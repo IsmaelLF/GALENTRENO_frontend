@@ -1,0 +1,103 @@
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Inicio - Galentreno</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background-color: #f0f2f5;
+        padding: 1rem;
+      }
+      .card {
+        background-color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      button.primary {
+        background-color: #1a1a1a;
+        color: white;
+        border: none;
+        padding: 1rem;
+        width: 100%;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      h1 {
+        margin: 0;
+      }
+      small {
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="user-greeting">Ola!</h1>
+    <small id="current-date"></small>
+
+    <div class="stats-grid">
+      <div class="card"><strong>--</strong><br />Entrenamientos</div>
+      <div class="card"><strong>--</strong><br />Volume total</div>
+      <div class="card"><strong>--</strong><br />Esta semana</div>
+    </div>
+
+    <button class="primary">+ Novo Entrenamento</button>
+
+    <button id="logout-button" style="width: 100%; margin-top: 1rem;"
+      >Cerrar Sesión</button
+    >
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const token = localStorage.getItem("jwt_token");
+
+        // --- Protección de la ruta ---
+        if (!token) {
+          window.location.href = "/login";
+          return;
+        }
+
+        // --- Lógica para mostrar la fecha ---
+        const dateElement = document.getElementById("current-date");
+        const today = new Date();
+        dateElement.textContent = today.toLocaleDateString("es-ES", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+        });
+
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/sesions/recentes",
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            document.getElementById("user-greeting").textContent =
+              `Ola, ${data.nomeUsuario}!`;
+          } else {
+            document.getElementById("user-greeting").textContent = "Ola!";
+          }
+        } catch (error) {
+          console.error("Error al obtener datos del usuario:", error);
+        }
+      });
+
+      document.getElementById("logout-button").addEventListener("click", () => {
+        localStorage.removeItem("jwt_token");
+        window.location.href = "/login";
+      });
+    </script>
+  </body>
+</html>

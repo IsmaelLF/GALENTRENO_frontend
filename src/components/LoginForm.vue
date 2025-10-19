@@ -2,8 +2,8 @@
 export default {
   data() {
     return {
-      email: '',
-      password: '',
+      correo: '',
+      contrasinal: '',
       isLoading: false,
       errorMessage: '',
     };
@@ -18,7 +18,7 @@ export default {
         const response = await fetch('http://localhost:3000/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.email, contrasinal: this.password }),
+          body: JSON.stringify({ email: this.correo, contrasinal: this.contrasinal }),
         });
 
         if (response.ok) {
@@ -44,26 +44,24 @@ export default {
     <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
     
     <div>
-      <label for="email">Email:</label>
-      <input type="email" id="email" v-model="email" required>
+      <label for="email">Correo:</label>
+      <input type="email" id="email" v-model="correo" required>
     </div>
     
     <div>
-      <label for="password">Contraseña:</label>
-      <input type="password" id="password" v-model="password" required>
+      <label for="password">Contrasinal:</label>
+      <input type="password" id="password" v-model="contrasinal" required>
     </div>
     
-    <button type="submit" :disabled="isLoading">
+<button type="submit" class="button button-login" :disabled="isLoading">
       <span v-if="isLoading">Cargando...</span>
       <span v-else>Iniciar Sesión</span>
     </button>
   </form>
 </template>
 
-<style>
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
+<style scoped>
+.button-login{
+  width: 75% !important;
+}
 </style>

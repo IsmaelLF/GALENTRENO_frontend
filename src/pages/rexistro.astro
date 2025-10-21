@@ -1,9 +1,9 @@
 ---
 import RegisterForm from "../components/RegisterForm.vue";
-import BaseLayout from "../layouts/BaseLayout.astro";
+import AuthLayout from "../layouts/AuthLayout.astro";
 ---
 
-<BaseLayout title="Rexistro">
+<AuthLayout title="Rexistro">
   <h1>Rexístrate</h1>
 
   <RegisterForm client:load />
@@ -12,4 +12,4 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <button class="button button-login"
     ><a href="/login">Xa tes unha conta? Inicia sesión aquí</a></button
   >
-</BaseLayout>
+</AuthLayout>

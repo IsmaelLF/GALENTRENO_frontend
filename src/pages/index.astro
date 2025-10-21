@@ -1,9 +1,9 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro"; // 1. Importas el Layout
+import AuthLayout from "../layouts/AuthLayout.astro"; // 1. Importas el Layout
 import LoginForm from "../components/LoginForm.vue"; // Importas tu componente de Vue
 ---
 
-<BaseLayout title="Iniciar Sesión">
+<AuthLayout title="Iniciar Sesión">
   <h1>Iniciar Sesión</h1>
 
   <LoginForm client:load />
@@ -12,4 +12,4 @@ import LoginForm from "../components/LoginForm.vue"; // Importas tu componente d
   <button class="button button-register"
     ><a href="/rexistro">Non tes unha conta? Rexístrate aquí</a></button
   >
-</BaseLayout>
+</AuthLayout>

@@ -1,5 +1,5 @@
 ---
-// src/layouts/BaseLayout.astro
+// src/layouts/AuthLayout.astro
 const { title } = Astro.props;
 ---
 
@@ -7,7 +7,7 @@ const { title } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
+    <title>{title} | Galentreno</title>
     <style is:global>
       body {
         font-family: BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
@@ -122,6 +122,8 @@ const { title } = Astro.props;
     </style>
   </head>
   <body>
-    <slot />
+    <main class="auth-card">
+      <slot />
+    </main>
   </body>
 </html>

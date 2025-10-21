@@ -26,7 +26,7 @@ export default {
                 });
 
                 if (response.ok) {
-                    window.location.href = '/login';
+                    window.location.href = '/';
                 } else {
                     const errorData = await response.json();
                     this.errorMessage = errorData.error || 'Erro ao rexistrar. Tente de novo.';

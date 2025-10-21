@@ -24,7 +24,7 @@ export default {
         if (response.ok) {
           const data = await response.json();
           localStorage.setItem('jwt_token', data.token);
-          window.location.href = '/home';
+          window.location.href = '/inicio';
         } else {
           const errorData = await response.json();
           this.errorMessage = errorData.error || 'Email o contraseña incorrectos.';

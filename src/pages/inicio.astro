@@ -1,0 +1,56 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+---
+
+<AppLayout title="GALENTRENO">
+  <h1 id="user-greeting">Ola!</h1>
+  <small id="current-date"></small>
+
+  <div class="stats-grid">
+    <div class="card"><strong>--</strong><br />Adestramentos</div>
+    <div class="card"><strong>--</strong><br />Volume total</div>
+    <div class="card"><strong>--</strong><br />Esta semana</div>
+  </div>
+
+  <button class="button">+ Novo Adestramento</button>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const token = localStorage.getItem("jwt_token");
+
+      if (!token) {
+        window.location.href = "/login";
+        return;
+      }
+
+      const dataActual = document.getElementById("current-date");
+      if (!dataActual) return;
+      else {
+        const diaActual = new Date();
+        dataActual.textContent = diaActual.toLocaleDateString("es-ES", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+        });
+      }
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/sesions/recentes",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const saudo = document.getElementById("user-greeting");
+        if (!saudo) return;
+        if (response.ok) {
+          const data = await response.json();
+          saudo.textContent = `Ola, ${data.nomeUsuario}!`;
+        } else {
+          saudo.textContent = `Ola!`;
+        }
+      } catch (error) {
+        console.error("Erro obtendo datos do usuario:", error);
+      }
+    });
+  </script>
+</AppLayout>

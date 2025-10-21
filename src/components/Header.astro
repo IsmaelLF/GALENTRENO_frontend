@@ -1,0 +1,59 @@
+---
+// src/components/Header.astro
+---
+
+<header>
+  <nav>
+    <a href="/home" class="logo">GALENTRENO</a>
+    <ul class="nav-links">
+      <li><a href="/home">Inicio</a></li>
+      <li><a href="/plans">Plans</a></li>
+      <li><a href="#" id="logout-link">Pechar Sesión</a></li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const logoutLink = document.getElementById("logout-link");
+  if (logoutLink) {
+    logoutLink.addEventListener("click", (event) => {
+      event.preventDefault();
+      localStorage.removeItem("jwt_token");
+      window.location.href = "/";
+    });
+  }
+</script>
+
+<style>
+  header {
+    background-color: white;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+  }
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .logo {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #091e42;
+    text-decoration: none;
+  }
+  .nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.5rem;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: #5e6c84;
+    font-weight: 600;
+  }
+</style>

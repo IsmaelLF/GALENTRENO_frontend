@@ -15,11 +15,14 @@ import AppLayout from "../layouts/AppLayout.astro";
   <button class="button">+ Novo Adestramento</button>
 
   <script>
+    import { format } from "date-fns";
+    import { gl } from "date-fns/locale";
+
     document.addEventListener("DOMContentLoaded", async () => {
       const token = localStorage.getItem("jwt_token");
 
       if (!token) {
-        window.location.href = "/login";
+        window.location.href = "/";
         return;
       }
 
@@ -27,10 +30,8 @@ import AppLayout from "../layouts/AppLayout.astro";
       if (!dataActual) return;
       else {
         const diaActual = new Date();
-        dataActual.textContent = diaActual.toLocaleDateString("es-ES", {
-          weekday: "long",
-          day: "numeric",
-          month: "long",
+        dataActual.textContent = format(diaActual, "EEEE, d MMMM", {
+          locale: gl,
         });
       }
       try {
@@ -44,7 +45,8 @@ import AppLayout from "../layouts/AppLayout.astro";
         if (!saudo) return;
         if (response.ok) {
           const data = await response.json();
-          saudo.textContent = `Ola, ${data.nomeUsuario}!`;
+
+          saudo.textContent = `Ola, ${data.nome}!`;
         } else {
           saudo.textContent = `Ola!`;
         }

@@ -19,7 +19,8 @@ export default {
             this.isLoading = true;
             this.errorMessage = '';
             try {
-                const response = await fetch('http://localhost:3000/api/auth/rexistro', {
+               const urlApi = import.meta.env.PUBLIC_API_URL;
+               const response = await fetch(`${urlApi}/api/auth/rexistro`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nome: this.nome, email: this.correo, contrasinal: this.contrasinal }),

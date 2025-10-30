@@ -15,7 +15,8 @@ export default {
       this.errorMessage = '';
 
       try {
-        const response = await fetch('http://localhost:3000/api/auth/login', {
+        const urlApi = import.meta.env.PUBLIC_API_URL;
+        const response = await fetch(`${urlApi}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: this.correo, contrasinal: this.contrasinal }),

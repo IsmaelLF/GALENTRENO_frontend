@@ -10,7 +10,7 @@ export const prerender = false;
     <p>Cargando detalle do plan...</p>
   </div>
 
-  <script define:vars={{ planId: id }}>
+  <script type="module" define:vars={{ planId: id }}>
     document.addEventListener("DOMContentLoaded", async () => {
       const planDetail = document.getElementById("plan-detail");
       const apiUrl = import.meta.env.PUBLIC_API_URL;

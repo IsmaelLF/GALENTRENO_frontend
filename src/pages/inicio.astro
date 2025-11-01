@@ -4,6 +4,7 @@ import { format } from "date-fns";
 import { gl } from "date-fns/locale";
 const diaActual = new Date();
 const dataFormateada = format(diaActual, "EEEE, d MMMM", { locale: gl });
+const urlAPI = import.meta.env.PUBLIC_API_URL;
 ---
 
 <AppLayout title="GALENTRENO">
@@ -18,9 +19,8 @@ const dataFormateada = format(diaActual, "EEEE, d MMMM", { locale: gl });
 
   <a href="/meus-plans" class="button button-primary">+ Novo Entrenamento</a>
 
-  <script type="module">
+  <script type="module" define:vars={{ urlAPI }}>
     document.addEventListener("DOMContentLoaded", async () => {
-      const urlAPI = import.meta.env.PUBLIC_API_URL;
       const token = localStorage.getItem("jwt_token");
 
       if (!token) {

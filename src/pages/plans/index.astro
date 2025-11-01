@@ -51,7 +51,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
           plans.forEach((plan) => {
             const card = document.createElement("a");
             card.className = "plan-card";
-            card.href = `/plans/${plan.id}`;
+            card.href = `/plan/${plan.id}`;
             card.innerHTML = `
                             <h3>${plan.nome}</h3>
                             <p>${plan.descricion || "Sen descrición."}</p>

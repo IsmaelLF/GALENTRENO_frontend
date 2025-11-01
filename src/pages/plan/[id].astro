@@ -3,7 +3,7 @@
 import AppLayout from "../../layouts/AppLayout.astro";
 const { id } = Astro.params;
 export const prerender = false;
-const urlAPI = import.meta.env.PUBLIC_API_URL;
+const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <AppLayout title="Detalle do Plan">
@@ -11,7 +11,7 @@ const urlAPI = import.meta.env.PUBLIC_API_URL;
     <p>Cargando detalle do plan...</p>
   </div>
 
-  <script type="module" define:vars={{ planId: id, urlAPI: urlAPI }}>
+  <script type="module" define:vars={{ planId: id, apiUrl: apiUrl }}>
     document.addEventListener("DOMContentLoaded", async () => {
       const planDetail = document.getElementById("plan-detail");
 

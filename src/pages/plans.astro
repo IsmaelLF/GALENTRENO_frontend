@@ -1,7 +1,7 @@
 ---
 // src/pages/plans.astro
 import AppLayout from "../layouts/AppLayout.astro";
-const urlAPI = import.meta.env.PUBLIC_API_URL;
+const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <AppLayout title="Plans Predefinidos">
@@ -29,7 +29,7 @@ const urlAPI = import.meta.env.PUBLIC_API_URL;
     }
   </style>
 
-  <script type="module" define:vars={{ urlAPI: urlAPI }}>
+  <script type="module" define:vars={{ apiUrl: apiUrl }}>
     document.addEventListener("DOMContentLoaded", async () => {
       const listaPlans = document.getElementById("plans-list");
       const apiUrl = import.meta.env.PUBLIC_API_URL;

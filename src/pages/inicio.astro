@@ -4,7 +4,7 @@ import { format } from "date-fns";
 import { gl } from "date-fns/locale";
 const diaActual = new Date();
 const dataFormateada = format(diaActual, "EEEE, d MMMM", { locale: gl });
-const urlAPI = import.meta.env.PUBLIC_API_URL;
+const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <AppLayout title="GALENTRENO">
@@ -19,7 +19,7 @@ const urlAPI = import.meta.env.PUBLIC_API_URL;
 
   <a href="/meus-plans" class="button button-primary">+ Novo Entrenamento</a>
 
-  <script type="module" define:vars={{ urlAPI }}>
+  <script type="module" define:vars={{ apiUrl: apiUrl }}>
     document.addEventListener("DOMContentLoaded", async () => {
       const token = localStorage.getItem("jwt_token");
 
@@ -34,7 +34,7 @@ const urlAPI = import.meta.env.PUBLIC_API_URL;
         dataActual.textContent = dataActual.dataset.dataFormatada;
       }
       try {
-        const response = await fetch(`${urlAPI}/api/sesions/recentes`, {
+        const response = await fetch(`${apiUrl}/api/sesions/recentes`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const saudo = document.getElementById("user-greeting");

@@ -1,0 +1,67 @@
+---
+// src/pages/plan/[id].astro
+import AppLayout from "../../layouts/AppLayout.astro";
+const { id } = Astro.params; // Colle o ID da URL (ex: /plan/1)
+---
+
+<AppLayout title="Detalle do Plan">
+  <div id="plan-detail">
+    <p>Cargando detalle do plan...</p>
+  </div>
+
+  <script define:vars={{ planId: id }}>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const planDetail = document.getElementById("plan-detail");
+      const apiUrl = import.meta.env.PUBLIC_API_URL;
+
+      try {
+        // Chamamos ao novo endpoint que creamos no backend
+        const response = await fetch(
+          `${apiUrl}/api/plans/predefinidos/${planId}`
+        );
+        if (!response.ok) throw new Error("Plan non atopado");
+
+        const plan = await response.json();
+
+        // "Pintamos" o HTML do plan
+        planDetail.innerHTML = `
+                    <h2>${plan.nome}</h2>
+                    <p>${plan.descricion}</p>
+                    <hr>
+                `;
+
+        plan.dias.forEach((dia) => {
+          const diaEl = document.createElement("div");
+          diaEl.className = "dia-card";
+
+          let exerciciosHtml = "";
+          dia.exercicios.forEach((ex) => {
+            exerciciosHtml += `<li>${ex.nome_exercicio} (${ex.series} x ${ex.repeticions})</li>`;
+          });
+
+          diaEl.innerHTML = `
+                        <h3>${dia.nome_dia}</h3>
+                        <ul>${exerciciosHtml}</ul>
+                    `;
+          planDetail.appendChild(diaEl);
+        });
+      } catch (error) {
+        console.error("Error:", error);
+        planDetail.innerHTML = "<p>Error ao cargar o plan.</p>";
+      }
+    });
+  </script>
+
+  <style>
+    .dia-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .dia-card h3 {
+      margin-top: 0;
+    }
+  </style>
+</AppLayout>

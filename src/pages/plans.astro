@@ -1,0 +1,66 @@
+---
+// src/pages/plans.astro
+import AppLayout from "../layouts/AppLayout.astro";
+---
+
+<AppLayout title="Plans Predefinidos">
+  <h2>Plans Predefinidos</h2>
+  <p>Explora as nosas rutinas creadas por expertos.</p>
+
+  <div id="plans-list" class="plans-container">
+    <p>Cargando plans...</p>
+  </div>
+
+  <style>
+    .plan-card {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .plan-card h3 {
+      margin-top: 0;
+    }
+  </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const listaPlans = document.getElementById("plans-list");
+      const apiUrl = import.meta.env.PUBLIC_API_URL;
+
+      try {
+        const response = await fetch(`${apiUrl}/api/plans/predefinidos`);
+        if (!response.ok) throw new Error("Non se puideron cargar os plans");
+        if (!listaPlans) return;
+        const plans = await response.json();
+        listaPlans.innerHTML = "";
+
+        if (plans.length === 0) {
+          listaPlans.innerHTML =
+            "<p>Non hai plans predefinidos dispoñibles.</p>";
+        } else {
+          plans.forEach((plan: { id: any; nome: any; descricion: any }) => {
+            // Creamos un enlace (<a>) para cada plan
+            const card = document.createElement("a");
+            card.className = "plan-card";
+            card.href = `/plan/${plan.id}`; // O enlace vai á páxina de detalle
+            card.innerHTML = `
+                            <h3>${plan.nome}</h3>
+                            <p>${plan.descricion || "Sen descrición."}</p>
+                        `;
+            listaPlans.appendChild(card);
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        if (!listaPlans) return;
+        listaPlans.innerHTML = "<p>Error ao cargar os plans.</p>";
+      }
+    });
+  </script>
+</AppLayout>

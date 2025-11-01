@@ -41,7 +41,7 @@ import AppLayout from "../layouts/AppLayout.astro";
         });
 
         if (!response.ok) throw new Error("Non se puideron cargar os plans");
-
+        if (!plansList) return;
         const plans = await response.json();
         plansList.innerHTML = ""; // Limpamos o "Cargando..."
 
@@ -49,7 +49,7 @@ import AppLayout from "../layouts/AppLayout.astro";
           plansList.innerHTML =
             "<p>Aínda non creaches ningún plan persoal.</p>";
         } else {
-          plans.forEach((plan) => {
+          plans.forEach((plan: { nome: any; descricion: any }) => {
             const card = document.createElement("div");
             card.className = "plan-card";
             card.innerHTML = `
@@ -61,6 +61,7 @@ import AppLayout from "../layouts/AppLayout.astro";
         }
       } catch (error) {
         console.error("Error:", error);
+        if (!plansList) return;
         plansList.innerHTML = "<p>Error ao cargar os teus plans.</p>";
       }
     });

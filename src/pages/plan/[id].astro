@@ -1,7 +1,8 @@
 ---
 // src/pages/plan/[id].astro
 import AppLayout from "../../layouts/AppLayout.astro";
-const { id } = Astro.params; // Colle o ID da URL (ex: /plan/1)
+const { id } = Astro.params;
+export const prerender = false;
 ---
 
 <AppLayout title="Detalle do Plan">

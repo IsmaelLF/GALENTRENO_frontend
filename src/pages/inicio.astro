@@ -8,7 +8,7 @@ const dataFormateada = format(diaActual, "EEEE, d MMMM", { locale: gl });
 
 <AppLayout title="GALENTRENO">
   <h1 id="user-greeting">Ola!</h1>
-  <small id="current-date"></small>
+  <small id="current-date" data-data-formatada={dataFormateada}></small>
 
   <div class="stats-grid">
     <div class="card"><strong>--</strong><br />Adestramentos</div>
@@ -30,7 +30,7 @@ const dataFormateada = format(diaActual, "EEEE, d MMMM", { locale: gl });
       const dataActual = document.getElementById("current-date");
       if (!dataActual) return;
       else {
-        dataActual.textContent = dataFormateada;
+        dataActual.textContent = dataActual.dataset.dataFormatada;
       }
       try {
         const apiUrl = import.meta.env.PUBLIC_API_URL;

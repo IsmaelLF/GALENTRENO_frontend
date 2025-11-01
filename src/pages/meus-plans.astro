@@ -28,7 +28,7 @@ import AppLayout from "../layouts/AppLayout.astro";
     document.addEventListener("DOMContentLoaded", async () => {
       const token = localStorage.getItem("jwt_token");
       if (!token) {
-        window.location.href = "/"; // Se non hai token, ao login
+        window.location.href = "/";
         return;
       }
 
@@ -43,13 +43,13 @@ import AppLayout from "../layouts/AppLayout.astro";
         if (!response.ok) throw new Error("Non se puideron cargar os plans");
         if (!plansList) return;
         const plans = await response.json();
-        plansList.innerHTML = ""; // Limpamos o "Cargando..."
+        plansList.innerHTML = "";
 
         if (plans.length === 0) {
           plansList.innerHTML =
             "<p>Aínda non creaches ningún plan persoal.</p>";
         } else {
-          plans.forEach((plan: { nome: any; descricion: any }) => {
+          plans.forEach((plan) => {
             const card = document.createElement("div");
             card.className = "plan-card";
             card.innerHTML = `

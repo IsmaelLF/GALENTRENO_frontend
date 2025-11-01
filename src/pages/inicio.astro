@@ -1,5 +1,9 @@
 ---
 import AppLayout from "../layouts/AppLayout.astro";
+import { format } from "date-fns";
+import { gl } from "date-fns/locale";
+const diaActual = new Date();
+const dataFormateada = format(diaActual, "EEEE, d MMMM", { locale: gl });
 ---
 
 <AppLayout title="GALENTRENO">
@@ -15,9 +19,6 @@ import AppLayout from "../layouts/AppLayout.astro";
   <a href="/meus-plans" class="button button-primary">+ Novo Entrenamento</a>
 
   <script type="module">
-    import { format } from "date-fns";
-    import { gl } from "date-fns/locale";
-
     document.addEventListener("DOMContentLoaded", async () => {
       const token = localStorage.getItem("jwt_token");
 
@@ -29,10 +30,7 @@ import AppLayout from "../layouts/AppLayout.astro";
       const dataActual = document.getElementById("current-date");
       if (!dataActual) return;
       else {
-        const diaActual = new Date();
-        dataActual.textContent = format(diaActual, "EEEE, d MMMM", {
-          locale: gl,
-        });
+        dataActual.textContent = dataFormateada;
       }
       try {
         const apiUrl = import.meta.env.PUBLIC_API_URL;

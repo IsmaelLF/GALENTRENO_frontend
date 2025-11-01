@@ -44,11 +44,10 @@ import AppLayout from "../layouts/AppLayout.astro";
           listaPlans.innerHTML =
             "<p>Non hai plans predefinidos dispoñibles.</p>";
         } else {
-          plans.forEach((plan: { id: any; nome: any; descricion: any }) => {
-            // Creamos un enlace (<a>) para cada plan
+          plans.forEach((plan) => {
             const card = document.createElement("a");
             card.className = "plan-card";
-            card.href = `/plan/${plan.id}`; // O enlace vai á páxina de detalle
+            card.href = `/plan/${plan.id}`;
             card.innerHTML = `
                             <h3>${plan.nome}</h3>
                             <p>${plan.descricion || "Sen descrición."}</p>

@@ -1,5 +1,4 @@
 ---
-// src/pages/plan/[id].astro
 import AppLayout from "../../layouts/AppLayout.astro";
 const { id } = Astro.params;
 export const prerender = false;
@@ -11,12 +10,21 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
     <p>Cargando detalle do plan...</p>
   </div>
 
+  <button
+    id="add-plan-button"
+    class="button button-primary"
+    style="margin-top: 1rem;"
+  >
+    Engadir aos meus plans
+  </button>
+
   <script type="module" define:vars={{ planId: id, apiUrl: apiUrl }}>
     document.addEventListener("DOMContentLoaded", async () => {
       const planDetail = document.getElementById("plan-detail");
+      const addButton = document.getElementById("add-plan-button");
+      const token = localStorage.getItem("jwt_token");
 
       try {
-        // Chamamos ao novo endpoint que creamos no backend
         const response = await fetch(
           `${apiUrl}/api/plans/predefinidos/${planId}`
         );
@@ -24,12 +32,11 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
 
         const plan = await response.json();
 
-        // "Pintamos" o HTML do plan
         planDetail.innerHTML = `
-                    <h2>${plan.nome}</h2>
-                    <p>${plan.descricion}</p>
-                    <hr>
-                `;
+          <h2>${plan.nome}</h2>
+          <p>${plan.descricion}</p>
+          <hr>
+        `;
 
         plan.dias.forEach((dia) => {
           const diaEl = document.createElement("div");
@@ -41,14 +48,47 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
           });
 
           diaEl.innerHTML = `
-                        <h3>${dia.nome_dia}</h3>
-                        <ul>${exerciciosHtml}</ul>
-                    `;
+            <h3>${dia.nome_dia}</h3>
+            <ul>${exerciciosHtml}</ul>
+          `;
           planDetail.appendChild(diaEl);
         });
       } catch (error) {
         console.error("Error:", error);
         planDetail.innerHTML = "<p>Error ao cargar o plan.</p>";
+      }
+
+      if (addButton) {
+        addButton.addEventListener("click", async () => {
+          if (!token) {
+            window.location.href = "/";
+            return;
+          }
+
+          addButton.textContent = "Engadindo...";
+          addButton.disabled = true;
+
+          try {
+            const response = await fetch(`${apiUrl}/api/plans/${planId}/copy`, {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+
+            if (response.ok) {
+              alert("Plan engadido con éxito aos teus plans!");
+              addButton.textContent = "Engadido!";
+            } else {
+              throw new Error("Non se puido engadir o plan");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Houbo un erro ao engadir o plan.");
+            addButton.textContent = "Engadir aos meus plans";
+            addButton.disabled = false;
+          }
+        });
       }
     });
   </script>

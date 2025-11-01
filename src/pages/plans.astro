@@ -13,8 +13,14 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
   </div>
 
   <style>
-    .plan-card {
+    .plans-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
       background-color: #112f63;
+      color: white;
+    }
+    .plan-card {
       color: white;
       padding: 1rem;
       border-radius: 12px;

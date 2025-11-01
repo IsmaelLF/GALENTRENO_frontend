@@ -1,0 +1,11 @@
+---
+// src/pages/plans/novo.astro
+import AppLayout from "../../layouts/AppLayout.astro";
+import CrearPlan from "../../components/CrearPlan.vue";
+---
+
+<AppLayout title="Crear Novo Plan">
+  <h2>Crear un novo plan</h2>
+
+  <CrearPlan client:load />
+</AppLayout>

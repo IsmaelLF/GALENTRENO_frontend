@@ -1,0 +1,68 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+---
+
+<AppLayout title="Os Meus Plans">
+  <h2>Os Meus Plans</h2>
+  <p>Selecciona un plan para comezar o teu adestramento.</p>
+
+  <div id="plans-list" class="plans-container">
+    <p>Cargando plans...</p>
+  </div>
+
+  <style>
+    .plan-card {
+      background-color: white;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    .plan-card h3 {
+      margin-top: 0;
+    }
+  </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const token = localStorage.getItem("jwt_token");
+      if (!token) {
+        window.location.href = "/"; // Se non hai token, ao login
+        return;
+      }
+
+      const plansList = document.getElementById("plans-list");
+      const apiUrl = import.meta.env.PUBLIC_API_URL;
+
+      try {
+        const response = await fetch(`${apiUrl}/api/plans/creados`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) throw new Error("Non se puideron cargar os plans");
+
+        const plans = await response.json();
+        plansList.innerHTML = ""; // Limpamos o "Cargando..."
+
+        if (plans.length === 0) {
+          plansList.innerHTML =
+            "<p>Aínda non creaches ningún plan persoal.</p>";
+        } else {
+          plans.forEach((plan) => {
+            const card = document.createElement("div");
+            card.className = "plan-card";
+            card.innerHTML = `
+                            <h3>${plan.nome}</h3>
+                            <p>${plan.descricion || "Sen descrición."}</p>
+                        `;
+            plansList.appendChild(card);
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        plansList.innerHTML = "<p>Error ao cargar os teus plans.</p>";
+      }
+    });
+  </script>
+</AppLayout>

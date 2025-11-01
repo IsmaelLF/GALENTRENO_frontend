@@ -17,9 +17,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
 
       try {
         // Chamamos ao novo endpoint que creamos no backend
-        const response = await fetch(
-          `${apiUrl}/api/plans/predefinidos/${planId}`
-        );
+        const response = await fetch(`${apiUrl}/api/plan/${planId}`);
         if (!response.ok) throw new Error("Plan non atopado");
 
         const plan = await response.json();

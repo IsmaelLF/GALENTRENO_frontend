@@ -55,7 +55,7 @@ export default {
 
         if (response.ok) {
           alert('Plan creado con éxito!');
-          window.location.href = '/meus-plans'; // Volvemos á lista de plans
+          window.location.href = '/meus-plans'; 
         } else {
           const errorData = await response.json();
           this.errorMessage = errorData.error || 'Non se puido crear o plan.';

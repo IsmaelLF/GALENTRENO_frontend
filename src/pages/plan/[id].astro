@@ -3,6 +3,7 @@
 import AppLayout from "../../layouts/AppLayout.astro";
 const { id } = Astro.params;
 export const prerender = false;
+const urlAPI = import.meta.env.PUBLIC_API_URL;
 ---
 
 <AppLayout title="Detalle do Plan">
@@ -10,10 +11,9 @@ export const prerender = false;
     <p>Cargando detalle do plan...</p>
   </div>
 
-  <script type="module" define:vars={{ planId: id }}>
+  <script type="module" define:vars={{ planId: id, urlAPI: urlAPI }}>
     document.addEventListener("DOMContentLoaded", async () => {
       const planDetail = document.getElementById("plan-detail");
-      const apiUrl = import.meta.env.PUBLIC_API_URL;
 
       try {
         // Chamamos ao novo endpoint que creamos no backend

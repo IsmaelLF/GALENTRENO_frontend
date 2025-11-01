@@ -98,16 +98,38 @@ const { title } = Astro.props;
         border: 1px solid rgba(0, 0, 0, 0.05);
       }
 
+      label {
+        font-weight: 600;
+        color: #172b4d;
+        display: block;
+        margin-bottom: 0.25rem;
+      }
+
       input[type="text"],
       input[type="email"],
-      input[type="password"] {
+      input[type="password"],
+      input[type="number"],
+      select {
         width: 100%;
-        padding: 0.75rem;
+        padding: 0.75rem 1rem;
         border-radius: 8px;
         border: 1px solid #dfe1e6;
         font-size: 1rem;
+        font-family: inherit;
         box-sizing: border-box;
-        margin-top: 0.25rem;
+        transition:
+          border-color 0.2s,
+          box-shadow 0.2s;
+      }
+
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      input[type="password"]:focus,
+      input[type="number"]:focus,
+      select:focus {
+        outline: none;
+        border-color: #112f63;
+        box-shadow: 0 0 0 3px rgba(17, 47, 99, 0.1);
       }
 
       label {

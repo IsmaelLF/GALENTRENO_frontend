@@ -9,7 +9,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
 
 <AppLayout title="GALENTRENO">
   <h1 id="user-greeting">Ola!</h1>
-  <small id="current-date" data-data-formatada={dataFormateada}></small>
+  <small id="current-date" data-data-formateada={dataFormateada}></small>
 
   <div class="stats-grid">
     <div class="card"><strong>--</strong><br />Adestramentos</div>
@@ -31,7 +31,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
       const dataActual = document.getElementById("current-date");
       if (!dataActual) return;
       else {
-        dataActual.textContent = dataActual.dataset.dataFormatada;
+        dataActual.textContent = dataActual.dataset.dataFormateada;
       }
       try {
         const response = await fetch(`${apiUrl}/api/sesions/recentes`, {
@@ -42,7 +42,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         if (response.ok) {
           const data = await response.json();
 
-          saudo.textContent = `Ola, ${data.nome}!`;
+          saudo.textContent = `Ola, ${data.nome}! Preparado para adestrar?`;
         } else {
           saudo.textContent = `Ola!`;
         }

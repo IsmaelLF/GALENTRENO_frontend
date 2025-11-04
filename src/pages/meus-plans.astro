@@ -60,6 +60,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
           plans.forEach((plan) => {
             const card = document.createElement("div");
             card.className = "plan-card";
+            // TODO: Engadir para ver os exercicios tamen
             card.innerHTML = `
                             <h3>${plan.nome}</h3>
                             <p>${plan.descricion || "Sen descrición."}</p>
@@ -70,7 +71,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
       } catch (error) {
         console.error("Error:", error);
         if (!plansList) return;
-        plansList.innerHTML = "<p>Error ao cargar os teus plans.</p>";
+        plansList.innerHTML = "<p>Erro ao cargar os teus plans.</p>";
       }
     });
   </script>

@@ -12,26 +12,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
     <p>Cargando plans...</p>
   </div>
 
-  <style is:global>
-    .plans-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-    }
-    .plan-card {
-      background-color: #112f63;
-      color: white;
-      padding: 1rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(0, 0, 0, 0.05);
-      text-decoration: none;
-      display: block;
-    }
-    .plan-card h3 {
-      margin-top: 0;
-    }
-  </style>
+  <style is:global></style>
 
   <script type="module" define:vars={{ apiUrl: apiUrl }}>
     document.addEventListener("DOMContentLoaded", async () => {

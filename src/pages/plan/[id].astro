@@ -39,23 +39,23 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         `;
 
         plan.dias.forEach((dia) => {
-          const diaEl = document.createElement("div");
-          diaEl.className = "dia-card";
+          const diaEx = document.createElement("div");
+          diaEx.className = "dia-card";
 
           let exerciciosHtml = "";
           dia.exercicios.forEach((ex) => {
             exerciciosHtml += `<li>${ex.nome_exercicio} (${ex.series} x ${ex.repeticions})</li>`;
           });
 
-          diaEl.innerHTML = `
+          diaEx.innerHTML = `
             <h3>${dia.nome_dia}</h3>
             <ul>${exerciciosHtml}</ul>
           `;
-          planDetail.appendChild(diaEl);
+          planDetail.appendChild(diaEx);
         });
       } catch (error) {
         console.error("Error:", error);
-        planDetail.innerHTML = "<p>Error ao cargar o plan.</p>";
+        planDetail.innerHTML = "<p>Erro ao cargar o plan.</p>";
       }
 
       if (addButton) {

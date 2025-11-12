@@ -43,6 +43,50 @@ const { title } = Astro.props;
   </body>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      const cursorDot = document.createElement("div");
+      cursorDot.classList.add("custom-cursor-dot");
+      document.body.appendChild(cursorDot);
+
+      let mouseX = 0;
+      let mouseY = 0;
+      const trail: HTMLElement[] = [];
+      const maxTrail = 15;
+
+      document.addEventListener("mousemove", (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+
+        cursorDot.style.left = mouseX + "px";
+        cursorDot.style.top = mouseY + "px";
+
+        const trailDot = document.createElement("div");
+        trailDot.classList.add("cursor-trail");
+        trailDot.style.left = mouseX + "px";
+        trailDot.style.top = mouseY + "px";
+        document.body.appendChild(trailDot);
+
+        trail.push(trailDot);
+
+        if (trail.length > maxTrail) {
+          const oldDot = trail.shift();
+          if (oldDot) oldDot.remove();
+        }
+
+        setTimeout(() => {
+          trailDot.style.opacity = "0";
+          trailDot.style.transform = "translate(-50%, -50%) scale(0)";
+        }, 10);
+      });
+
+      document.querySelectorAll("a, button").forEach((el) => {
+        el.addEventListener("mouseenter", () => {
+          cursorDot.classList.add("cursor-hover");
+        });
+        el.addEventListener("mouseleave", () => {
+          cursorDot.classList.remove("cursor-hover");
+        });
+      });
+
       const container = document.querySelector(".deco-under");
       const track = document.querySelector<HTMLElement>(".scroll-track");
 
@@ -62,7 +106,6 @@ const { title } = Astro.props;
         const totalImages = images.length;
 
         if (totalImages > 0) {
-          // El punto de reset es la mitad del ancho total (donde termina el primer set)
           resetPoint = track.scrollWidth / 2;
         }
       }
@@ -78,7 +121,6 @@ const { title } = Astro.props;
         scrollAmount += currentSpeed;
         currentSpeed = Math.max(baseSpeed, currentSpeed * decay);
 
-        // Cuando llegamos al final del primer set, volvemos al inicio
         if (scrollAmount >= resetPoint) {
           scrollAmount = scrollAmount - resetPoint;
         }
@@ -126,6 +168,66 @@ const { title } = Astro.props;
     overflow: hidden;
   }
 
+  @media (min-width: 900px) {
+    body {
+      cursor: none;
+    }
+  }
+
+  input,
+  textarea,
+  select {
+    cursor: text !important;
+  }
+
+  .custom-cursor-dot {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background-color: #0073c0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    transition:
+      width 0.3s ease,
+      height 0.3s ease;
+    display: none;
+  }
+
+  @media (min-width: 900px) {
+    .custom-cursor-dot {
+      display: block;
+    }
+  }
+
+  .custom-cursor-dot.cursor-hover {
+    width: 12px;
+    height: 12px;
+  }
+
+  .cursor-trail {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background-color: #0073c0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s ease;
+    opacity: 0.6;
+    display: none;
+  }
+
+  @media (min-width: 900px) {
+    .cursor-trail {
+      display: block;
+    }
+  }
+
   .deco-under {
     display: none;
     position: fixed;
@@ -140,14 +242,14 @@ const { title } = Astro.props;
   .deco-left {
     position: relative;
     width: 100%;
-    flex-basis: 40%;
-    min-height: 250px;
+    flex-basis: auto;
+    min-height: 200px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 2rem 1rem 1.5rem 1rem;
+    padding: 1.5rem 1rem 1rem 1rem;
     overflow: hidden;
   }
   .deco-left img {
@@ -159,13 +261,13 @@ const { title } = Astro.props;
   .deco-right {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: auto;
     flex-grow: 1;
     overflow-y: auto;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 1rem 0 3rem 0;
+    padding: 1rem 1rem 2rem 1rem;
     z-index: 2;
     flex-direction: column;
   }
@@ -176,8 +278,8 @@ const { title } = Astro.props;
     top: auto;
     left: auto;
     width: 90%;
-    margin-top: 1.5rem;
-    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    margin-top: 1rem;
+    font-size: clamp(1.5rem, 4.5vw, 2.2rem);
     color: #fff;
     font-weight: 700;
     text-transform: uppercase;

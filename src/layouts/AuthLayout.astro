@@ -1,5 +1,4 @@
 ---
-// src/layouts/AuthLayout.astro
 const { title } = Astro.props;
 ---
 
@@ -13,7 +12,7 @@ const { title } = Astro.props;
   <body>
     <main>
       <div class="deco-left">
-        <img src="/frontend/public/img/GALENTRENO.png" alt="Galentreno Logo" />
+        <img src="/img/GALENTRENO.png" alt="Galentreno Logo" />
 
         <h1 class="h1-split">
           A TÚA PLATAFORMA DE ADESTRAMENTO 100% EN GALEGO
@@ -31,12 +30,12 @@ const { title } = Astro.props;
       <div class="deco-under">
         <div class="scroll-gallery">
           <div class="scroll-track">
-            <img src="/frontend/public/img/galeria/foto1.jpg" alt="Imaxe 1" />
-            <img src="/frontend/public/img/galeria/foto2.jpg" alt="Imaxe 2" />
-            <img src="/frontend/public/img/galeria/foto3.jpg" alt="Imaxe 3" />
-            <img src="/frontend/public/img/galeria/foto1.jpg" alt="Imaxe 1" />
-            <img src="/frontend/public/img/galeria/foto2.jpg" alt="Imaxe 2" />
-            <img src="/frontend/public/img/galeria/foto3.jpg" alt="Imaxe 3" />
+            <img src="/img/galeria/foto1.jpg" alt="Imaxe 1" />
+            <img src="/img/galeria/foto2.jpg" alt="Imaxe 2" />
+            <img src="/img/galeria/foto3.jpg" alt="Imaxe 3" />
+            <img src="/img/galeria/foto1.jpg" alt="Imaxe 1" />
+            <img src="/img/galeria/foto2.jpg" alt="Imaxe 2" />
+            <img src="/img/galeria/foto3.jpg" alt="Imaxe 3" />
           </div>
         </div>
       </div>
@@ -63,6 +62,7 @@ const { title } = Astro.props;
         const totalImages = images.length;
 
         if (totalImages > 0) {
+          // El punto de reset es la mitad del ancho total (donde termina el primer set)
           resetPoint = track.scrollWidth / 2;
         }
       }
@@ -78,6 +78,7 @@ const { title } = Astro.props;
         scrollAmount += currentSpeed;
         currentSpeed = Math.max(baseSpeed, currentSpeed * decay);
 
+        // Cuando llegamos al final del primer set, volvemos al inicio
         if (scrollAmount >= resetPoint) {
           scrollAmount = scrollAmount - resetPoint;
         }

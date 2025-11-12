@@ -8,6 +8,9 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} | Galentreno</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <script>
+      import { ViewTransitions } from "astro:transitions";
+    </script>
   </head>
   <body>
     <main>
@@ -49,7 +52,7 @@ const { title } = Astro.props;
 
       let mouseX = 0;
       let mouseY = 0;
-      const trail: HTMLElement[] = [];
+      const trail = [];
       const maxTrail = 15;
 
       document.addEventListener("mousemove", (e) => {
@@ -106,6 +109,7 @@ const { title } = Astro.props;
         const totalImages = images.length;
 
         if (totalImages > 0) {
+          // El punto de reset es la mitad del ancho total (donde termina el primer set)
           resetPoint = track.scrollWidth / 2;
         }
       }
@@ -121,6 +125,7 @@ const { title } = Astro.props;
         scrollAmount += currentSpeed;
         currentSpeed = Math.max(baseSpeed, currentSpeed * decay);
 
+        // Cuando llegamos al final del primer set, volvemos al inicio
         if (scrollAmount >= resetPoint) {
           scrollAmount = scrollAmount - resetPoint;
         }

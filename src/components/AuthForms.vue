@@ -303,7 +303,7 @@ input:focus,input:hover {
   width: 50%;
   padding: 12px;
   color: #fff;
-  background-color: #0d6dfde5;
+  background-color: #0d6dfd;
   border-radius: 2.5dvw;
   text-transform: uppercase;
   border: none;

@@ -325,10 +325,10 @@ input:focus,input:hover {
 @media (max-width: 967px) {
   .button-primary,
   .button-secondary {
-    background-color: rgba(34, 34, 34, 0.5);
+    background-color: rgba(34, 34, 34, 0.85);
     color: #fff;
     font-size: 1rem;
-    border-radius: 5dvh;
+    border-radius: 2.5dvh;
   }
 }
 </style>

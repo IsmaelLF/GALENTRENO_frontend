@@ -58,7 +58,7 @@ export default {
     async handleRegister() {
       const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (!emailRegex.test(this.correo)) {
-        this.errorMessage = 'Por favor, introduce un formato de correo electrónico válido.';
+        this.errorMessage = 'Introduce un formato de correo electrónico válido.';
         return;
       }
       this.isLoading = true;
@@ -77,13 +77,12 @@ export default {
           this.nome = '';
           this.correo = '';
           this.contrasinal = '';
-          alert('Rexistro exitoso! Agora podes iniciar sesión.');
         } else {
           const errorData = await response.json();
           this.errorMessage = errorData.error || 'Erro ao rexistrar. Tente de novo.';
         }
       } catch (error) {
-        this.errorMessage = 'Error de conexión co servidor.';
+        this.errorMessage = 'Erro de conexión co servidor.';
       } finally {
         this.isLoading = false;
       }

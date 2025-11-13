@@ -14,23 +14,22 @@ const { title } = Astro.props;
       <div class="deco-left">
         <a href="/"><img src="/img/GALENTRENO.png" alt="Galentreno Logo" /></a>
 
-        <!-- <h1 class="h1-split">
-          A TÚA PLATAFORMA DE ADESTRAMENTO 100% EN GALEGO
-        </h1> -->
         <div class="div-texts">
-          <div class="div-text-1">
+          <!-- <div class="div-text-1">
             A TÚA PLATAFORMA DE ADESTRAMENTO 100% EN GALEGO
-          </div>
+          </div> -->
           <p class="div-text-copy">Copyright 2025 GALENTRENO</p>
         </div>
       </div>
-      <a class="a-ig" href="https://instagram.com/galentreno" target="_blank"
-        >INSTAGRAM</a
-      >
-      <a class="a-fb" href="https://facebook.com/galentreno" target="_blank"
-        >FACEBOOK</a
-      >
-      <a class="a-web" href="https://galentreno.com" target="_blank">(WEB)</a>
+      <div class="links-container">
+        <a class="a-ig" href="https://instagram.com/galentreno" target="_blank"
+          >INSTAGRAM</a
+        >
+        <a class="a-web" href="https://galentreno.com" target="_blank">(WEB)</a>
+        <a class="a-fb" href="https://facebook.com/galentreno" target="_blank"
+          >FACEBOOK</a
+        >
+      </div>
       <div class="deco-right auth-card">
         <div class="auth-content">
           <slot />
@@ -224,15 +223,8 @@ const { title } = Astro.props;
   }
 
   @media (min-width: 1142px) and (max-width: 1355px) {
-    .div-text-copy,
-    .text-frase p {
+    .div-text-copy {
       font-size: 0.5rem;
-    }
-  }
-  @media (min-width: 968px) and (max-width: 1141px) {
-    .div-text-copy,
-    .text-frase p {
-      font-size: 0.4rem;
     }
   }
 
@@ -314,27 +306,52 @@ const { title } = Astro.props;
     min-height: 0;
   }
 
-  .h1-split {
-    display: block;
-    position: absolute;
-    top: 30vh;
-    left: auto;
-    width: 90%;
-    font-size: 12px !important;
-    color: #fff;
-    font-weight: 600;
-    text-transform: uppercase;
-    text-align: center;
-    line-height: 1.2;
-  }
-
   .div-texts,
   .div-text-1,
-  .div-text-copy,
+  .div-text-copy {
+    display: none;
+  }
+
+  .links-container {
+    position: fixed;
+    bottom: 15vh;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10%;
+    z-index: 1001;
+  }
+
   .a-ig,
   .a-fb,
   .a-web {
-    display: none;
+    font-size: 16px;
+    font-style: normal;
+    text-decoration: none;
+    font-weight: 500;
+    color: #ffffff;
+    opacity: 0.7;
+  }
+
+  .text-frase {
+    display: block;
+    position: fixed;
+    bottom: 0vh;
+    right: 1vw;
+    left: 1vw;
+    text-align: center;
+    z-index: 1001;
+    font-size: 10px;
+  }
+  .text-frase p {
+    font-family: "IBM Plex Mono", monospace;
+    font-style: normal;
+    line-height: 1.2;
+    color: #ffffff;
+    opacity: 0.6;
+    text-transform: uppercase;
+    margin: 0;
   }
 
   main {
@@ -359,13 +376,6 @@ const { title } = Astro.props;
       max-width: 240px;
     }
 
-    .h1-split {
-      font-size: clamp(1.1rem, 3.5vw, 1.6rem);
-      margin-top: 0.75rem;
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.75rem;
-    }
-
     .deco-right {
       padding: 2rem 1rem 2rem 1rem;
     }
@@ -379,12 +389,6 @@ const { title } = Astro.props;
     .deco-left img {
       width: 70%;
       max-width: 320px;
-    }
-
-    .h1-split {
-      font-size: clamp(1.5rem, 3.8vw, 2.2rem);
-      margin-top: 1.5rem;
-      margin-bottom: 2rem;
     }
 
     .deco-right {
@@ -409,12 +413,6 @@ const { title } = Astro.props;
     .deco-left img {
       width: 50%;
       max-width: 150px;
-    }
-
-    .h1-split {
-      font-size: clamp(1rem, 3vw, 1.3rem);
-      margin-top: 0.5rem;
-      margin-bottom: 0.75rem;
     }
 
     .deco-right {
@@ -473,8 +471,10 @@ const { title } = Astro.props;
       position: absolute;
       bottom: 1vh;
       right: 1vw;
+      left: auto;
       text-align: right;
       max-width: 100%;
+      font-size: 0.6rem;
     }
 
     .text-frase p {
@@ -493,46 +493,33 @@ const { title } = Astro.props;
 
     .div-text-copy {
       display: block;
-    }
-    .a-ig {
-      display: block;
-      position: fixed;
-      bottom: 15vh;
-      left: 5vw;
-      font-size: 22px;
+      position: absolute;
+      left: 1vw;
+      bottom: 0vh;
+      font-family: "IBM Plex Mono", monospace;
       font-style: normal;
-      text-decoration: none;
       font-weight: 500;
+      text-transform: uppercase;
       color: #ffffff;
-      opacity: 0.7;
+      opacity: 0.8;
+      line-height: 1;
+      margin: 0;
       z-index: 1001;
+      font-size: 0.6rem;
     }
+
+    .links-container {
+      top: 5dvh;
+      bottom: auto;
+      left: 70%;
+      right: 0;
+      padding: 0 5vw 0 0;
+    }
+
+    .a-ig,
+    .a-fb,
     .a-web {
-      display: block;
-      position: fixed;
-      bottom: 15vh;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 22px;
-      font-style: normal;
-      font-weight: 500;
-      color: #fff;
-      opacity: 0.7;
-      text-decoration: none;
-      z-index: 1001;
-    }
-    .a-fb {
-      display: block;
-      position: fixed;
-      bottom: 15vh;
-      right: 5vw;
-      font-size: 22px;
-      font-style: normal;
-      font-weight: 500;
-      color: #ffffff;
-      text-decoration: none;
-      opacity: 0.7;
-      z-index: 1001;
+      font-size: 20px;
     }
     .deco-under {
       display: block;
@@ -591,10 +578,6 @@ const { title } = Astro.props;
       z-index: 999;
     }
 
-    .h1-split {
-      display: none;
-    }
-
     .div-texts {
       display: inline-block;
       text-align: center;
@@ -605,32 +588,21 @@ const { title } = Astro.props;
       position: absolute;
       color: #fff;
       text-transform: uppercase;
-      font-size: 16px;
+      font-size: 12px;
       letter-spacing: 0;
+      margin-right: 2dvh;
       top: 10vh;
-      left: 50%;
-      transform: translateX(-50%);
+      left: 65dvw;
     }
   }
 
   @media (min-width: 1445px) {
     .text-frase p {
       font-size: 0.6rem;
-    }
-    .div-text-1 {
-      font-size: 20px;
+      margin-bottom: 0.5rem;
     }
   }
 
-  h1 {
-    display: none;
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    font-size: 2.5rem;
-    color: #fff;
-    font-weight: normal;
-  }
   .scroll-gallery {
     width: 100%;
     height: 100%;
@@ -659,20 +631,5 @@ const { title } = Astro.props;
     .scroll-track img {
       width: 95vw;
     }
-  }
-  .div-text-copy {
-    position: absolute;
-    left: 1vw;
-    font-family: "IBM Plex Mono", monospace;
-    font-style: normal;
-    font-weight: 500;
-    bottom: 0vh;
-    padding-bottom: 0;
-    text-transform: uppercase;
-    color: #ffffff;
-    opacity: 0.8;
-    display: block;
-    line-height: 1;
-    margin: 0;
   }
 </style>

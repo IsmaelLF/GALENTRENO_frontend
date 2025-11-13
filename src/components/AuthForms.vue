@@ -284,19 +284,25 @@ label {
 input {
   width: 100%;
   padding: 12px;
-  margin: 5px 0 10px 0;
+  margin: 0 auto;
+  display: block;
   background: rgba(34, 34, 34, 0.95);
   color: #ffffff;
   border: 1px solid #ffffff65;
-  border-radius: 2.5dvw;
+  border-radius: 1em;
   box-sizing: border-box;
 }
 
-input:active,
-input:focus,input:hover {
+
+input:focus,
+input:hover {
   outline: none;
   border-color: #0d6efd;
   box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+  cursor: none !important;
+}
+input:active{
+  cursor: auto !important;
 }
 
 .button-submit {
@@ -304,7 +310,7 @@ input:focus,input:hover {
   padding: 12px;
   color: #fff;
   background-color: #0d6dfd;
-  border-radius: 2.5dvw;
+border-radius: 1em;
   text-transform: uppercase;
   border: none;
   font-weight: 900;
@@ -315,7 +321,11 @@ input:focus,input:hover {
 }
 
 .button-submit:hover:not(:disabled) {
-  color: #fff
+  background-color: #094094 ;
+  transition: background-color 200ms linear;
+  -webkit-transition: background-color 200ms linear;
+  -ms-transition: background-color 200ms linear;
+
 }
 
 .button-submit:disabled {
@@ -328,9 +338,12 @@ input:focus,input:hover {
     color: #fff;
     background: rgba(34, 34, 34, 0.95);
     font-size: 1rem;
-    border-radius: 2.5dvw;
+    border-radius: 1em;
+    width: 60%;
+    margin: 0 auto;
+    display: block;
   }
-
+  
   .auth-form {
     padding: 10px;
   }
@@ -341,12 +354,16 @@ input:focus,input:hover {
 
   input {
     padding: 10px;
-    margin: 3px 0 6px 0;
+    margin: 0 auto;
+    display: block;
+    width: 80%;
   }
 
   label {
-    margin-bottom: 3px;
-    font-size: 0.9rem;
+    width: 80%;
+    margin: 0 auto;
+    display: block;
+    font-size: 1rem;
   }
 
   .button-submit {

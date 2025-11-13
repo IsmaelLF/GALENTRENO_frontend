@@ -59,7 +59,6 @@ const { title } = Astro.props;
           </div>
         </div>
       </div>
-      <div><hr id="horizontal-divider" class="horizontal-divider" /></div>
     </main>
   </body>
   <script>
@@ -150,14 +149,6 @@ const { title } = Astro.props;
         track.style.transform = `translateX(-${scrollAmount}px)`;
 
         requestAnimationFrame(animateScroll);
-        const authForm = document.querySelector(".auth-form");
-        const hrDivider = document.querySelector(".horizontal-divider");
-
-        if (authForm && hrDivider instanceof HTMLElement) {
-          hrDivider.style.display = "none";
-        } else if (hrDivider instanceof HTMLElement) {
-          hrDivider.style.display = "block";
-        }
       }
 
       container.addEventListener(
@@ -189,11 +180,6 @@ const { title } = Astro.props;
     -webkit-font-smoothing: antialiased;
   }
 
-  .horizontal-divider {
-    border: none;
-    height: 1px;
-    background-color: rgba(255, 255, 255, 0.2);
-  }
   body {
     background-color: #111;
     background-size: cover;
@@ -432,10 +418,6 @@ const { title } = Astro.props;
     display: none !important;
   }
 
-  .horizontal-divider {
-    display: none;
-  }
-
   @media (min-width: 968px) {
     body {
       display: block;
@@ -456,17 +438,6 @@ const { title } = Astro.props;
       height: 100vh;
       overflow: hidden;
       position: relative;
-    }
-
-    .horizontal-divider {
-      display: block;
-      position: fixed;
-      top: calc(43.5dvh);
-      left: 0;
-      width: 100vw;
-      height: 1px;
-      z-index: 3;
-      pointer-events: none;
     }
 
     .text-frase {

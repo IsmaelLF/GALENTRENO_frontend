@@ -231,10 +231,8 @@ const { title } = Astro.props;
     .text-frase p {
       font-size: 0.4rem;
     }
-    .div-text-1 {
-      font-size: 12px !important;
-    }
   }
+
   .cursor-trail {
     position: fixed;
     width: 6px;
@@ -315,16 +313,13 @@ const { title } = Astro.props;
 
   .h1-split {
     display: block;
-    position: relative;
-    top: auto;
+    position: absolute;
+    top: 30vh;
     left: auto;
     width: 90%;
-    margin-top: 1rem;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    font-size: clamp(1.3rem, 4vw, 1.9rem);
+    font-size: 12px !important;
     color: #fff;
-    font-weight: 700;
+    font-weight: 600;
     text-transform: uppercase;
     text-align: center;
     line-height: 1.2;

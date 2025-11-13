@@ -195,6 +195,10 @@ const { title } = Astro.props;
     -webkit-overflow-scrolling: touch;
   }
 
+  .div-text-copy,
+  .text-frase p {
+    font-size: 0.6rem;
+  }
   input,
   textarea,
   select {
@@ -221,6 +225,42 @@ const { title } = Astro.props;
     height: 12px;
   }
 
+  @media (min-width: 1142px) and (max-width: 1355px) {
+    .div-text-copy,
+    .text-frase p {
+      font-size: 0.5rem;
+    }
+    .div-text-1,
+    .div-text-2,
+    .div-text-3,
+    .div-text-4 {
+      font-size: 50px !important;
+    }
+  }
+  @media (min-width: 968px) and (max-width: 1141px) {
+    .div-text-copy,
+    .text-frase p {
+      font-size: 0.4rem;
+    }
+    .div-text-1,
+    .div-text-2,
+    .div-text-3,
+    .div-text-4 {
+      font-size: 50px !important;
+    }
+    .div-text-1 {
+      left: 25vw !important;
+    }
+    .div-text-2 {
+      left: 5vw !important;
+    }
+    .div-text-3 {
+      left: 7.5vw !important;
+    }
+    .div-text-4 {
+      left: 10vw !important;
+    }
+  }
   .cursor-trail {
     position: fixed;
     width: 6px;
@@ -396,14 +436,13 @@ const { title } = Astro.props;
     text-align: center;
     color: #fff;
     padding: 2rem 1rem;
+    font-size: 0.7rem;
     max-width: 500px;
     margin: 0 auto;
   }
 
   .text-frase p {
     font-family: "IBM Plex Mono", monospace;
-    font-size: 0.9rem;
-    line-height: 1.5;
     margin: 0;
     font-style: normal;
     font-weight: 500;
@@ -452,7 +491,6 @@ const { title } = Astro.props;
 
     .text-frase p {
       font-family: "IBM Plex Mono", monospace;
-      font-size: 0.75rem;
       font-style: normal;
       line-height: 1;
       color: #ffffff;
@@ -471,7 +509,7 @@ const { title } = Astro.props;
     .a-ig {
       display: block;
       position: absolute;
-      bottom: 7vh;
+      bottom: 5vh;
       left: 2vw;
       font-size: 22px;
       font-style: normal;
@@ -482,7 +520,7 @@ const { title } = Astro.props;
     .a-web {
       display: block;
       position: absolute;
-      bottom: 7vh;
+      bottom: 5vh;
       left: 17.5vw;
       font-size: 22px;
       font-style: normal;
@@ -493,7 +531,7 @@ const { title } = Astro.props;
     .a-fb {
       display: block;
       position: absolute;
-      bottom: 7vh;
+      bottom: 5vh;
       left: 30vw;
       font-size: 22px;
       font-style: normal;
@@ -577,36 +615,43 @@ const { title } = Astro.props;
 
     .div-text-2 {
       top: 9vh;
-      left: 1vw;
+      left: 5vw;
     }
 
     .div-text-3 {
       top: 16vh;
-      left: 1vw;
+      left: 10vw;
     }
 
     .div-text-4 {
       top: 23vh;
-      left: 1vw;
+      left: 15vw;
     }
   }
 
   @media (min-width: 1445px) {
+    .text-frase p {
+      font-size: 0.6rem;
+    }
     .div-text-1 {
-      top: 2vh;
-      font-size: 80px;
+      top: 3vh;
+      left: 25vw;
+      font-size: 70px;
     }
     .div-text-2 {
-      top: 10vh;
-      font-size: 80px;
+      top: 12vh;
+      left: 5vw;
+      font-size: 70px;
     }
     .div-text-3 {
-      top: 18vh;
-      font-size: 80px;
+      top: 21vh;
+      left: 7.5vw;
+      font-size: 70px;
     }
     .div-text-4 {
-      top: 26vh;
-      font-size: 80px;
+      top: 30vh;
+      left: 10vw;
+      font-size: 70px;
     }
   }
 
@@ -650,7 +695,6 @@ const { title } = Astro.props;
     font-weight: 500;
     bottom: 1vh;
     text-transform: uppercase;
-    font-size: 0.75rem;
     color: #ffffff;
     opacity: 0.6;
     display: flex;

@@ -285,7 +285,7 @@ input {
   width: 100%;
   padding: 12px;
   margin: 5px 0 10px 0;
-  background: rgba(34, 34, 34, 0.85);
+  background: rgba(34, 34, 34, 0.95);
   color: #ffffff;
   border: 1px solid #ffffff65;
   border-radius: 2.5dvw;
@@ -303,7 +303,7 @@ input:focus,input:hover {
   width: 50%;
   padding: 12px;
   color: #fff;
-  background-color: #0d6dfdd2;
+  background-color: #0d6dfde5;
   border-radius: 2.5dvw;
   text-transform: uppercase;
   border: none;

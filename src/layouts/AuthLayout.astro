@@ -103,16 +103,11 @@ const { title } = Astro.props;
         });
       });
 
-      const container = document.querySelector(".deco-under") as HTMLElement;
       const track = document.querySelector(".scroll-track") as HTMLElement;
 
-      if (!container || !track) return;
+      if (!track) return;
 
-      const baseSpeed = 0.3;
-      const fastSpeed = 15;
-      const decay = 0.98;
-
-      let currentSpeed = baseSpeed;
+      const baseSpeed = 0.5;
       let scrollAmount = 0;
       let resetPoint = 0;
 
@@ -134,8 +129,7 @@ const { title } = Astro.props;
           calculateResetPoint();
         }
 
-        scrollAmount += currentSpeed;
-        currentSpeed = Math.max(baseSpeed, currentSpeed * decay);
+        scrollAmount += baseSpeed;
 
         if (scrollAmount >= resetPoint) {
           scrollAmount = scrollAmount - resetPoint;
@@ -146,16 +140,6 @@ const { title } = Astro.props;
 
         requestAnimationFrame(animateScroll);
       }
-
-      container.addEventListener(
-        "wheel",
-        (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          currentSpeed = fastSpeed;
-        },
-        { passive: false }
-      );
 
       requestAnimationFrame(animateScroll);
 

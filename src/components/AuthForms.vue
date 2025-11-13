@@ -119,7 +119,6 @@ export default {
     <div v-if="currentView === 'login'" class="auth-form">
       <div class="form-header">
         <button @click="goBack" class="button-back">←</button>
-        <h3 class="h3-form">INICIAR SESIÓN</h3>
       </div>
       <form @submit.prevent="handleLogin">
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
@@ -144,7 +143,6 @@ export default {
     <div v-if="currentView === 'registro'" class="auth-form">
       <div class="form-header">
         <button @click="goBack" class="button-back">←</button>
-        <h3 class="h3-form">REXISTRARSE</h3>
       </div>
       <form @submit.prevent="handleRegister">
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
@@ -247,15 +245,7 @@ export default {
   color: #0d6efd;
 }
 
-.h3-form {
-  text-align: left;
-  font-family: TexGyre, sans-serif;
-  color: #fff;
-  margin: 0;
-  font-size: 1.2rem;
-  font-weight: 700;
-  flex-grow: 1;
-}
+
 
 .auth-form {
   padding: 20px;

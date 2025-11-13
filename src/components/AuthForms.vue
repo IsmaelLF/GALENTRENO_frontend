@@ -103,8 +103,8 @@ export default {
 </script>
 
 <template>
-  <div class="auth-container">
-    
+  <div class="auth-container" :class="{ 'form-active': currentView !== 'inicio' }">
+
     <div v-if="currentView === 'inicio'" class="welcome-screen">
       <div class="welcome-buttons">
         <button @click="showLogin" class="button button-primary">
@@ -117,8 +117,10 @@ export default {
     </div>
 
     <div v-if="currentView === 'login'" class="auth-form">
-      <button @click="goBack" class="button-back">← Volver</button>
-      <h3 class="h3-form">INICIAR SESIÓN</h3>
+      <div class="form-header">
+        <button @click="goBack" class="button-back">←</button>
+        <h3 class="h3-form">INICIAR SESIÓN</h3>
+      </div>
       <form @submit.prevent="handleLogin">
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
@@ -140,8 +142,10 @@ export default {
     </div>
 
     <div v-if="currentView === 'registro'" class="auth-form">
-      <button @click="goBack" class="button-back">← Volver</button>
-      <h3 class="h3-form">REXISTRARSE</h3>
+      <div class="form-header">
+        <button @click="goBack" class="button-back">←</button>
+        <h3 class="h3-form">REXISTRARSE</h3>
+      </div>
       <form @submit.prevent="handleRegister">
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
@@ -180,13 +184,14 @@ export default {
   justify-content: center;
 }
 
+
 .welcome-screen {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 2rem;
-  padding: 2rem;
+  padding: 0 2rem 2rem 2rem;
   max-width: 400px;
   width: 100%;
 }
@@ -197,6 +202,7 @@ export default {
   gap: 4rem;
   width: 100%;
 }
+
 
 .button-primary,
 .button-secondary {
@@ -219,17 +225,22 @@ export default {
   transform: translateY(-2px);
 }
 
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0;
+}
+
 .button-back {
-  position: absolute;
-  top: 10px;
-  left: 10px;
   background: transparent;
   color: #fff;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
-  padding: 5px 10px;
+  font-size: 1.5rem;
+  padding: 0;
   transition: color 0.2s ease;
+  flex-shrink: 0;
 }
 
 .button-back:hover {
@@ -237,25 +248,32 @@ export default {
 }
 
 .h3-form {
-  text-align: center;
+  text-align: left;
   font-family: TexGyre, sans-serif;
   color: #fff;
-  margin: 0 0 1.5rem 0;
-  font-size: 1.5rem;
+  margin: 0;
+  font-size: 1.2rem;
   font-weight: 700;
+  flex-grow: 1;
 }
 
 .auth-form {
-  padding: 24px;
+  padding: 20px;
   border-radius: 12px;
-  max-width: 400px;
+  max-width: 500px;
   width: 100%;
   box-sizing: border-box;
   margin: 0 auto;
-  display: grid;
-  grid-gap: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   color: #f0f0f0;
-  position: relative;
+}
+
+.auth-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .error-message {
@@ -286,7 +304,7 @@ input {
 }
 
 input:active,
-input:focus {
+input:focus,input:hover {
   outline: none;
   border-color: #0d6efd;
   box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
@@ -295,19 +313,19 @@ input:focus {
 .button-submit {
   width: 100%;
   padding: 12px;
-  background-color: #0d6efd;
-  color: white;
+  color: #0d6efd;
+  background: transparent;
+  text-transform: uppercase;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
+  font-weight: 900;
+  cursor: none;
   margin: 0 auto;
   font-family: inherit;
-  font-weight: 600;
-  transition: background-color 0.2s ease;
+  font-size: 16px;
 }
 
 .button-submit:hover:not(:disabled) {
-  background-color: #0b5ed7;
+  color: #fff
 }
 
 .button-submit:disabled {

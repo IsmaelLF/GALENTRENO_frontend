@@ -22,11 +22,30 @@ const { title } = Astro.props;
           <div class="div-text-2">PLATAFORMA DE</div>
           <div class="div-text-3">ADESTRAMENTO</div>
           <div class="div-text-4">100% EN GALEGO</div>
+          <p class="div-text-copy">Copyright 2025 GALENTRENO</p>
+          <a
+            class="a-ig"
+            href="https://instagram.com/galentreno"
+            target="_blank">INSTAGRAM</a
+          >
+          <a class="a-fb" href="https://facebook.com/galentreno" target="_blank"
+            >FACEBOOK</a
+          >
+          <a class="a-web" href="https://galentreno.com" target="_blank"
+            >(WEB)</a
+          >
         </div>
-        <p class="div-text-copy">Copyright 2025 GALENTRENO</p>
       </div>
       <div class="deco-right auth-card">
-        <slot />
+        <div class="auth-content">
+          <slot />
+          <div class="text-frase">
+            <p>
+              "Somos o que facemos repetidamente. A excelencia, daquela, non é
+              un acto, senón un hábito." - Aristóteles
+            </p>
+          </div>
+        </div>
       </div>
       <div class="deco-under">
         <div class="scroll-gallery">
@@ -40,6 +59,7 @@ const { title } = Astro.props;
           </div>
         </div>
       </div>
+      <div><hr id="horizontal-divider" class="horizontal-divider" /></div>
     </main>
   </body>
   <script>
@@ -130,6 +150,14 @@ const { title } = Astro.props;
         track.style.transform = `translateX(-${scrollAmount}px)`;
 
         requestAnimationFrame(animateScroll);
+        const authForm = document.querySelector(".auth-form");
+        const hrDivider = document.querySelector(".horizontal-divider");
+
+        if (authForm && hrDivider instanceof HTMLElement) {
+          hrDivider.style.display = "none";
+        } else if (hrDivider instanceof HTMLElement) {
+          hrDivider.style.display = "block";
+        }
       }
 
       container.addEventListener(
@@ -148,6 +176,8 @@ const { title } = Astro.props;
 </html>
 
 <style is:global>
+  @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,500;1,500&display=swap");
+
   @font-face {
     font-family: TexGyre;
     src: url("/fonts/texgyreheros-bold.otf") format("opentype");
@@ -156,8 +186,14 @@ const { title } = Astro.props;
     font-family: TexGyre, sans-serif;
     font-weight: lighter;
     box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
   }
 
+  .horizontal-divider {
+    border: none;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+  }
   body {
     background-color: #111;
     background-size: cover;
@@ -171,12 +207,6 @@ const { title } = Astro.props;
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-  }
-
-  @media (min-width: 968px) {
-    body {
-      cursor: none;
-    }
   }
 
   input,
@@ -200,12 +230,6 @@ const { title } = Astro.props;
     display: none;
   }
 
-  @media (min-width: 968px) {
-    .custom-cursor-dot {
-      display: block;
-    }
-  }
-
   .custom-cursor-dot.cursor-hover {
     width: 12px;
     height: 12px;
@@ -225,12 +249,6 @@ const { title } = Astro.props;
       transform 0.5s ease;
     opacity: 0.6;
     display: none;
-  }
-
-  @media (min-width: 968px) {
-    .cursor-trail {
-      display: block;
-    }
   }
 
   .deco-under {
@@ -388,19 +406,129 @@ const { title } = Astro.props;
     }
   }
 
+  .text-frase {
+    text-align: center;
+    color: #fff;
+    padding: 2rem 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .text-frase p {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+    font-style: normal;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .auth-content {
+    width: 100%;
+  }
+
+  .auth-content:has(.form-active) .text-frase {
+    display: none !important;
+  }
+
+  .horizontal-divider {
+    display: none;
+  }
+
   @media (min-width: 968px) {
     body {
       display: block;
       overflow: hidden;
+      cursor: none;
     }
+
+    .custom-cursor-dot {
+      display: block;
+    }
+
+    .cursor-trail {
+      display: block;
+    }
+
     main {
       display: block;
       height: 100vh;
       overflow: hidden;
       position: relative;
     }
+
+    .horizontal-divider {
+      display: block;
+      position: fixed;
+      top: calc(43.5dvh);
+      left: 0;
+      width: 100vw;
+      height: 1px;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .text-frase {
+      position: absolute;
+      bottom: 0vh;
+      right: 3vw;
+      left: 0;
+      padding-top: 1.5rem;
+      text-align: right;
+      max-width: 100%;
+    }
+
+    .text-frase p {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.75rem;
+      font-style: normal;
+      line-height: 1;
+      color: #ffffff;
+      opacity: 0.6;
+      text-transform: uppercase;
+    }
+
+    .auth-content {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
     .div-text-copy {
       display: block;
+    }
+    .a-ig {
+      display: block;
+      position: absolute;
+      bottom: 7vh;
+      left: 2vw;
+      font-size: 22px;
+      font-style: normal;
+      text-decoration: none;
+      font-weight: 500;
+      color: #ffffff;
+    }
+    .a-web {
+      display: block;
+      position: absolute;
+      bottom: 7vh;
+      left: 17.5vw;
+      font-size: 22px;
+      font-style: normal;
+      font-weight: 500;
+      color: #4d4d4d;
+      text-decoration: none;
+    }
+    .a-fb {
+      display: block;
+      position: absolute;
+      bottom: 7vh;
+      left: 30vw;
+      font-size: 22px;
+      font-style: normal;
+      font-weight: 500;
+      color: #ffffff;
+      text-decoration: none;
     }
     .deco-under {
       display: block;
@@ -409,6 +537,9 @@ const { title } = Astro.props;
       left: 0;
       right: 0;
       height: 50%;
+    }
+    a:hover {
+      text-decoration: underline;
     }
     .deco-left {
       position: fixed;
@@ -422,6 +553,7 @@ const { title } = Astro.props;
       min-height: unset;
       max-height: unset;
     }
+
     .deco-left img {
       max-width: none;
       width: 70%;
@@ -432,6 +564,7 @@ const { title } = Astro.props;
       top: 0vh;
       transform: translate(-20%, -40%);
     }
+
     .deco-right {
       position: fixed;
       right: 0;
@@ -444,13 +577,16 @@ const { title } = Astro.props;
       justify-content: center;
       overflow-y: auto;
     }
+
     .h1-split {
       display: none;
     }
+
     .div-texts {
       display: inline-block;
       text-align: center;
     }
+
     .div-text-1,
     .div-text-2,
     .div-text-3,
@@ -462,18 +598,22 @@ const { title } = Astro.props;
       font-size: 60px;
       letter-spacing: -0.25rem;
     }
+
     .div-text-1 {
       top: 2vh;
       left: 25vw;
     }
+
     .div-text-2 {
       top: 9vh;
       left: 1vw;
     }
+
     .div-text-3 {
       top: 16vh;
       left: 1vw;
     }
+
     .div-text-4 {
       top: 23vh;
       left: 1vw;
@@ -508,10 +648,6 @@ const { title } = Astro.props;
     color: #fff;
     font-weight: normal;
   }
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
   .scroll-gallery {
     width: 100%;
     height: 100%;
@@ -538,10 +674,18 @@ const { title } = Astro.props;
   .div-text-copy {
     position: absolute;
     left: 1vw;
-    font-style: italic;
-    bottom: 0vh;
-    font-size: 12px;
+    font-family: "IBM Plex Mono", monospace;
+    font-style: normal;
+    font-weight: 500;
+    bottom: 1vh;
+    text-transform: uppercase;
+    font-size: 0.75rem;
     color: #ffffff;
-    opacity: 0.7;
+    opacity: 0.6;
+    display: flex;
+    align-items: center;
+    height: auto;
+    line-height: 1;
+    margin: 0;
   }
 </style>

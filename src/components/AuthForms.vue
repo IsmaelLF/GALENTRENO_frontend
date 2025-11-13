@@ -8,7 +8,7 @@ export default {
   },
   data() {
     return {
-      isLogin: true,
+      currentView: 'inicio',
       nome: '',
       correo: '',
       contrasinal: '',
@@ -18,12 +18,23 @@ export default {
   },
   mounted() {
     if (this.startWithRegister) {
-      this.isLogin = false;
+      this.currentView = 'registro';
     }
   },
   methods: {
-    toggleForm() {
-      this.isLogin = !this.isLogin;
+    showLogin() {
+      this.currentView = 'login';
+      this.resetForm();
+    },
+    showRegister() {
+      this.currentView = 'registro';
+      this.resetForm();
+    },
+    goBack() {
+      this.currentView = 'inicio';
+      this.resetForm();
+    },
+    resetForm() {
       this.errorMessage = '';
       this.nome = '';
       this.correo = '';
@@ -72,7 +83,7 @@ export default {
         });
 
         if (response.ok) {
-          this.isLogin = true;
+          this.currentView = 'login';
           this.errorMessage = '';
           this.nome = '';
           this.correo = '';
@@ -94,15 +105,22 @@ export default {
 <template>
   <div class="auth-container">
     
-    <div class="auth-form">
-    <h2 class="h2-form">{{ isLogin ? 'INICIAR SESIÓN' : 'REXISTRARSE' }}</h2>
-      <form @submit.prevent="isLogin ? handleLogin() : handleRegister()">
-        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <div v-if="currentView === 'inicio'" class="welcome-screen">
+      <div class="welcome-buttons">
+        <button @click="showLogin" class="button button-primary">
+          INICIAR SESIÓN
+        </button>
+        <button @click="showRegister" class="button button-secondary">
+          REXISTRARSE
+        </button>
+      </div>
+    </div>
 
-        <div v-if="!isLogin">
-          <label for="nome">Nome:</label>
-          <input type="text" id="nome" v-model="nome" required>
-        </div>
+    <div v-if="currentView === 'login'" class="auth-form">
+      <button @click="goBack" class="button-back">← Volver</button>
+      <h3 class="h3-form">INICIAR SESIÓN</h3>
+      <form @submit.prevent="handleLogin">
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <div>
           <label for="email">Correo:</label>
@@ -116,19 +134,39 @@ export default {
 
         <button type="submit" class="button button-submit" :disabled="isLoading">
           <span v-if="isLoading">Cargando...</span>
-          <span v-else>{{ isLogin ? 'Iniciar Sesión' : 'Rexistrarse' }}</span>
+          <span v-else>Iniciar Sesión</span>
         </button>
-
-        <div class="toggle-section">
-          <p class="p-text-acc">
-            {{ isLogin ? 'Non tes unha conta?' : 'Xa tes unha conta?' }}
-          </p>
-          <button type="button" @click="toggleForm" class="button button-toggle">
-            {{ isLogin ? 'Rexístrate' : 'Inicia Sesión' }}
-          </button>
-        </div>
       </form>
     </div>
+
+    <div v-if="currentView === 'registro'" class="auth-form">
+      <button @click="goBack" class="button-back">← Volver</button>
+      <h3 class="h3-form">REXISTRARSE</h3>
+      <form @submit.prevent="handleRegister">
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+        <div>
+          <label for="nome">Nome</label>
+          <input type="text" id="nome" v-model="nome" required>
+        </div>
+
+        <div>
+          <label for="email">Correo</label>
+          <input type="email" id="email" v-model="correo" required>
+        </div>
+
+        <div>
+          <label for="password">Contrasinal</label>
+          <input type="password" id="password" v-model="contrasinal" required>
+        </div>
+
+        <button type="submit" class="button button-submit" :disabled="isLoading">
+          <span v-if="isLoading">Cargando...</span>
+          <span v-else>Rexistrarse</span>
+        </button>
+      </form>
+    </div>
+
   </div>
 </template>
 
@@ -139,12 +177,72 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
-.h2-form {
+.welcome-screen {
   display: flex;
-  margin: 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+}
+
+.welcome-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  width: 100%;
+}
+
+.button-primary,
+.button-secondary {
+  width: 100%;
+  padding: 16px;
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 1.5rem;
+  transition: color 0.2s ease, transform 0.1s ease;
+}
+
+.button-primary:hover,
+.button-secondary:hover {
+  color: #0d6efd;
+  transform: translateY(-2px);
+}
+
+.button-back {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: transparent;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 5px 10px;
+  transition: color 0.2s ease;
+}
+
+.button-back:hover {
+  color: #0d6efd;
+}
+
+.h3-form {
   text-align: center;
+  font-family: TexGyre, sans-serif;
+  color: #fff;
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
 .auth-form {
@@ -156,10 +254,8 @@ export default {
   margin: 0 auto;
   display: grid;
   grid-gap: 16px;
-  position: relative;
-  left: auto;
-  transform: none;
   color: #f0f0f0;
+  position: relative;
 }
 
 .error-message {
@@ -181,7 +277,7 @@ input {
   width: 100%;
   padding: 12px;
   margin: 5px 0 10px 0;
-  background: #333;
+  background: #111;
   color: #ffffff;
   border: 1px solid #555;
   border-radius: 8px;
@@ -217,37 +313,5 @@ input:focus {
 .button-submit:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
-
-.toggle-section {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  margin-top: 1rem;
-}
-
-.button-toggle {
-  width: 100%;
-  background: transparent;
-  color: #1c77ff;
-  cursor: pointer;
-  margin: 0;
-  height: fit-content;
-  padding: 5px;
-  border: none;
-  transition: color 0.2s ease;
-  font-family: inherit;
-}
-
-.button-toggle:hover {
-  color: #ffffff;
-}
-
-.p-text-acc {
-  color: #a0a0a0;
-  font-size: 0.9rem;
-  text-align: center;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
 }
 </style>

@@ -8,9 +8,6 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} | Galentreno</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <script>
-      import { ViewTransitions } from "astro:transitions";
-    </script>
   </head>
   <body>
     <main>
@@ -53,7 +50,7 @@ const { title } = Astro.props;
 
       let mouseX = 0;
       let mouseY = 0;
-      const trail: HTMLDivElement[] = [];
+      const trail: HTMLElement[] = [];
       const maxTrail = 15;
 
       document.addEventListener("mousemove", (e) => {
@@ -91,8 +88,8 @@ const { title } = Astro.props;
         });
       });
 
-      const container = document.querySelector(".deco-under");
-      const track = document.querySelector<HTMLElement>(".scroll-track");
+      const container = document.querySelector(".deco-under") as HTMLElement;
+      const track = document.querySelector(".scroll-track") as HTMLElement;
 
       if (!container || !track) return;
 
@@ -168,11 +165,13 @@ const { title } = Astro.props;
     color: #000;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
-  @media (min-width: 900px) {
+  @media (min-width: 968px) {
     body {
       cursor: none;
     }
@@ -199,7 +198,7 @@ const { title } = Astro.props;
     display: none;
   }
 
-  @media (min-width: 900px) {
+  @media (min-width: 968px) {
     .custom-cursor-dot {
       display: block;
     }
@@ -226,7 +225,7 @@ const { title } = Astro.props;
     display: none;
   }
 
-  @media (min-width: 900px) {
+  @media (min-width: 968px) {
     .cursor-trail {
       display: block;
     }
@@ -247,20 +246,21 @@ const { title } = Astro.props;
     position: relative;
     width: 100%;
     flex-basis: auto;
-    min-height: 200px;
+    min-height: 150px;
+    max-height: 200px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 1.5rem 1rem 1rem 1rem;
+    padding: 1rem 1rem 0.5rem 1rem;
     overflow: hidden;
   }
   .deco-left img {
-    width: 60%;
-    max-width: 180px;
+    width: 50%;
+    max-width: 140px;
     height: auto;
-    object-fit: cover;
+    object-fit: contain;
   }
   .deco-right {
     position: relative;
@@ -271,9 +271,10 @@ const { title } = Astro.props;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 1rem 1rem 2rem 1rem;
+    padding: 0.5rem 1rem 2rem 1rem;
     z-index: 2;
     flex-direction: column;
+    min-height: 0;
   }
 
   .h1-split {
@@ -282,8 +283,9 @@ const { title } = Astro.props;
     top: auto;
     left: auto;
     width: 90%;
-    margin-top: 1rem;
-    font-size: clamp(1.5rem, 4.5vw, 2.2rem);
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+    font-size: clamp(1.2rem, 3.8vw, 1.8rem);
     color: #fff;
     font-weight: 700;
     text-transform: uppercase;
@@ -300,9 +302,48 @@ const { title } = Astro.props;
     display: none;
   }
 
+  main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+  }
+
+  /* Tablet adjustments */
+  @media (min-width: 600px) and (max-width: 967px) {
+    .deco-left {
+      min-height: 180px;
+      max-height: 220px;
+      padding: 1.5rem 1rem 1rem 1rem;
+    }
+
+    .deco-left img {
+      width: 45%;
+      max-width: 160px;
+    }
+
+    .h1-split {
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
+      margin-top: 1rem;
+    }
+
+    .deco-right {
+      padding: 1rem 2rem 2rem 2rem;
+    }
+  }
+
+  /* Desktop */
   @media (min-width: 968px) {
     body {
       display: block;
+      overflow: hidden;
+    }
+
+    main {
+      display: block;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
     }
     .div-text-copy {
       display: block;
@@ -324,6 +365,8 @@ const { title } = Astro.props;
       transform: translate(0, -5%);
       padding: 0;
       flex-basis: auto;
+      min-height: unset;
+      max-height: unset;
     }
     .deco-left img {
       max-width: none;
@@ -370,15 +413,15 @@ const { title } = Astro.props;
       left: 25vw;
     }
     .div-text-2 {
-      top: 11vh;
+      top: 9vh;
       left: 1vw;
     }
     .div-text-3 {
-      top: 20vh;
+      top: 16vh;
       left: 1vw;
     }
     .div-text-4 {
-      top: 29vh;
+      top: 23vh;
       left: 1vw;
     }
   }
@@ -386,19 +429,19 @@ const { title } = Astro.props;
   @media (min-width: 1445px) {
     .div-text-1 {
       top: 2vh;
-      font-size: 70px;
+      font-size: 80px;
     }
     .div-text-2 {
-      top: 12vh;
-      font-size: 70px;
+      top: 10vh;
+      font-size: 80px;
     }
     .div-text-3 {
-      top: 22vh;
-      font-size: 70px;
+      top: 18vh;
+      font-size: 80px;
     }
     .div-text-4 {
-      top: 32vh;
-      font-size: 70px;
+      top: 26vh;
+      font-size: 80px;
     }
   }
 

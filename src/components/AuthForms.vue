@@ -325,10 +325,37 @@ input:focus,input:hover {
 @media (max-width: 967px) {
   .button-primary,
   .button-secondary {
-  color: #fff;
-  background: rgba(34, 34, 34, 0.95);
+    color: #fff;
+    background: rgba(34, 34, 34, 0.95);
     font-size: 1rem;
-  border-radius: 2.5dvw;
+    border-radius: 2.5dvw;
+  }
+
+  .auth-form {
+    padding: 10px;
+  }
+
+  .auth-form form {
+    gap: 10px;
+  }
+
+  input {
+    padding: 10px;
+    margin: 3px 0 6px 0;
+  }
+
+  label {
+    margin-bottom: 3px;
+    font-size: 0.9rem;
+  }
+
+  .button-submit {
+    padding: 10px;
+    margin-top: 8px;
+  }
+
+  .form-header {
+    margin-bottom: 8px;
   }
 }
 </style>

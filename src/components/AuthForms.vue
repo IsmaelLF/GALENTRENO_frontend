@@ -303,7 +303,7 @@ input:focus,input:hover {
   width: 50%;
   padding: 12px;
   color: #fff;
-  background-color: #0d6dfdab;
+  background-color: #0d6dfdd2;
   border-radius: 2.5dvw;
   text-transform: uppercase;
   border: none;
@@ -326,7 +326,7 @@ input:focus,input:hover {
   .button-primary,
   .button-secondary {
   color: #fff;
-  background: rgba(34, 34, 34, 0.85);
+  background: rgba(34, 34, 34, 0.95);
     font-size: 1rem;
   border-radius: 2.5dvw;
   }

@@ -18,24 +18,19 @@ const { title } = Astro.props;
           A TÚA PLATAFORMA DE ADESTRAMENTO 100% EN GALEGO
         </h1>
         <div class="div-texts">
-          <div class="div-text-1">A TÚA</div>
-          <div class="div-text-2">PLATAFORMA DE</div>
-          <div class="div-text-3">ADESTRAMENTO</div>
-          <div class="div-text-4">100% EN GALEGO</div>
+          <div class="div-text-1">
+            A TÚA PLATAFORMA DE ADESTRAMENTO 100% EN GALEGO
+          </div>
           <p class="div-text-copy">Copyright 2025 GALENTRENO</p>
-          <a
-            class="a-ig"
-            href="https://instagram.com/galentreno"
-            target="_blank">INSTAGRAM</a
-          >
-          <a class="a-fb" href="https://facebook.com/galentreno" target="_blank"
-            >FACEBOOK</a
-          >
-          <a class="a-web" href="https://galentreno.com" target="_blank"
-            >(WEB)</a
-          >
         </div>
       </div>
+      <a class="a-ig" href="https://instagram.com/galentreno" target="_blank"
+        >INSTAGRAM</a
+      >
+      <a class="a-fb" href="https://facebook.com/galentreno" target="_blank"
+        >FACEBOOK</a
+      >
+      <a class="a-web" href="https://galentreno.com" target="_blank">(WEB)</a>
       <div class="deco-right auth-card">
         <div class="auth-content">
           <slot />
@@ -181,7 +176,7 @@ const { title } = Astro.props;
   }
 
   body {
-    background-color: #111;
+    background-color: #000;
     background-size: cover;
     margin: 0;
     color: #000;
@@ -230,35 +225,14 @@ const { title } = Astro.props;
     .text-frase p {
       font-size: 0.5rem;
     }
-    .div-text-1,
-    .div-text-2,
-    .div-text-3,
-    .div-text-4 {
-      font-size: 50px !important;
-    }
   }
   @media (min-width: 968px) and (max-width: 1141px) {
     .div-text-copy,
     .text-frase p {
       font-size: 0.4rem;
     }
-    .div-text-1,
-    .div-text-2,
-    .div-text-3,
-    .div-text-4 {
-      font-size: 50px !important;
-    }
     .div-text-1 {
-      left: 25vw !important;
-    }
-    .div-text-2 {
-      left: 5vw !important;
-    }
-    .div-text-3 {
-      left: 7.5vw !important;
-    }
-    .div-text-4 {
-      left: 10vw !important;
+      font-size: 12px !important;
     }
   }
   .cursor-trail {
@@ -278,14 +252,26 @@ const { title } = Astro.props;
   }
 
   .deco-under {
-    display: none;
+    display: block;
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
     width: 100%;
-    height: 50vh;
-    z-index: 1;
+    height: 100%;
+    z-index: 0;
     overflow: hidden;
+  }
+
+  .deco-under::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1;
+    pointer-events: none;
   }
 
   .deco-left {
@@ -301,12 +287,15 @@ const { title } = Astro.props;
     align-items: center;
     padding: 2rem 1rem 2rem 1rem;
     overflow: visible;
+    z-index: 1;
   }
   .deco-left img {
     width: 85%;
     max-width: 280px;
     height: auto;
     object-fit: contain;
+    display: block;
+    margin: 0 auto;
   }
   .deco-right {
     position: relative;
@@ -319,7 +308,7 @@ const { title } = Astro.props;
     justify-content: flex-start;
     align-items: center;
     padding: 3rem 1rem 2rem 1rem;
-    z-index: 2;
+    z-index: 1;
     flex-direction: column;
     min-height: 0;
   }
@@ -343,10 +332,10 @@ const { title } = Astro.props;
 
   .div-texts,
   .div-text-1,
-  .div-text-2,
-  .div-text-3,
-  .div-text-4,
-  .div-text-copy {
+  .div-text-copy,
+  .a-ig,
+  .a-fb,
+  .a-web {
     display: none;
   }
 
@@ -357,6 +346,7 @@ const { title } = Astro.props;
     min-height: 100vh;
     min-height: 100dvh;
     height: auto;
+    position: relative;
   }
 
   @media (max-height: 700px) and (max-width: 967px) {
@@ -481,10 +471,8 @@ const { title } = Astro.props;
 
     .text-frase {
       position: absolute;
-      bottom: 0vh;
-      right: 3vw;
-      left: 0;
-      padding-top: 1.5rem;
+      bottom: 1vh;
+      right: 1vw;
       text-align: right;
       max-width: 100%;
     }
@@ -508,36 +496,43 @@ const { title } = Astro.props;
     }
     .a-ig {
       display: block;
-      position: absolute;
-      bottom: 5vh;
-      left: 2vw;
+      position: fixed;
+      bottom: 15vh;
+      left: 5vw;
       font-size: 22px;
       font-style: normal;
       text-decoration: none;
       font-weight: 500;
       color: #ffffff;
+      opacity: 0.7;
+      z-index: 1001;
     }
     .a-web {
       display: block;
-      position: absolute;
-      bottom: 5vh;
-      left: 17.5vw;
+      position: fixed;
+      bottom: 15vh;
+      left: 50%;
+      transform: translateX(-50%);
       font-size: 22px;
       font-style: normal;
       font-weight: 500;
-      color: #4d4d4d;
+      color: #fff;
+      opacity: 0.7;
       text-decoration: none;
+      z-index: 1001;
     }
     .a-fb {
       display: block;
-      position: absolute;
-      bottom: 5vh;
-      left: 30vw;
+      position: fixed;
+      bottom: 15vh;
+      right: 5vw;
       font-size: 22px;
       font-style: normal;
       font-weight: 500;
       color: #ffffff;
       text-decoration: none;
+      opacity: 0.7;
+      z-index: 1001;
     }
     .deco-under {
       display: block;
@@ -545,7 +540,12 @@ const { title } = Astro.props;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 50%;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .deco-under::after {
+      display: block;
     }
     a:hover {
       text-decoration: underline;
@@ -554,37 +554,41 @@ const { title } = Astro.props;
       position: fixed;
       top: 0;
       left: 0;
-      width: 50%;
-      height: 50%;
+      width: 100%;
+      height: 100%;
       transform: translate(0, -5%);
       padding: 0;
       flex-basis: auto;
       min-height: unset;
       max-height: unset;
+      z-index: 999;
+      pointer-events: none;
     }
 
     .deco-left img {
       max-width: none;
-      width: 70%;
+      width: 35%;
       height: auto;
       object-fit: cover;
       position: absolute;
-      left: 2.5vw;
-      top: 0vh;
+      left: 2vw;
+      top: 2vh;
       transform: translate(-20%, -40%);
+      pointer-events: auto;
     }
 
     .deco-right {
       position: fixed;
       right: 0;
       top: 0;
-      width: 50%;
-      height: 50%;
+      width: 100%;
+      height: 100%;
       padding: 0;
       flex-direction: column;
       flex-grow: 0;
       justify-content: center;
       overflow-y: auto;
+      z-index: 999;
     }
 
     .h1-split {
@@ -596,36 +600,16 @@ const { title } = Astro.props;
       text-align: center;
     }
 
-    .div-text-1,
-    .div-text-2,
-    .div-text-3,
-    .div-text-4 {
+    .div-text-1 {
       display: block;
       position: absolute;
       color: #fff;
       text-transform: uppercase;
-      font-size: 60px;
-      letter-spacing: -0.25rem;
-    }
-
-    .div-text-1 {
-      top: 2vh;
-      left: 25vw;
-    }
-
-    .div-text-2 {
-      top: 9vh;
-      left: 5vw;
-    }
-
-    .div-text-3 {
-      top: 16vh;
-      left: 10vw;
-    }
-
-    .div-text-4 {
-      top: 23vh;
-      left: 15vw;
+      font-size: 16px;
+      letter-spacing: 0;
+      top: 10vh;
+      left: 50%;
+      transform: translateX(-50%);
     }
   }
 
@@ -634,24 +618,7 @@ const { title } = Astro.props;
       font-size: 0.6rem;
     }
     .div-text-1 {
-      top: 3vh;
-      left: 25vw;
-      font-size: 70px;
-    }
-    .div-text-2 {
-      top: 12vh;
-      left: 7.5vw;
-      font-size: 70px;
-    }
-    .div-text-3 {
-      top: 21vh;
-      left: 10vw;
-      font-size: 70px;
-    }
-    .div-text-4 {
-      top: 30vh;
-      left: 12.5vw;
-      font-size: 70px;
+      font-size: 20px;
     }
   }
 
@@ -693,13 +660,12 @@ const { title } = Astro.props;
     font-family: "IBM Plex Mono", monospace;
     font-style: normal;
     font-weight: 500;
-    bottom: 1vh;
+    bottom: 0vh;
+    padding-bottom: 0;
     text-transform: uppercase;
     color: #ffffff;
-    opacity: 0.6;
-    display: flex;
-    align-items: center;
-    height: auto;
+    opacity: 0.8;
+    display: block;
     line-height: 1;
     margin: 0;
   }

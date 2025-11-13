@@ -8,6 +8,9 @@ const { title } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} | Galentreno</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"
+      is:inline></script>
   </head>
   <body>
     <main>
@@ -53,6 +56,8 @@ const { title } = Astro.props;
     </main>
   </body>
   <script>
+    declare const gsap: any;
+
     document.addEventListener("DOMContentLoaded", () => {
       const cursorDot = document.createElement("div");
       cursorDot.classList.add("custom-cursor-dot");
@@ -154,7 +159,6 @@ const { title } = Astro.props;
 
       requestAnimationFrame(animateScroll);
 
-      // Hide links on mobile when form is active
       const linksContainer = document.querySelector(
         ".links-container"
       ) as HTMLElement;
@@ -176,12 +180,49 @@ const { title } = Astro.props;
           attributeFilter: ["class"],
         });
 
-        // Initial check
         if (authContainer.classList.contains("form-active")) {
           linksContainer.style.opacity = "0";
           linksContainer.style.pointerEvents = "none";
         }
       }
+
+      const quotes = [
+        '"Somos o que facemos repetidamente. A excelencia, daquela, non é un acto, senón un hábito." - Aristóteles',
+        '"Unha viaxe de mil millas comeza cun só paso" - Lao-Tse',
+        '"Non basta con saber, hai que aplicar. Non basta con querer, hai que facer." Johann Wolfgang von Goethe',
+        '"A única maneira de descubrir os límites do posible é ir máis alá deles, cara ao imposible." - Arthur C. Clarke',
+        '"Non teño talentos especiais. Só son apaixonadamente curioso." - Albert Einstein',
+        '"Os únicos límites que tes son os límites que cres." - Wayne Dyer',
+        '"Non te conformes con facelo ¨suficientemente ben¨. Busca sempre facelo mellor." - Michael Jordan',
+      ];
+
+      const fraseElement = document.querySelector(
+        ".text-frase p"
+      ) as HTMLElement;
+      let currentQuoteIndex = 0;
+
+      function rotateQuote() {
+        if (!fraseElement) return;
+
+        gsap.to(fraseElement, {
+          opacity: 0,
+          y: 10,
+          duration: 0.6,
+          ease: "power2.in",
+          onComplete: () => {
+            currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+            fraseElement.textContent = quotes[currentQuoteIndex];
+
+            gsap.fromTo(
+              fraseElement,
+              { opacity: 0, y: -10 },
+              { opacity: 0.6, y: 0, duration: 0.6, ease: "power2.out" }
+            );
+          },
+        });
+      }
+
+      setInterval(rotateQuote, 5000);
     });
   </script>
 </html>

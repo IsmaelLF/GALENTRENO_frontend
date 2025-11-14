@@ -1,10 +1,9 @@
 <script>
+import TransicionLogin from './TransicionLogin.vue';
+
 export default {
-  props: {
-    startWithRegister: {
-      type: Boolean,
-      default: false
-    }
+  components: {
+    TransicionLogin: TransicionLogin,
   },
   data() {
     return {
@@ -14,12 +13,8 @@ export default {
       contrasinal: '',
       isLoading: false,
       errorMessage: '',
+      showLoginTransition: false,
     };
-  },
-  mounted() {
-    if (this.startWithRegister) {
-      this.currentView = 'registro';
-    }
   },
   methods: {
     showLogin() {
@@ -55,7 +50,7 @@ export default {
         if (response.ok) {
           const data = await response.json();
           localStorage.setItem('jwt_token', data.token);
-          window.location.href = '/inicio';
+          this.showLoginTransition = true;
         } else {
           const errorData = await response.json();
           this.errorMessage = errorData.error || 'Email o contraseña incorrectos.';
@@ -168,6 +163,8 @@ export default {
         </button>
       </form>
     </div>
+    
+    <TransicionLogin :isVisible="showLoginTransition" />
 
   </div>
 </template>
@@ -336,7 +333,7 @@ input:active{
   .button-primary,
   .button-secondary {
     color: #fff;
-  background: rgba(34, 34, 34, 0.85);
+    background: rgba(34, 34, 34, 0.85);
     font-size: 1rem;
     border-radius: 1em;
     width: 70%;

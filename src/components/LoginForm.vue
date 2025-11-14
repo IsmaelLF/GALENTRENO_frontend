@@ -1,15 +1,40 @@
+
 <script>
+import LoginTransition from './LoginTransition.vue';
 export default {
+  components: {
+    LoginTransition,
+  },
+  props: {
+    startWithRegister: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
+      isLogin: true,
+      nome: '',
       correo: '',
       contrasinal: '',
       isLoading: false,
       errorMessage: '',
+      showLoginTransition: false,
     };
   },
-
+  mounted() {
+    if (this.startWithRegister) {
+      this.isLogin = false;
+    }
+  },
   methods: {
+    toggleForm() {
+      this.isLogin = !this.isLogin;
+      this.errorMessage = '';
+      this.nome = '';
+      this.correo = '';
+      this.contrasinal = '';
+    },
     async handleLogin() {
       this.isLoading = true;
       this.errorMessage = '';
@@ -25,13 +50,45 @@ export default {
         if (response.ok) {
           const data = await response.json();
           localStorage.setItem('jwt_token', data.token);
-          window.location.href = '/inicio';
+          this.showLoginTransition = true;
         } else {
           const errorData = await response.json();
           this.errorMessage = errorData.error || 'Email o contraseña incorrectos.';
+          this.isLoading = false;
         }
       } catch (error) {
         this.errorMessage = 'Error de conexión con el servidor.';
+        this.isLoading = false;
+      }
+    },
+    async handleRegister() {
+      const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (!emailRegex.test(this.correo)) {
+        this.errorMessage = 'Introduce un formato de correo electrónico válido.';
+        return;
+      }
+      this.isLoading = true;
+      this.errorMessage = '';
+      try {
+        const urlApi = import.meta.env.PUBLIC_API_URL;
+        const response = await fetch(`${urlApi}/api/auth/rexistro`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome: this.nome, email: this.correo, contrasinal: this.contrasinal }),
+        });
+
+        if (response.ok) {
+          this.isLogin = true;
+          this.errorMessage = '';
+          this.nome = '';
+          this.correo = '';
+          this.contrasinal = '';
+        } else {
+          const errorData = await response.json();
+          this.errorMessage = errorData.error || 'Erro ao rexistrar. Tente de novo.';
+        }
+      } catch (error) {
+        this.errorMessage = 'Erro de conexión co servidor.';
       } finally {
         this.isLoading = false;
       }

@@ -108,7 +108,7 @@ const { title } = Astro.props;
 
       if (!track) return;
 
-      const baseSpeed = 0.5;
+      const baseSpeed = 0.25;
       let scrollAmount = 0;
       let resetPoint = 0;
 
@@ -673,6 +673,7 @@ const { title } = Astro.props;
     height: 100%;
     padding: 0;
     object-fit: cover;
+    filter: saturate(30%);
     border-radius: 10px;
     margin-right: 10px;
   }

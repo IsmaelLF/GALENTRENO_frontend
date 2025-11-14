@@ -215,7 +215,8 @@ export default {
 .button-primary:hover,
 .button-secondary:hover {
   color: #0d6efd;
-  transform: translateY(-2px);
+  transform: translateY(-0.5dvh);
+  cursor: none;
 }
 
 .form-header {
@@ -284,7 +285,7 @@ input {
   background: rgba(34, 34, 34, 0.95);
   color: #ffffff;
   border: 1px solid #ffffff65;
-  border-radius: 1em;
+  border-radius: 10px;
   box-sizing: border-box;
 }
 
@@ -305,7 +306,7 @@ input:active{
   padding: 12px;
   color: #fff;
   background-color: #0d6dfd;
-  border-radius: 1em;
+  border-radius: 10px;
   text-transform: uppercase;
   border: none;
   font-weight: 900;
@@ -333,7 +334,7 @@ input:active{
     color: #fff;
     background: rgba(34, 34, 34, 0.85);
     font-size: 1rem;
-    border-radius: 1em;
+    border-radius: 10px;
     width: 70%;
     margin: 0 auto;
     display: block;

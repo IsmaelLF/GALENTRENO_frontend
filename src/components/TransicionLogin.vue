@@ -24,6 +24,11 @@ export default defineComponent({
       this.isVisible = true;
       await this.$nextTick();
 
+      const preloadLink = document.createElement('link');
+      preloadLink.rel = 'prefetch';
+      preloadLink.href = '/inicio';
+      document.head.appendChild(preloadLink);
+
       const hero = this.$el.querySelector('.hero-container') as HTMLElement;
       const whiteCover = this.$el.querySelector('.white-cover') as HTMLElement;
 
@@ -44,11 +49,12 @@ export default defineComponent({
           scaleY: 1,
           duration: 4.5,
           ease: 'power1.inOut',
-          delay: 1
+          delay: 1,
+          onComplete: () => {
+            window.location.href = '/inicio';
+          }
         }
       );
-
-      window.location.href = '/inicio';
     },
   },
 });

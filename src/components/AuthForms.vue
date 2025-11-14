@@ -1,10 +1,5 @@
 <script>
-import TransicionLogin from './TransicionLogin.vue';
-
 export default {
-  components: {
-    TransicionLogin,
-  },
   data() {
     return {
       currentView: 'inicio',
@@ -50,8 +45,10 @@ export default {
           const data = await response.json();
           localStorage.setItem('jwt_token', data.token);
 
-          // Activar la transición
-          this.$refs.transicionLogin.playTransition();
+          document.body.style.filter = 'blur(10px)';
+          document.body.style.transition = 'filter 0.3s ease';
+
+          window.location.href = '/inicio';
         } else {
           const errorData = await response.json();
           this.errorMessage = errorData.error || 'Email o contraseña incorrectos.';
@@ -164,8 +161,6 @@ export default {
         </button>
       </form>
     </div>
-
-    <TransicionLogin ref="transicionLogin" />
 
   </div>
 </template>

@@ -44,12 +44,11 @@ export default defineComponent({
           scaleY: 1,
           duration: 4.5,
           ease: 'power1.inOut',
-          delay: 1,
-          onComplete: () => {
-            window.location.href = '/inicio';
-          }
+          delay: 1
         }
       );
+
+      window.location.href = '/inicio';
     },
   },
 });
@@ -94,14 +93,14 @@ export default defineComponent({
 }
 
 .white-cover {
-  position: absolute;
+  position: fixed;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 200vw;
-  height: 200vh;
+  left: 0;
+  width: 100vw;
+  height: 300vh;
   background-color: #ffffff;
   z-index: 1;
+  transform-origin: bottom;
 }
 
 @media (max-width: 767px) {

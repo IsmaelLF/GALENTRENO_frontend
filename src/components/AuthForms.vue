@@ -3,7 +3,7 @@ import TransicionLogin from './TransicionLogin.vue';
 
 export default {
   components: {
-    TransicionLogin: TransicionLogin,
+    TransicionLogin,
   },
   data() {
     return {
@@ -13,7 +13,6 @@ export default {
       contrasinal: '',
       isLoading: false,
       errorMessage: '',
-      showLoginTransition: false,
     };
   },
   methods: {
@@ -50,7 +49,9 @@ export default {
         if (response.ok) {
           const data = await response.json();
           localStorage.setItem('jwt_token', data.token);
-          this.showLoginTransition = true;
+
+          // Activar la transición
+          this.$refs.transicionLogin.playTransition();
         } else {
           const errorData = await response.json();
           this.errorMessage = errorData.error || 'Email o contraseña incorrectos.';
@@ -163,8 +164,8 @@ export default {
         </button>
       </form>
     </div>
-    
-    <TransicionLogin :isVisible="showLoginTransition" />
+
+    <TransicionLogin ref="transicionLogin" />
 
   </div>
 </template>

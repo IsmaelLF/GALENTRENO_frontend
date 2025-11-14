@@ -33,6 +33,9 @@ export default {
       this.isLoading = true;
       this.errorMessage = '';
 
+      document.body.style.filter = 'blur(20px)';
+      document.body.style.transition = 'filter 0.2s ease-out';
+
       try {
         const urlApi = import.meta.env.PUBLIC_API_URL;
         const response = await fetch(`${urlApi}/api/auth/login`, {
@@ -45,15 +48,14 @@ export default {
           const data = await response.json();
           localStorage.setItem('jwt_token', data.token);
 
-          document.body.style.filter = 'blur(10px)';
-          document.body.style.transition = 'filter 0.3s ease';
-
           window.location.href = '/inicio';
         } else {
+          document.body.style.filter = 'none';
           const errorData = await response.json();
           this.errorMessage = errorData.error || 'Email o contraseña incorrectos.';
         }
       } catch (error) {
+        document.body.style.filter = 'none';
         this.errorMessage = 'Error de conexión con el servidor.';
       } finally {
         this.isLoading = false;

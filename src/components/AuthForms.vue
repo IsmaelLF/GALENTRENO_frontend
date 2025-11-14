@@ -33,7 +33,7 @@ export default {
       this.isLoading = true;
       this.errorMessage = '';
 
-      document.body.style.filter = 'blur(10px)';
+      document.body.style.filter = 'blur(5px)';
       document.body.style.transition = 'filter 0.2s ease-out';
 
       try {

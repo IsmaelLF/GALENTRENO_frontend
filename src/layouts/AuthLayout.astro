@@ -2,7 +2,7 @@
 const { title } = Astro.props;
 ---
 
-<html lang="es" transition:animate="fade">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -717,41 +717,6 @@ const { title } = Astro.props;
 
     .text-frase p {
       line-height: 1.1;
-    }
-  }
-
-  @view-transition {
-    navigation: auto;
-  }
-
-  ::view-transition-old(root),
-  ::view-transition-new(root) {
-    animation-duration: 1.2s;
-  }
-
-  ::view-transition-old(root) {
-    animation-name: slide-up-out;
-  }
-
-  ::view-transition-new(root) {
-    animation-name: slide-up-in;
-  }
-
-  @keyframes slide-up-out {
-    from {
-      transform: translateY(0);
-    }
-    to {
-      transform: translateY(-100vh);
-    }
-  }
-
-  @keyframes slide-up-in {
-    from {
-      transform: translateY(100vh);
-    }
-    to {
-      transform: translateY(0);
     }
   }
 </style>

@@ -1,5 +1,6 @@
 <template>
   <div v-if="isVisible" class="login-transition-overlay">
+    <div class="white-cover"></div>
     <div class="hero-container">
       <img src="/img/transition-hero.png" alt="" class="hero-image" />
     </div>
@@ -24,20 +25,30 @@ export default defineComponent({
       await this.$nextTick();
 
       const hero = this.$el.querySelector('.hero-container') as HTMLElement;
+      const whiteCover = this.$el.querySelector('.white-cover') as HTMLElement;
 
       gsap.fromTo(
         hero,
         { y: '100vh' },
         {
           y: '-100vh',
-          duration: 2,
+          duration: 1.5,
           ease: 'power2.inOut'
         }
       );
 
-      setTimeout(() => {
-        window.location.href = '/inicio';
-      }, 800);
+      gsap.fromTo(
+        whiteCover,
+        { y: '100vh' },
+        {
+          y: '0vh',
+          duration: 1.5,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            window.location.href = '/inicio';
+          }
+        }
+      );
     },
   },
 });
@@ -54,6 +65,16 @@ export default defineComponent({
   background-color: transparent;
   overflow: hidden;
   pointer-events: none;
+}
+
+.white-cover {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: #ffffff;
+  z-index: 99998;
 }
 
 .hero-container {

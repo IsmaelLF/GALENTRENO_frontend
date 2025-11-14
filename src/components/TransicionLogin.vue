@@ -31,12 +31,9 @@ export default defineComponent({
         hero,
         { y: '100vh' },
         {
-          y: '-100vh',
-          duration: 1.5,
-          ease: 'power2.inOut',
-          onComplete: () => {
-            window.location.href = '/inicio';
-          }
+          y: '-50vh',
+          duration: 1.2,
+          ease: 'power2.inOut'
         }
       );
 
@@ -45,9 +42,12 @@ export default defineComponent({
         { scaleY: 0, transformOrigin: 'bottom' },
         {
           scaleY: 1,
-          duration: 1.2,
-          ease: 'power2.out',
-          delay: 0.3
+          duration: 1.5,
+          ease: 'power2.inOut',
+          delay: 0.4,
+          onComplete: () => {
+            window.location.href = '/inicio';
+          }
         }
       );
     },

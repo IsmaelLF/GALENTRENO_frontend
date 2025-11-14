@@ -32,8 +32,8 @@ export default defineComponent({
         { y: '100vh' },
         {
           y: '-120vh',
-          duration: 2.5,
-          ease: 'power2.inOut'
+          duration: 4,
+          ease: 'power1.inOut'
         }
       );
 
@@ -42,9 +42,9 @@ export default defineComponent({
         { scaleY: 0, transformOrigin: 'bottom' },
         {
           scaleY: 1,
-          duration: 3,
-          ease: 'power2.inOut',
-          delay: 0.6,
+          duration: 4.5,
+          ease: 'power1.inOut',
+          delay: 1,
           onComplete: () => {
             window.location.href = '/inicio';
           }

@@ -1,7 +1,5 @@
 <template>
   <div v-if="isVisible" class="login-transition-overlay">
-    <div class="curtain-top"></div>
-    <div class="curtain-bottom"></div>
     <div class="hero-container">
       <img src="/img/transition-hero.png" alt="" class="hero-image" />
     </div>
@@ -23,57 +21,41 @@ export default defineComponent({
   methods: {
     async playTransition() {
       this.isVisible = true;
-
       await this.$nextTick();
 
       const overlay = this.$el;
       const hero = overlay.querySelector('.hero-container') as HTMLElement;
-      const curtainTop = overlay.querySelector('.curtain-top') as HTMLElement;
-      const curtainBottom = overlay.querySelector('.curtain-bottom') as HTMLElement;
 
-      const timeline = gsap.timeline();
+      if ('startViewTransition' in document) {
+        const transition = (document as any).startViewTransition(async () => {
+          window.location.href = '/inicio';
+        });
 
-      // Fase 1: Fade in del overlay
-      timeline.fromTo(
-        overlay,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.3, ease: 'power2.out' }
-      );
+        await transition.ready;
 
-      // Fase 2: Héroe entra desde abajo
-      timeline.fromTo(
-        hero,
-        { y: 200, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out' },
-        '-=0.1'
-      );
-
-      // Fase 3: Héroe "levanta" la cortina (cortinas se mueven hacia arriba/abajo)
-      timeline.to(
-        curtainTop,
-        { y: '-100%', duration: 0.8, ease: 'power2.inOut' },
-        '+=0.2'
-      );
-
-      timeline.to(
-        curtainBottom,
-        { y: '100%', duration: 0.8, ease: 'power2.inOut' },
-        '-=0.8'
-      );
-
-      // Fase 4: Fade out completo
-      timeline.to(
-        overlay,
-        {
-          opacity: 0,
-          duration: 0.4,
-          ease: 'power2.in',
-          onComplete: () => {
-            window.location.href = '/inicio';
+        gsap.fromTo(
+          hero,
+          { y: '100vh' },
+          {
+            y: '-100vh',
+            duration: 1.5,
+            ease: 'power2.inOut'
           }
-        },
-        '+=0.2'
-      );
+        );
+      } else {
+        gsap.fromTo(
+          hero,
+          { y: '100vh' },
+          {
+            y: '-100vh',
+            duration: 1.5,
+            ease: 'power2.inOut',
+            onComplete: () => {
+              window.location.href = '/inicio';
+            }
+          }
+        );
+      }
     },
   },
 });
@@ -86,56 +68,37 @@ export default defineComponent({
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 9999;
-  background-color: rgba(0, 0, 0, 0.95);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  z-index: 99999;
+  background-color: transparent;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .hero-container {
-  position: relative;
-  z-index: 10002;
-  max-width: 600px;
-  max-height: 80vh;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100000;
+  width: 100%;
+  max-width: 500px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
+  pointer-events: none;
 }
 
 .hero-image {
   width: 100%;
   height: auto;
-  max-height: 80vh;
+  max-height: 90vh;
   object-fit: contain;
-  filter: drop-shadow(0 10px 30px rgba(0, 115, 192, 0.4));
-}
-
-.curtain-top,
-.curtain-bottom {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 50%;
-  background: linear-gradient(to bottom, #000 0%, #111 100%);
-  z-index: 10001;
-}
-
-.curtain-top {
-  top: 0;
-  transform-origin: top;
-}
-
-.curtain-bottom {
-  bottom: 0;
-  transform-origin: bottom;
-  background: linear-gradient(to top, #000 0%, #111 100%);
+  filter: drop-shadow(0 10px 30px rgba(0, 115, 192, 0.5));
 }
 
 @media (max-width: 767px) {
   .hero-container {
-    max-width: 90%;
+    max-width: 80%;
   }
 
   .hero-image {

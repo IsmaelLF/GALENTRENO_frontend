@@ -310,7 +310,7 @@ input:active{
   padding: 12px;
   color: #fff;
   background-color: #0d6dfd;
-border-radius: 1em;
+  border-radius: 1em;
   text-transform: uppercase;
   border: none;
   font-weight: 900;
@@ -336,10 +336,10 @@ border-radius: 1em;
   .button-primary,
   .button-secondary {
     color: #fff;
-    background: rgba(34, 34, 34, 0.95);
+  background: rgba(34, 34, 34, 0.85);
     font-size: 1rem;
     border-radius: 1em;
-    width: 60%;
+    width: 50%;
     margin: 0 auto;
     display: block;
   }
@@ -373,6 +373,45 @@ border-radius: 1em;
 
   .form-header {
     margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 358px) {
+  .button-primary,
+  .button-secondary {
+    width: 70%;
+    font-size: 0.9rem;
+    padding: 12px;
+  }
+
+  .auth-form {
+    padding: 8px;
+  }
+
+  .auth-form form {
+    gap: 8px;
+  }
+
+  input {
+    padding: 8px;
+    width: 85%;
+    font-size: 0.9rem;
+  }
+
+  label {
+    width: 85%;
+    font-size: 0.9rem;
+  }
+
+  .button-submit {
+    padding: 8px;
+    font-size: 0.85rem;
+    width: 60%;
+  }
+
+  .error-message {
+    font-size: 0.85rem;
+    padding: 8px;
   }
 }
 </style>

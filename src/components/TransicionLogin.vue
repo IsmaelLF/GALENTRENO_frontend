@@ -42,7 +42,7 @@ export default defineComponent({
 
       gsap.fromTo(
         whiteCover,
-        { scaleY: 0, transformOrigin: 'top' },
+        { scaleY: 0, transformOrigin: 'bottom' },
         {
           scaleY: 1,
           duration: 1.2,

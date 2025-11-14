@@ -23,39 +23,20 @@ export default defineComponent({
       this.isVisible = true;
       await this.$nextTick();
 
-      const overlay = this.$el;
-      const hero = overlay.querySelector('.hero-container') as HTMLElement;
+      const hero = this.$el.querySelector('.hero-container') as HTMLElement;
 
-      if ('startViewTransition' in document) {
-        const transition = (document as any).startViewTransition(async () => {
-          window.location.href = '/inicio';
-        });
-
-        await transition.ready;
-
-        gsap.fromTo(
-          hero,
-          { y: '100vh' },
-          {
-            y: '-100vh',
-            duration: 1.5,
-            ease: 'power2.inOut'
+      gsap.fromTo(
+        hero,
+        { y: '100vh' },
+        {
+          y: '-100vh',
+          duration: 1.5,
+          ease: 'power2.inOut',
+          onComplete: () => {
+            window.location.href = '/inicio';
           }
-        );
-      } else {
-        gsap.fromTo(
-          hero,
-          { y: '100vh' },
-          {
-            y: '-100vh',
-            duration: 1.5,
-            ease: 'power2.inOut',
-            onComplete: () => {
-              window.location.href = '/inicio';
-            }
-          }
-        );
-      }
+        }
+      );
     },
   },
 });

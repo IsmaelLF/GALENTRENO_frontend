@@ -24,11 +24,6 @@ export default defineComponent({
       this.isVisible = true;
       await this.$nextTick();
 
-      const preloadLink = document.createElement('link');
-      preloadLink.rel = 'prefetch';
-      preloadLink.href = '/inicio';
-      document.head.appendChild(preloadLink);
-
       const hero = this.$el.querySelector('.hero-container') as HTMLElement;
       const whiteCover = this.$el.querySelector('.white-cover') as HTMLElement;
 
@@ -36,9 +31,9 @@ export default defineComponent({
         hero,
         { y: '100vh' },
         {
-          y: '-120vh',
-          duration: 4,
-          ease: 'power1.inOut'
+          y: '-110vh',
+          duration: 2,
+          ease: 'power2.inOut'
         }
       );
 
@@ -47,9 +42,9 @@ export default defineComponent({
         { scaleY: 0, transformOrigin: 'bottom' },
         {
           scaleY: 1,
-          duration: 4.5,
-          ease: 'power1.inOut',
-          delay: 1,
+          duration: 2.2,
+          ease: 'power2.inOut',
+          delay: 0.5,
           onComplete: () => {
             window.location.href = '/inicio';
           }
@@ -102,10 +97,11 @@ export default defineComponent({
   position: fixed;
   bottom: 0;
   left: 0;
+  right: 0;
   width: 100vw;
-  height: 300vh;
+  height: 100vh;
   background-color: #ffffff;
-  z-index: 1;
+  z-index: 100001;
   transform-origin: bottom;
 }
 

@@ -30,13 +30,14 @@ export default defineComponent({
         { y: '100vh' },
         {
           y: '-100vh',
-          duration: 1.5,
-          ease: 'power2.inOut',
-          onComplete: () => {
-            window.location.href = '/inicio';
-          }
+          duration: 2,
+          ease: 'power2.inOut'
         }
       );
+
+      setTimeout(() => {
+        window.location.href = '/inicio';
+      }, 800);
     },
   },
 });

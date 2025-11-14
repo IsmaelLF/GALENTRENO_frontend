@@ -339,7 +339,7 @@ input:active{
   background: rgba(34, 34, 34, 0.85);
     font-size: 1rem;
     border-radius: 1em;
-    width: 50%;
+    width: 70%;
     margin: 0 auto;
     display: block;
   }

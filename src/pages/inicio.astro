@@ -201,6 +201,9 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
     document.addEventListener("DOMContentLoaded", async () => {
       const { data: { session } } = await supabase.auth.getSession();
 
+      console.log('Session:', session);
+      console.log('Access token:', session?.access_token);
+
       if (!session) {
         window.location.href = "/";
         return;

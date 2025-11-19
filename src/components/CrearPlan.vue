@@ -4,10 +4,15 @@ export default {
     return {
       planNome: '',
       planDescricion: '',
-      exercicios: [
-        { exercicio_id: null, series: 3, repeticions: 10, peso: 0 }
+      dias: [
+        {
+          nome_dia: 'Día 1',
+          exercicios: [
+            { exercicio_id: null, series: 3, repeticions: 10, peso: 0 }
+          ]
+        }
       ],
-      todosExercicios: [], 
+      todosExercicios: [],
       isLoading: false,
       errorMessage: '',
     };
@@ -29,12 +34,32 @@ export default {
         this.errorMessage = error.message;
       }
     },
-    addExercicio() {
-    
-      this.exercicios.push({ exercicio_id: null, series: 3, repeticions: 10, peso: 0 });
+    addDia() {
+      const diaNum = this.dias.length + 1;
+      this.dias.push({
+        nome_dia: `Día ${diaNum}`,
+        exercicios: [
+          { exercicio_id: null, series: 3, repeticions: 10, peso: 0 }
+        ]
+      });
     },
-    removeExercicio(index) {
-      this.exercicios.splice(index, 1);
+    removeDia(index) {
+      if (this.dias.length > 1) {
+        this.dias.splice(index, 1);
+      }
+    },
+    addExercicio(diaIndex) {
+      this.dias[diaIndex].exercicios.push({
+        exercicio_id: null,
+        series: 3,
+        repeticions: 10,
+        peso: 0
+      });
+    },
+    removeExercicio(diaIndex, exercicioIndex) {
+      if (this.dias[diaIndex].exercicios.length > 1) {
+        this.dias[diaIndex].exercicios.splice(exercicioIndex, 1);
+      }
     },
     async handleSubmit() {
       this.isLoading = true;
@@ -49,13 +74,13 @@ export default {
           body: JSON.stringify({
             nome: this.planNome,
             descricion: this.planDescricion,
-            exercicios: this.exercicios
+            dias: this.dias
           })
         });
 
         if (response.ok) {
           alert('Plan creado con éxito!');
-          window.location.href = '/meus-plans'; 
+          window.location.href = '/meus-plans';
         } else {
           const errorData = await response.json();
           this.errorMessage = errorData.error || 'Non se puido crear o plan.';
@@ -73,37 +98,77 @@ export default {
 <template>
   <form @submit.prevent="handleSubmit" class="create-plan-form">
     <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
-    
+
     <div>
       <label for="planNome">Nome do Plan:</label>
       <input type="text" id="planNome" v-model="planNome" required>
     </div>
-    
+
     <div>
       <label for="planDescricion">Descrición (opcional):</label>
       <input type="text" id="planDescricion" v-model="planDescricion">
     </div>
 
     <hr>
-    <h3>Exercicios</h3>
-
-    <div v-for="(exercicio, index) in exercicios" :key="index" class="exercicio-fila">
-      <select v-model="exercicio.exercicio_id" required>
-        <option :value="null" disabled>Selecciona un exercicio...</option>
-        <option v-for="ex in todosExercicios" :key="ex.id" :value="ex.id">
-          {{ ex.nome }} ({{ ex.grupo_muscular }})
-        </option>
-      </select>
-      <input type="number" v-model.number="exercicio.series" placeholder="Series" min="1">
-      <input type="number" v-model.number="exercicio.repeticions" placeholder="Repeticións" min="1">
-      <input type="number" v-model.number="exercicio.peso" placeholder="Peso (kg)" min="0">
-      <button type="button" @click="removeExercicio(index)" class="button-remove">X</button>
+    <div class="dias-header">
+      <h3>Días de Adestramento</h3>
+      <button type="button" @click="addDia" class="button button-secondary">
+        + Engadir Día
+      </button>
     </div>
 
-    <button type="button" @click="addExercicio" class="button button-secondary">
-      + Engadir Exercicio
-    </button>
-    
+    <div v-for="(dia, diaIndex) in dias" :key="diaIndex" class="dia-section">
+      <div class="dia-header">
+        <input
+          type="text"
+          v-model="dia.nome_dia"
+          placeholder="Nome do día"
+          class="dia-nombre-input"
+          required
+        >
+        <button
+          type="button"
+          @click="removeDia(diaIndex)"
+          class="button-remove"
+          :disabled="dias.length === 1"
+        >
+          X
+        </button>
+      </div>
+
+      <div class="exercicios-container">
+        <h4>Exercicios para {{ dia.nome_dia }}</h4>
+
+        <div v-for="(exercicio, exercicioIndex) in dia.exercicios" :key="exercicioIndex" class="exercicio-fila">
+          <select v-model="exercicio.exercicio_id" required>
+            <option :value="null" disabled>Selecciona un exercicio...</option>
+            <option v-for="ex in todosExercicios" :key="ex.id" :value="ex.id">
+              {{ ex.nome }} ({{ ex.grupo_muscular }})
+            </option>
+          </select>
+          <input type="number" v-model.number="exercicio.series" placeholder="Series" min="1">
+          <input type="number" v-model.number="exercicio.repeticions" placeholder="Repeticións" min="1">
+          <input type="number" v-model.number="exercicio.peso" placeholder="Peso (kg)" min="0">
+          <button
+            type="button"
+            @click="removeExercicio(diaIndex, exercicioIndex)"
+            class="button-remove"
+            :disabled="dia.exercicios.length === 1"
+          >
+            X
+          </button>
+        </div>
+
+        <button
+          type="button"
+          @click="addExercicio(diaIndex)"
+          class="button button-tertiary"
+        >
+          + Engadir Exercicio a este día
+        </button>
+      </div>
+    </div>
+
     <button type="submit" :disabled="isLoading" class="button button-primary">
       <span v-if="isLoading">Gardando...</span>
       <span v-else>Crear Plan</span>
@@ -112,7 +177,104 @@ export default {
 </template>
 
 <style>
-  .create-plan-form { display: flex; flex-direction: column; gap: 1rem; }
-  .exercicio-fila { display: grid; grid-template-columns: 3fr 1fr 1fr 1fr auto; gap: 0.5rem; align-items: center; }
-  .button-remove { background-color: #ff5630; color: white; border: none; border-radius: 8px; cursor: pointer; }
+  .create-plan-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .dias-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .dia-section {
+    background-color: #2a2a2e;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 2px solid #444;
+  }
+
+  .dia-header {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .dia-nombre-input {
+    flex: 1;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.5rem;
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 8px;
+  }
+
+  .exercicios-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .exercicios-container h4 {
+    color: #0d6efd;
+    margin: 0.5rem 0;
+  }
+
+  .exercicio-fila {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr 1fr auto;
+    gap: 0.5rem;
+    align-items: center;
+    background-color: #1a1a1e;
+    padding: 0.75rem;
+    border-radius: 8px;
+  }
+
+  .button-remove {
+    background-color: #ff5630;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    min-width: 40px;
+  }
+
+  .button-remove:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .button-tertiary {
+    background-color: #28a745;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+
+  .button-tertiary:hover {
+    background-color: #218838;
+  }
+
+  @media (max-width: 768px) {
+    .exercicio-fila {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .dia-section {
+      padding: 1rem;
+    }
+  }
 </style>

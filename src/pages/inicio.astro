@@ -6,8 +6,7 @@ const diaActual = new Date();
 const dataFormateada = format(diaActual, "EEEE, d 'de' MMMM 'de' yyyy", {
   locale: gl,
 });
-const apiUrl =
-  import.meta.env.PUBLIC_API_URL || "https://galentreno-backend.onrender.com";
+const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
 ---
 
 <AppLayout title="Inicio">

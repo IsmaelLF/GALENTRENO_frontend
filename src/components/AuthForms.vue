@@ -40,7 +40,7 @@ export default {
 
       try {
         const urlApi = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
-        const response = await fetch(`${urlApi}/api/auth/supabase/login`, {
+        const response = await fetch(`${urlApi}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: this.correo, contrasinal: this.contrasinal }),
@@ -77,7 +77,7 @@ export default {
       this.errorMessage = '';
       try {
         const urlApi = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
-        const response = await fetch(`${urlApi}/api/auth/supabase/rexistro`, {
+        const response = await fetch(`${urlApi}/api/auth/rexistro`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ nome: this.nome, email: this.correo, contrasinal: this.contrasinal }),

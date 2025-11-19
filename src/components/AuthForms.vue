@@ -49,10 +49,15 @@ export default {
         if (response.ok) {
           const data = await response.json();
 
-          const { error } = await supabase.auth.setSession({
+          console.log('[LOGIN] Backend response:', data);
+          console.log('[LOGIN] Access token from backend:', data.session?.access_token);
+
+          const { data: sessionData, error } = await supabase.auth.setSession({
             access_token: data.session.access_token,
             refresh_token: data.session.refresh_token
           });
+
+          console.log('[LOGIN] setSession result:', { sessionData, error });
 
           if (error) {
             console.error('Error setting session:', error);
@@ -61,6 +66,10 @@ export default {
             this.isLoading = false;
             return;
           }
+
+          // Verificar que a sesión se gardou correctamente
+          const { data: { session: verificarSesion } } = await supabase.auth.getSession();
+          console.log('[LOGIN] Session after setSession:', verificarSesion);
 
           // Pequeno delay para asegurar que a sesión se gardou
           await new Promise(resolve => setTimeout(resolve, 100));
@@ -97,10 +106,15 @@ export default {
         if (response.ok) {
           const data = await response.json();
 
-          const { error } = await supabase.auth.setSession({
+          console.log('[REGISTER] Backend response:', data);
+          console.log('[REGISTER] Access token from backend:', data.session?.access_token);
+
+          const { data: sessionData, error } = await supabase.auth.setSession({
             access_token: data.session.access_token,
             refresh_token: data.session.refresh_token
           });
+
+          console.log('[REGISTER] setSession result:', { sessionData, error });
 
           if (error) {
             console.error('Error setting session:', error);
@@ -108,6 +122,10 @@ export default {
             this.isLoading = false;
             return;
           }
+
+          // Verificar que a sesión se gardou correctamente
+          const { data: { session: verificarSesion } } = await supabase.auth.getSession();
+          console.log('[REGISTER] Session after setSession:', verificarSesion);
 
           // Pequeno delay para asegurar que a sesión se gardou
           await new Promise(resolve => setTimeout(resolve, 100));

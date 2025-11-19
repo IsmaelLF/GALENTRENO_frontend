@@ -18,7 +18,7 @@ export default {
   methods: {
     async fetchExercicios() {
       const token = localStorage.getItem('jwt_token');
-      const apiUrl = import.meta.env.PUBLIC_API_URL;
+      const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
       try {
         const response = await fetch(`${apiUrl}/api/exercicios`, {
           headers: { 'Authorization': `Bearer ${token}` }
@@ -40,7 +40,7 @@ export default {
       this.isLoading = true;
       this.errorMessage = '';
       const token = localStorage.getItem('jwt_token');
-      const apiUrl = import.meta.env.PUBLIC_API_URL;
+      const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
 
       try {
         const response = await fetch(`${apiUrl}/api/plans/novo`, {

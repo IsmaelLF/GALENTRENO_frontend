@@ -19,7 +19,7 @@ export default {
             this.isLoading = true;
             this.errorMessage = '';
             try {
-               const urlApi = import.meta.env.PUBLIC_API_URL;
+               const urlApi = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
                const response = await fetch(`${urlApi}/api/auth/rexistro`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

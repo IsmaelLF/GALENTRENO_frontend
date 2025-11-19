@@ -1,7 +1,7 @@
 
 <script>
 import LoginTransition from './LoginTransition.vue';
-import { supabase } from '$lib/supabase.js';
+import { supabase } from '/src/lib/supabase.js';
 
 export default {
   components: {

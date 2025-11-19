@@ -49,10 +49,21 @@ export default {
         if (response.ok) {
           const data = await response.json();
 
-          await supabase.auth.setSession({
+          const { error } = await supabase.auth.setSession({
             access_token: data.session.access_token,
             refresh_token: data.session.refresh_token
           });
+
+          if (error) {
+            console.error('Error setting session:', error);
+            document.body.style.filter = 'none';
+            this.errorMessage = 'Erro ao gardar a sesión';
+            this.isLoading = false;
+            return;
+          }
+
+          // Pequeno delay para asegurar que a sesión se gardou
+          await new Promise(resolve => setTimeout(resolve, 100));
 
           window.location.href = '/inicio';
         } else {
@@ -86,10 +97,20 @@ export default {
         if (response.ok) {
           const data = await response.json();
 
-          await supabase.auth.setSession({
+          const { error } = await supabase.auth.setSession({
             access_token: data.session.access_token,
             refresh_token: data.session.refresh_token
           });
+
+          if (error) {
+            console.error('Error setting session:', error);
+            this.errorMessage = 'Erro ao gardar a sesión';
+            this.isLoading = false;
+            return;
+          }
+
+          // Pequeno delay para asegurar que a sesión se gardou
+          await new Promise(resolve => setTimeout(resolve, 100));
 
           window.location.href = '/inicio';
         } else {

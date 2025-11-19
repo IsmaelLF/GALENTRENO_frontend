@@ -11,6 +11,7 @@
   "dependencies": {
     "@astrojs/vercel": "^8.0.4",
     "@astrojs/vue": "^5.1.1",
+    "@supabase/supabase-js": "^2.39.0",
     "astro": "^5.14.6",
     "date-fns": "^4.1.0",
     "gsap": "^3.13.0",

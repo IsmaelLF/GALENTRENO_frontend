@@ -193,14 +193,20 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
     }
   </style>
 
-  <script type="module" define:vars={{ apiUrl: apiUrl }}>
-    document.addEventListener("DOMContentLoaded", async () => {
-      const token = localStorage.getItem("jwt_token");
+  <script type="module">
+    import { supabase } from '../lib/supabase.js';
 
-      if (!token) {
+    const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
         window.location.href = "/";
         return;
       }
+
+      const token = session.access_token;
 
       const dataActual = document.getElementById("current-date");
       if (dataActual) {

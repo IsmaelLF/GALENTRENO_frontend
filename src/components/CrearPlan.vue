@@ -1,4 +1,6 @@
 <script>
+import { supabase } from '../lib/supabase.js';
+
 export default {
   data() {
     return {
@@ -22,7 +24,13 @@ export default {
   },
   methods: {
     async cargarExercicios() {
-      const token = localStorage.getItem('jwt_token');
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = '/';
+        return;
+      }
+
+      const token = session.access_token;
       const urlApi = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
       try {
         const resposta = await fetch(`${urlApi}/api/exercicios`, {
@@ -64,7 +72,14 @@ export default {
     async manexarEnvio() {
       this.estaCargando = true;
       this.mensaxeErro = '';
-      const token = localStorage.getItem('jwt_token');
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = '/';
+        return;
+      }
+
+      const token = session.access_token;
       const urlApi = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
 
       try {

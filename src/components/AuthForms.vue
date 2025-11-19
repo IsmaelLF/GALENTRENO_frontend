@@ -1,4 +1,6 @@
 <script>
+import { supabase } from '../lib/supabase.js';
+
 export default {
   data() {
     return {
@@ -38,7 +40,7 @@ export default {
 
       try {
         const urlApi = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
-        const response = await fetch(`${urlApi}/api/auth/login`, {
+        const response = await fetch(`${urlApi}/api/auth/supabase/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: this.correo, contrasinal: this.contrasinal }),
@@ -46,17 +48,21 @@ export default {
 
         if (response.ok) {
           const data = await response.json();
-          localStorage.setItem('jwt_token', data.token);
+
+          await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token
+          });
 
           window.location.href = '/inicio';
         } else {
           document.body.style.filter = 'none';
           const errorData = await response.json();
-          this.errorMessage = errorData.error || 'Email o contraseña incorrectos.';
+          this.errorMessage = errorData.error || 'Email o contrasinal incorrectos.';
         }
       } catch (error) {
         document.body.style.filter = 'none';
-        this.errorMessage = 'Error de conexión con el servidor.';
+        this.errorMessage = 'Erro de conexión co servidor.';
       } finally {
         this.isLoading = false;
       }
@@ -71,18 +77,21 @@ export default {
       this.errorMessage = '';
       try {
         const urlApi = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
-        const response = await fetch(`${urlApi}/api/auth/rexistro`, {
+        const response = await fetch(`${urlApi}/api/auth/supabase/rexistro`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ nome: this.nome, email: this.correo, contrasinal: this.contrasinal }),
         });
 
         if (response.ok) {
-          this.currentView = 'login';
-          this.errorMessage = '';
-          this.nome = '';
-          this.correo = '';
-          this.contrasinal = '';
+          const data = await response.json();
+
+          await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token
+          });
+
+          window.location.href = '/inicio';
         } else {
           const errorData = await response.json();
           this.errorMessage = errorData.error || 'Erro ao rexistrar. Tente de novo.';

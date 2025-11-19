@@ -158,14 +158,21 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
     }
   </style>
 
-  <script type="module" define:vars={{ apiUrl: apiUrl, planId: id }}>
-    document.addEventListener("DOMContentLoaded", async () => {
-      const token = localStorage.getItem("jwt_token");
+  <script type="module">
+    import { supabase } from '../../lib/supabase.js';
 
-      if (!token) {
+    const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
+    const planId = window.location.pathname.split('/').pop();
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+
+      if (!session) {
         window.location.href = "/";
         return;
       }
+
+      const token = session.access_token;
 
       const parametrosUrl = new URLSearchParams(window.location.search);
       const diaSeleccionadoId = parametrosUrl.get('dia');

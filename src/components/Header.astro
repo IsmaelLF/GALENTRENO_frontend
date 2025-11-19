@@ -27,11 +27,13 @@
 </header>
 
 <script>
+  import { supabase } from '../lib/supabase.js';
+
   const enlacePecharSesion = document.getElementById("logout-link");
   if (enlacePecharSesion) {
-    enlacePecharSesion.addEventListener("click", (evento) => {
+    enlacePecharSesion.addEventListener("click", async (evento) => {
       evento.preventDefault();
-      localStorage.removeItem("jwt_token");
+      await supabase.auth.signOut();
       window.location.href = "/";
     });
   }

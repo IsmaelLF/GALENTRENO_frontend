@@ -13,62 +13,62 @@ export default {
         }
       ],
       todosExercicios: [],
-      isLoading: false,
-      errorMessage: '',
+      estaCargando: false,
+      mensaxeErro: '',
     };
   },
   async mounted() {
-    await this.fetchExercicios();
+    await this.cargarExercicios();
   },
   methods: {
-    async fetchExercicios() {
+    async cargarExercicios() {
       const token = localStorage.getItem('jwt_token');
-      const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
+      const urlApi = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
       try {
-        const response = await fetch(`${apiUrl}/api/exercicios`, {
+        const resposta = await fetch(`${urlApi}/api/exercicios`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        if (!response.ok) throw new Error('Non se puideron cargar os exercicios');
-        this.todosExercicios = await response.json();
-      } catch (error) {
-        this.errorMessage = error.message;
+        if (!resposta.ok) throw new Error('Non se puideron cargar os exercicios');
+        this.todosExercicios = await resposta.json();
+      } catch (erro) {
+        this.mensaxeErro = erro.message;
       }
     },
-    addDia() {
-      const diaNum = this.dias.length + 1;
+    engadirDia() {
+      const numDia = this.dias.length + 1;
       this.dias.push({
-        nome_dia: `Día ${diaNum}`,
+        nome_dia: `Día ${numDia}`,
         exercicios: [
           { exercicio_id: null, series: null, repeticions: null, peso: null }
         ]
       });
     },
-    removeDia(index) {
+    eliminarDia(indice) {
       if (this.dias.length > 1) {
-        this.dias.splice(index, 1);
+        this.dias.splice(indice, 1);
       }
     },
-    addExercicio(diaIndex) {
-      this.dias[diaIndex].exercicios.push({
+    engadirExercicio(indiceDia) {
+      this.dias[indiceDia].exercicios.push({
         exercicio_id: null,
         series: null,
         repeticions: null,
         peso: null
       });
     },
-    removeExercicio(diaIndex, exercicioIndex) {
-      if (this.dias[diaIndex].exercicios.length > 1) {
-        this.dias[diaIndex].exercicios.splice(exercicioIndex, 1);
+    eliminarExercicio(indiceDia, indiceExercicio) {
+      if (this.dias[indiceDia].exercicios.length > 1) {
+        this.dias[indiceDia].exercicios.splice(indiceExercicio, 1);
       }
     },
-    async handleSubmit() {
-      this.isLoading = true;
-      this.errorMessage = '';
+    async manexarEnvio() {
+      this.estaCargando = true;
+      this.mensaxeErro = '';
       const token = localStorage.getItem('jwt_token');
-      const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
+      const urlApi = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
 
       try {
-        const response = await fetch(`${apiUrl}/api/plans/novo`, {
+        const resposta = await fetch(`${urlApi}/api/plans/novo`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({
@@ -78,17 +78,17 @@ export default {
           })
         });
 
-        if (response.ok) {
+        if (resposta.ok) {
           alert('Plan creado con éxito!');
           window.location.href = '/meus-plans';
         } else {
-          const errorData = await response.json();
-          this.errorMessage = errorData.error || 'Non se puido crear o plan.';
+          const datosErro = await resposta.json();
+          this.mensaxeErro = datosErro.error || 'Non se puido crear o plan.';
         }
-      } catch (error) {
-        this.errorMessage = 'Erro de conexión ao crear o plan.';
+      } catch (erro) {
+        this.mensaxeErro = 'Erro de conexión ao crear o plan.';
       } finally {
-        this.isLoading = false;
+        this.estaCargando = false;
       }
     }
   }
@@ -96,8 +96,8 @@ export default {
 </script>
 
 <template>
-  <form @submit.prevent="handleSubmit" class="create-plan-form">
-    <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
+  <form @submit.prevent="manexarEnvio" class="create-plan-form">
+    <p v-if="mensaxeErro" style="color: red;">{{ mensaxeErro }}</p>
 
     <div>
       <label for="planNome">Nome do Plan:</label>
@@ -112,12 +112,12 @@ export default {
     <hr>
     <div class="dias-header">
       <h3>Días de Adestramento</h3>
-      <button type="button" @click="addDia" class="button button-secondary">
+      <button type="button" @click="engadirDia" class="button button-secondary">
         + Engadir Día
       </button>
     </div>
 
-    <div v-for="(dia, diaIndex) in dias" :key="diaIndex" class="dia-section">
+    <div v-for="(dia, indiceDia) in dias" :key="indiceDia" class="dia-section">
       <div class="dia-header">
         <input
           type="text"
@@ -128,7 +128,7 @@ export default {
         >
         <button
           type="button"
-          @click="removeDia(diaIndex)"
+          @click="eliminarDia(indiceDia)"
           class="button-remove"
           :disabled="dias.length === 1"
         >
@@ -139,7 +139,7 @@ export default {
       <div class="exercicios-container">
         <h4>Exercicios para {{ dia.nome_dia }}</h4>
 
-        <div v-for="(exercicio, exercicioIndex) in dia.exercicios" :key="exercicioIndex" class="exercicio-fila">
+        <div v-for="(exercicio, indiceExercicio) in dia.exercicios" :key="indiceExercicio" class="exercicio-fila">
           <div class="input-group">
             <label class="input-label">Exercicio</label>
             <select v-model="exercicio.exercicio_id" required>
@@ -163,7 +163,7 @@ export default {
           </div>
           <button
             type="button"
-            @click="removeExercicio(diaIndex, exercicioIndex)"
+            @click="eliminarExercicio(indiceDia, indiceExercicio)"
             class="button-remove"
             :disabled="dia.exercicios.length === 1"
           >
@@ -173,7 +173,7 @@ export default {
 
         <button
           type="button"
-          @click="addExercicio(diaIndex)"
+          @click="engadirExercicio(indiceDia)"
           class="button button-tertiary"
         >
           + Engadir Exercicio a este día
@@ -181,8 +181,8 @@ export default {
       </div>
     </div>
 
-    <button type="submit" :disabled="isLoading" class="button button-primary">
-      <span v-if="isLoading">Gardando...</span>
+    <button type="submit" :disabled="estaCargando" class="button button-primary">
+      <span v-if="estaCargando">Gardando...</span>
       <span v-else>Crear Plan</span>
     </button>
   </form>

@@ -1,16 +1,10 @@
 ---
-// src/components/Header.astro
 ---
 
 <header>
   <nav>
     <a href="/inicio" class="logo" aria-label="Ir ao inicio">
       <span>GALENTRENO</span>
-      <!-- <img
-        src="/img/GALENTRENO.png"
-        alt="Logo Galentreno"
-        style="width: 150px; height: 150px; display: block;"
-      /> -->
     </a>
 
     <button
@@ -33,67 +27,61 @@
 </header>
 
 <script>
-  // Logout functionality
-  const logoutLink = document.getElementById("logout-link");
-  if (logoutLink) {
-    logoutLink.addEventListener("click", (event) => {
-      event.preventDefault();
+  const enlacePecharSesion = document.getElementById("logout-link");
+  if (enlacePecharSesion) {
+    enlacePecharSesion.addEventListener("click", (evento) => {
+      evento.preventDefault();
       localStorage.removeItem("jwt_token");
       window.location.href = "/";
     });
   }
 
-  // Mobile menu toggle
-  const mobileMenuToggle = document.querySelector(".mobile-menu-toggle");
-  const navLinks = document.querySelector(".nav-links");
+  const botonMenuMovil = document.querySelector(".mobile-menu-toggle");
+  const enlacesNav = document.querySelector(".nav-links");
 
-  if (mobileMenuToggle && navLinks) {
-    mobileMenuToggle.addEventListener("click", () => {
-      const isExpanded =
-        mobileMenuToggle.getAttribute("aria-expanded") === "true";
+  if (botonMenuMovil && enlacesNav) {
+    botonMenuMovil.addEventListener("click", () => {
+      const estaExpandido =
+        botonMenuMovil.getAttribute("aria-expanded") === "true";
 
-      mobileMenuToggle.setAttribute("aria-expanded", (!isExpanded).toString());
-      mobileMenuToggle.classList.toggle("active");
-      navLinks.classList.toggle("active");
+      botonMenuMovil.setAttribute("aria-expanded", (!estaExpandido).toString());
+      botonMenuMovil.classList.toggle("active");
+      enlacesNav.classList.toggle("active");
 
-      // Prevent body scroll when menu is open
-      document.body.style.overflow = isExpanded ? "" : "hidden";
+      document.body.style.overflow = estaExpandido ? "" : "hidden";
     });
 
-    // Close menu when clicking outside
     document.addEventListener("click", (e) => {
-      const target = e.target as HTMLElement;
+      const obxectivo = e.target as HTMLElement;
       if (
-        navLinks.classList.contains("active") &&
-        !navLinks.contains(target) &&
-        !mobileMenuToggle.contains(target)
+        enlacesNav.classList.contains("active") &&
+        !enlacesNav.contains(obxectivo) &&
+        !botonMenuMovil.contains(obxectivo)
       ) {
-        mobileMenuToggle.setAttribute("aria-expanded", "false");
-        mobileMenuToggle.classList.remove("active");
-        navLinks.classList.remove("active");
+        botonMenuMovil.setAttribute("aria-expanded", "false");
+        botonMenuMovil.classList.remove("active");
+        enlacesNav.classList.remove("active");
         document.body.style.overflow = "";
       }
     });
 
-    // Close menu on link click (mobile)
-    const links = navLinks.querySelectorAll("a");
-    links.forEach((link) => {
-      link.addEventListener("click", () => {
+    const enlaces = enlacesNav.querySelectorAll("a");
+    enlaces.forEach((enlace) => {
+      enlace.addEventListener("click", () => {
         if (window.innerWidth < 768) {
-          mobileMenuToggle.setAttribute("aria-expanded", "false");
-          mobileMenuToggle.classList.remove("active");
-          navLinks.classList.remove("active");
+          botonMenuMovil.setAttribute("aria-expanded", "false");
+          botonMenuMovil.classList.remove("active");
+          enlacesNav.classList.remove("active");
           document.body.style.overflow = "";
         }
       });
     });
 
-    // Handle window resize
     window.addEventListener("resize", () => {
       if (window.innerWidth >= 768) {
-        mobileMenuToggle.setAttribute("aria-expanded", "false");
-        mobileMenuToggle.classList.remove("active");
-        navLinks.classList.remove("active");
+        botonMenuMovil.setAttribute("aria-expanded", "false");
+        botonMenuMovil.classList.remove("active");
+        enlacesNav.classList.remove("active");
         document.body.style.overflow = "";
       }
     });
@@ -145,7 +133,6 @@
     border-radius: 4px;
   }
 
-  /* Mobile Menu Toggle */
   .mobile-menu-toggle {
     display: none;
     flex-direction: column;
@@ -188,7 +175,6 @@
     transform: rotate(-45deg) translate(7px, -7px);
   }
 
-  /* Navigation Links */
   .nav-links {
     list-style: none;
     margin: 0;
@@ -236,7 +222,6 @@
     border-radius: 4px;
   }
 
-  /* Responsive Design */
   @media (max-width: 767px) {
     header {
       padding: 0.75rem 1rem;
@@ -322,7 +307,6 @@
     }
   }
 
-  /* Respect user's motion preferences */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

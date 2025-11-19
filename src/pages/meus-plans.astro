@@ -31,7 +31,13 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
         <p>Cargando detalle do plan...</p>
       </div>
       <div class="modal-footer">
-        <button id="start-training-btn" class="button button-primary">
+        <div id="day-selection" class="day-selection">
+          <label for="day-select">Selecciona o día de adestramento:</label>
+          <select id="day-select" class="day-select">
+            <option value="">Escolle un día...</option>
+          </select>
+        </div>
+        <button id="start-training-btn" class="button button-primary" disabled>
           Iniciar Adestramento
         </button>
       </div>
@@ -232,6 +238,40 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
       font-weight: bold;
     }
 
+    .day-selection {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .day-selection label {
+      font-weight: 600;
+      color: var(--color-text-primary);
+      font-size: var(--font-size-sm);
+    }
+
+    .day-select {
+      padding: var(--spacing-md);
+      background-color: var(--color-bg-input);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-size: var(--font-size-base);
+      cursor: pointer;
+      transition: border-color var(--transition-base);
+    }
+
+    .day-select:hover {
+      border-color: var(--color-primary);
+    }
+
+    .day-select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px var(--color-primary-light);
+    }
+
     @media (max-width: 767px) {
       .modal-content {
         max-height: 95vh;
@@ -258,117 +298,125 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
         return;
       }
 
-      const plansList = document.getElementById("plans-list");
+      const listaPlans = document.getElementById("plans-list");
       const modal = document.getElementById("plan-modal");
-      const closeModalBtn = document.getElementById("close-modal");
-      const modalPlanName = document.getElementById("modal-plan-name");
-      const modalPlanDetail = document.getElementById("modal-plan-detail");
-      const startTrainingBtn = document.getElementById("start-training-btn");
+      const botonPechar = document.getElementById("close-modal");
+      const nomePlanModal = document.getElementById("modal-plan-name");
+      const detallePlanModal = document.getElementById("modal-plan-detail");
+      const botonIniciar = document.getElementById("start-training-btn");
+      const selectorDia = document.getElementById("day-select");
 
-      let currentPlanId = null;
+      let planActualId = null;
 
-      function closeModal() {
+      function pecharModal() {
         if (modal) {
           modal.classList.remove("active");
           document.body.style.overflow = "";
         }
       }
 
-      function openModal() {
+      function abrirModal() {
         if (modal) {
           modal.classList.add("active");
           document.body.style.overflow = "hidden";
         }
       }
 
-      async function loadPlanDetails(planId) {
-        currentPlanId = planId;
+      async function cargarDetallesPlan(planId) {
+        planActualId = planId;
 
-        if (!modalPlanDetail || !modalPlanName) return;
+        if (!detallePlanModal || !nomePlanModal) return;
 
-        modalPlanDetail.innerHTML = "<p>Cargando detalle do plan...</p>";
-        openModal();
+        detallePlanModal.innerHTML = "<p>Cargando detalle do plan...</p>";
+        abrirModal();
 
         try {
-          const response = await fetch(`${apiUrl}/api/plans/${planId}`, {
+          const resposta = await fetch(`${apiUrl}/api/plans/${planId}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
 
-          if (!response.ok) throw new Error("Non se puido cargar o plan");
+          if (!resposta.ok) throw new Error("Non se puido cargar o plan");
 
-          const plan = await response.json();
+          const plan = await resposta.json();
 
-          modalPlanName.textContent = plan.nome;
+          nomePlanModal.textContent = plan.nome;
 
-          let detailHtml = "";
+          let htmlDetalle = "";
 
           if (plan.descricion) {
-            detailHtml += `<p style="margin-bottom: var(--spacing-lg); color: var(--color-text-muted);">${plan.descricion}</p>`;
+            htmlDetalle += `<p style="margin-bottom: var(--spacing-lg); color: var(--color-text-muted);">${plan.descricion}</p>`;
           }
 
           if (plan.dias && plan.dias.length > 0) {
             plan.dias.forEach((dia) => {
-              let exerciciosHtml = "";
+              let htmlExercicios = "";
               if (dia.exercicios && dia.exercicios.length > 0) {
                 dia.exercicios.forEach((ex) => {
-                  exerciciosHtml += `<li>${ex.nome_exercicio} - ${ex.series} series × ${ex.repeticions} reps</li>`;
+                  htmlExercicios += `<li>${ex.nome_exercicio} - ${ex.series} series × ${ex.repeticions} reps</li>`;
                 });
               } else {
-                exerciciosHtml = "<li>Sen exercicios asignados</li>";
+                htmlExercicios = "<li>Sen exercicios asignados</li>";
               }
 
-              detailHtml += `
+              htmlDetalle += `
                 <div class="dia-card">
                   <h3>${dia.nome_dia}</h3>
-                  <ul>${exerciciosHtml}</ul>
+                  <ul>${htmlExercicios}</ul>
                 </div>
               `;
             });
           } else {
-            detailHtml += "<p>Este plan non ten días configurados.</p>";
+            htmlDetalle += "<p>Este plan non ten días configurados.</p>";
           }
 
-          modalPlanDetail.innerHTML = detailHtml;
-        } catch (error) {
-          console.error("Error:", error);
-          modalPlanDetail.innerHTML =
-            "<p>Erro ao cargar os detalles do plan.</p>";
+          detallePlanModal.innerHTML = htmlDetalle;
+
+          if (selectorDia) {
+            selectorDia.innerHTML = '<option value="">Escolle un día...</option>';
+
+            if (plan.dias && plan.dias.length > 0) {
+              plan.dias.forEach((dia) => {
+                const opcion = document.createElement('option');
+                opcion.value = dia.id;
+                opcion.textContent = dia.nome_dia;
+                selectorDia.appendChild(opcion);
+              });
+            }
+
+            selectorDia.disabled = false;
+          }
+        } catch (erro) {
+          detallePlanModal.innerHTML = "<p>Erro ao cargar os detalles do plan.</p>";
         }
       }
 
       try {
-        const response = await fetch(`${apiUrl}/api/plans/creados`, {
+        const resposta = await fetch(`${apiUrl}/api/plans/creados`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        if (!response.ok) throw new Error("Non se puideron cargar os plans");
-        if (!plansList) return;
+        if (!resposta.ok) throw new Error("Non se puideron cargar os plans");
+        if (!listaPlans) return;
 
-        const plans = await response.json();
-        plansList.innerHTML = "";
+        const plans = await resposta.json();
+        listaPlans.innerHTML = "";
 
         if (plans.length === 0) {
-          plansList.innerHTML =
-            "<p>Aínda non creaches ningún plan persoal.</p>";
+          listaPlans.innerHTML = "<p>Aínda non creaches ningún plan persoal.</p>";
         } else {
           plans.forEach((plan) => {
-            const card = document.createElement("div");
-            card.className = "plan-card";
-            card.setAttribute("role", "button");
-            card.setAttribute("tabindex", "0");
-            card.setAttribute(
-              "aria-label",
-              `Ver detalles do plan ${plan.nome}`
-            );
+            const tarxeta = document.createElement("div");
+            tarxeta.className = "plan-card";
+            tarxeta.setAttribute("role", "button");
+            tarxeta.setAttribute("tabindex", "0");
+            tarxeta.setAttribute("aria-label", `Ver detalles do plan ${plan.nome}`);
 
             const numDias = plan.dias?.length || 0;
-            const numExercicios =
-              plan.dias?.reduce(
-                (total, dia) => total + (dia.exercicios?.length || 0),
-                0
-              ) || 0;
+            const numExercicios = plan.dias?.reduce(
+              (total, dia) => total + (dia.exercicios?.length || 0), 0
+            ) || 0;
 
-            card.innerHTML = `
+            tarxeta.innerHTML = `
               <h3>${plan.nome}</h3>
               <p>${plan.descricion || "Sen descrición"}</p>
               <div class="plan-card-footer">
@@ -377,49 +425,54 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
               </div>
             `;
 
-            card.addEventListener("click", () => loadPlanDetails(plan.id));
+            tarxeta.addEventListener("click", () => cargarDetallesPlan(plan.id));
 
-            card.addEventListener("keypress", (e) => {
+            tarxeta.addEventListener("keypress", (e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
-                loadPlanDetails(plan.id);
+                cargarDetallesPlan(plan.id);
               }
             });
 
-            plansList.appendChild(card);
+            listaPlans.appendChild(tarxeta);
           });
         }
-      } catch (error) {
-        console.error("Error:", error);
-        if (!plansList) return;
-        plansList.innerHTML = "<p>Erro ao cargar os teus plans.</p>";
+      } catch (erro) {
+        if (!listaPlans) return;
+        listaPlans.innerHTML = "<p>Erro ao cargar os teus plans.</p>";
       }
 
-      if (closeModalBtn) {
-        closeModalBtn.addEventListener("click", closeModal);
+      if (botonPechar) {
+        botonPechar.addEventListener("click", pecharModal);
       }
 
       if (modal) {
         modal.addEventListener("click", (e) => {
           if (e.target === modal) {
-            closeModal();
+            pecharModal();
           }
         });
       }
 
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && modal?.classList.contains("active")) {
-          closeModal();
+          pecharModal();
         }
       });
 
-      if (startTrainingBtn) {
-        startTrainingBtn.addEventListener("click", () => {
-          if (currentPlanId) {
-            alert(
-              "Funcionalidade de iniciar adestramento pendente de implementar"
-            );
-            closeModal();
+      if (selectorDia) {
+        selectorDia.addEventListener("change", () => {
+          if (botonIniciar) {
+            botonIniciar.disabled = !selectorDia.value;
+          }
+        });
+      }
+
+      if (botonIniciar) {
+        botonIniciar.addEventListener("click", () => {
+          const diaSeleccionadoId = selectorDia?.value;
+          if (planActualId && diaSeleccionadoId) {
+            window.location.href = `/adestramento/${planActualId}?dia=${diaSeleccionadoId}`;
           }
         });
       }

@@ -44,7 +44,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
     </div>
   </section>
 
-  <!-- Estadísticas -->
   <section class="stats-section">
     <h2>Estatísticas</h2>
     <div class="stats-grid">
@@ -80,7 +79,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
       color: var(--color-text-muted);
     }
 
-    /* Weight Section */
     .weight-section {
       margin-bottom: var(--spacing-2xl);
     }
@@ -165,7 +163,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
       font-size: var(--font-size-2xl);
     }
 
-    /* Stats Section */
     .stats-section {
       margin-bottom: var(--spacing-2xl);
     }
@@ -211,66 +208,64 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
       }
 
       try {
-        const response = await fetch(`${apiUrl}/api/sesions/recentes`, {
+        const resposta = await fetch(`${apiUrl}/api/sesions/recentes`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
         const saudo = document.getElementById("user-greeting");
 
-        if (response.ok && saudo) {
-          const data = await response.json();
-          saudo.textContent = `Benvido, ${data.nome}`;
+        if (resposta.ok && saudo) {
+          const datos = await resposta.json();
+          saudo.textContent = `Benvido, ${datos.nome}`;
         }
-      } catch (error) {
-        console.error("Erro obtendo datos do usuario:", error);
+      } catch (erro) {
       }
 
-      async function loadTodayWeight() {
+      async function cargarPesoHoxe() {
         try {
-          const response = await fetch(`${apiUrl}/api/peso/hoy`, {
+          const resposta = await fetch(`${apiUrl}/api/peso/hoy`, {
             headers: { Authorization: `Bearer ${token}` },
           });
 
-          if (response.ok) {
-            const data = await response.json();
-            const lastWeightSpan = document.querySelector("#last-weight span");
-            const weightInput = document.getElementById("weight-input");
+          if (resposta.ok) {
+            const datos = await resposta.json();
+            const elementoPesoAnterior = document.querySelector("#last-weight span");
+            const inputPeso = document.getElementById("weight-input");
 
-            if (data.peso) {
-              if (lastWeightSpan) {
-                lastWeightSpan.textContent = `${data.peso} kg`;
+            if (datos.peso) {
+              if (elementoPesoAnterior) {
+                elementoPesoAnterior.textContent = `${datos.peso} kg`;
               }
-              if (weightInput) {
-                weightInput.value = data.peso;
+              if (inputPeso) {
+                inputPeso.value = datos.peso;
               }
             }
           }
-        } catch (error) {
-          console.error("Erro cargando peso:", error);
+        } catch (erro) {
         }
       }
 
-      const saveWeightBtn = document.getElementById("save-weight-btn");
-      const weightInput = document.getElementById("weight-input");
-      const weightStatus = document.getElementById("weight-status");
+      const botonGardarPeso = document.getElementById("save-weight-btn");
+      const inputPeso = document.getElementById("weight-input");
+      const estadoPeso = document.getElementById("weight-status");
 
-      if (saveWeightBtn && weightInput && weightStatus) {
-        saveWeightBtn.addEventListener("click", async () => {
-          const peso = parseFloat(weightInput.value);
+      if (botonGardarPeso && inputPeso && estadoPeso) {
+        botonGardarPeso.addEventListener("click", async () => {
+          const peso = parseFloat(inputPeso.value);
 
           if (!peso || peso <= 0 || peso > 500) {
-            weightStatus.textContent = "Por favor, introduce un peso válido";
-            weightStatus.className = "weight-status error";
+            estadoPeso.textContent = "Por favor, introduce un peso válido";
+            estadoPeso.className = "weight-status error";
             return;
           }
 
-          saveWeightBtn.textContent = "Gardando...";
-          saveWeightBtn.disabled = true;
-          weightStatus.textContent = "";
-          weightStatus.className = "weight-status";
+          botonGardarPeso.textContent = "Gardando...";
+          botonGardarPeso.disabled = true;
+          estadoPeso.textContent = "";
+          estadoPeso.className = "weight-status";
 
           try {
-            const response = await fetch(`${apiUrl}/api/peso`, {
+            const resposta = await fetch(`${apiUrl}/api/peso`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -279,25 +274,53 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
               body: JSON.stringify({ peso_corporal: peso }),
             });
 
-            if (response.ok) {
-              weightStatus.textContent = "✓ Peso gardado correctamente";
-              weightStatus.className = "weight-status success";
-              await loadTodayWeight();
+            if (resposta.ok) {
+              estadoPeso.textContent = "✓ Peso gardado correctamente";
+              estadoPeso.className = "weight-status success";
+              await cargarPesoHoxe();
             } else {
               throw new Error("Error ao gardar o peso");
             }
-          } catch (error) {
-            console.error("Error:", error);
-            weightStatus.textContent = "✗ Erro ao gardar o peso";
-            weightStatus.className = "weight-status error";
+          } catch (erro) {
+            estadoPeso.textContent = "✗ Erro ao gardar o peso";
+            estadoPeso.className = "weight-status error";
           } finally {
-            saveWeightBtn.textContent = "Gardar";
-            saveWeightBtn.disabled = false;
+            botonGardarPeso.textContent = "Gardar";
+            botonGardarPeso.disabled = false;
           }
         });
       }
 
-      loadTodayWeight();
+      cargarPesoHoxe();
+      cargarEstatisticas();
+
+      async function cargarEstatisticas() {
+        try {
+          const resposta = await fetch(`${apiUrl}/api/sesions/stats`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (resposta.ok) {
+            const datos = await resposta.json();
+
+            const elementoTotalAdestramentos = document.getElementById("total-trainings");
+            const elementoVolumeTotal = document.getElementById("total-volume");
+            const elementoAdestramentosSemana = document.getElementById("week-trainings");
+
+            if (elementoTotalAdestramentos) {
+              elementoTotalAdestramentos.textContent = datos.totalAdestramentos || 0;
+            }
+            if (elementoVolumeTotal) {
+              const volume = datos.volumeTotal || 0;
+              elementoVolumeTotal.textContent = `${Math.round(volume)} kg`;
+            }
+            if (elementoAdestramentosSemana) {
+              elementoAdestramentosSemana.textContent = datos.adestramentsEstaSemana || 0;
+            }
+          }
+        } catch (erro) {
+        }
+      }
     });
   </script>
 </AppLayout>

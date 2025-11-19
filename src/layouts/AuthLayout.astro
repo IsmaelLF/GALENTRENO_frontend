@@ -2,7 +2,7 @@
 const { title } = Astro.props;
 ---
 
-<html lang="es">
+<html lang="gl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,11 +23,28 @@ const { title } = Astro.props;
         </div>
       </div>
       <div class="links-container">
-        <a class="a-ig" href="https://instagram.com/galentreno" target="_blank"
+        <a
+          class="a-ig"
+          href="https://instagram.com/galentreno"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visitar o noso perfil de Instagram"
           >INSTAGRAM</a
         >
-        <a class="a-web" href="https://galentreno.com" target="_blank">(WEB)</a>
-        <a class="a-fb" href="https://facebook.com/galentreno" target="_blank"
+        <a
+          class="a-web"
+          href="https://galentreno.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Ir á páxina web principal de Galentreno"
+          >(WEB)</a
+        >
+        <a
+          class="a-fb"
+          href="https://facebook.com/galentreno"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visitar a nosa páxina de Facebook"
           >FACEBOOK</a
         >
       </div>
@@ -49,31 +66,19 @@ const { title } = Astro.props;
               fetchpriority="high"
               src="/img/galeria/foto1.webp"
               alt="Imaxe 1"
+              loading="lazy"
             />
             <img
               fetchpriority="high"
               src="/img/galeria/foto2.webp"
               alt="Imaxe 2"
+              loading="lazy"
             />
             <img
               fetchpriority="high"
               src="/img/galeria/foto3.webp"
               alt="Imaxe 3"
-            />
-            <img
-              fetchpriority="high"
-              src="/img/galeria/foto1.webp"
-              alt="Imaxe 1"
-            />
-            <img
-              fetchpriority="high"
-              src="/img/galeria/foto2.webp"
-              alt="Imaxe 2"
-            />
-            <img
-              fetchpriority="high"
-              src="/img/galeria/foto3.webp"
-              alt="Imaxe 3"
+              loading="lazy"
             />
           </div>
         </div>
@@ -84,55 +89,73 @@ const { title } = Astro.props;
     declare const gsap: any;
 
     document.addEventListener("DOMContentLoaded", () => {
-      const cursorDot = document.createElement("div");
-      cursorDot.classList.add("custom-cursor-dot");
-      document.body.appendChild(cursorDot);
+      // Check if GSAP is loaded
+      if (typeof gsap === "undefined") {
+        console.warn("GSAP library failed to load. Some animations will be disabled.");
+      }
 
-      let mouseX = 0;
-      let mouseY = 0;
-      const trail: HTMLElement[] = [];
-      const maxTrail = 15;
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-      document.addEventListener("mousemove", (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
+      // Custom cursor (only if user doesn't prefer reduced motion)
+      if (!prefersReducedMotion && window.innerWidth >= 968) {
+        const cursorDot = document.createElement("div");
+        cursorDot.classList.add("custom-cursor-dot");
+        document.body.appendChild(cursorDot);
 
-        cursorDot.style.left = mouseX + "px";
-        cursorDot.style.top = mouseY + "px";
+        let mouseX = 0;
+        let mouseY = 0;
+        const trail: HTMLElement[] = [];
+        const maxTrail = 15;
 
-        const trailDot = document.createElement("div");
-        trailDot.classList.add("cursor-trail");
-        trailDot.style.left = mouseX + "px";
-        trailDot.style.top = mouseY + "px";
-        document.body.appendChild(trailDot);
+        document.addEventListener("mousemove", (e) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
 
-        trail.push(trailDot);
+          cursorDot.style.left = mouseX + "px";
+          cursorDot.style.top = mouseY + "px";
 
-        if (trail.length > maxTrail) {
-          const oldDot = trail.shift();
-          if (oldDot) oldDot.remove();
-        }
+          const trailDot = document.createElement("div");
+          trailDot.classList.add("cursor-trail");
+          trailDot.style.left = mouseX + "px";
+          trailDot.style.top = mouseY + "px";
+          document.body.appendChild(trailDot);
 
-        setTimeout(() => {
-          trailDot.style.opacity = "0";
-          trailDot.style.transform = "translate(-50%, -50%) scale(0)";
-        }, 10);
-      });
+          trail.push(trailDot);
 
-      document.querySelectorAll("a, button").forEach((el) => {
-        el.addEventListener("mouseenter", () => {
-          cursorDot.classList.add("cursor-hover");
+          if (trail.length > maxTrail) {
+            const oldDot = trail.shift();
+            if (oldDot) oldDot.remove();
+          }
+
+          setTimeout(() => {
+            trailDot.style.opacity = "0";
+            trailDot.style.transform = "translate(-50%, -50%) scale(0)";
+          }, 10);
         });
-        el.addEventListener("mouseleave", () => {
-          cursorDot.classList.remove("cursor-hover");
+
+        document.querySelectorAll("a, button").forEach((el) => {
+          el.addEventListener("mouseenter", () => {
+            cursorDot.classList.add("cursor-hover");
+          });
+          el.addEventListener("mouseleave", () => {
+            cursorDot.classList.remove("cursor-hover");
+          });
         });
-      });
+      }
 
       const track = document.querySelector(".scroll-track") as HTMLElement;
 
       if (!track) return;
 
-      const baseSpeed = 0.25;
+      // Duplicate images for infinite scroll effect
+      const originalImages = Array.from(track.querySelectorAll("img"));
+      originalImages.forEach((img) => {
+        const clone = img.cloneNode(true) as HTMLElement;
+        track.appendChild(clone);
+      });
+
+      const baseSpeed = prefersReducedMotion ? 0.1 : 0.25;
       let scrollAmount = 0;
       let resetPoint = 0;
 
@@ -171,7 +194,7 @@ const { title } = Astro.props;
       const linksContainer = document.querySelector(
         ".links-container"
       ) as HTMLElement;
-      const authContainer = document.querySelector(".auth-container");
+      const authContainer = document.querySelector(".auth-card");
 
       if (linksContainer && authContainer && window.innerWidth < 968) {
         const observer = new MutationObserver(() => {
@@ -213,22 +236,35 @@ const { title } = Astro.props;
       function rotateQuote() {
         if (!fraseElement) return;
 
-        gsap.to(fraseElement, {
-          opacity: 0,
-          y: 10,
-          duration: 0.6,
-          ease: "power2.in",
-          onComplete: () => {
+        if (typeof gsap !== "undefined" && !prefersReducedMotion) {
+          // Use GSAP animations if available and user doesn't prefer reduced motion
+          gsap.to(fraseElement, {
+            opacity: 0,
+            y: 10,
+            duration: 0.6,
+            ease: "power2.in",
+            onComplete: () => {
+              currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+              fraseElement.textContent = quotes[currentQuoteIndex];
+
+              gsap.fromTo(
+                fraseElement,
+                { opacity: 0, y: -10 },
+                { opacity: 0.6, y: 0, duration: 0.6, ease: "power2.out" }
+              );
+            },
+          });
+        } else {
+          // Fallback to simple fade without GSAP
+          fraseElement.style.transition = prefersReducedMotion ? "none" : "opacity 0.6s ease";
+          fraseElement.style.opacity = "0";
+
+          setTimeout(() => {
             currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
             fraseElement.textContent = quotes[currentQuoteIndex];
-
-            gsap.fromTo(
-              fraseElement,
-              { opacity: 0, y: -10 },
-              { opacity: 0.6, y: 0, duration: 0.6, ease: "power2.out" }
-            );
-          },
-        });
+            fraseElement.style.opacity = "0.6";
+          }, prefersReducedMotion ? 0 : 600);
+        }
       }
 
       setInterval(rotateQuote, 5000);
@@ -250,6 +286,18 @@ const { title } = Astro.props;
     -webkit-font-smoothing: antialiased;
     margin: 0;
     padding: 0;
+  }
+
+  /* Respect user's motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 
   body {
@@ -525,15 +573,21 @@ const { title } = Astro.props;
     body {
       display: block;
       overflow: hidden;
-      cursor: none;
     }
 
-    .custom-cursor-dot {
-      display: block;
-    }
+    /* Only hide default cursor if custom cursor is supported and user doesn't prefer reduced motion */
+    @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+      body {
+        cursor: none;
+      }
 
-    .cursor-trail {
-      display: block;
+      .custom-cursor-dot {
+        display: block;
+      }
+
+      .cursor-trail {
+        display: block;
+      }
     }
 
     main {

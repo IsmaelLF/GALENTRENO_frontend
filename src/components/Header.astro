@@ -4,14 +4,27 @@
 
 <header>
   <nav>
-    <a href="/inicio" class="logo">
+    <a href="/inicio" class="logo" aria-label="Ir ao inicio">
+      <span>GALENTRENO</span>
       <!-- <img
         src="/img/GALENTRENO.png"
-        alt="Logo"
+        alt="Logo Galentreno"
         style="width: 150px; height: 150px; display: block;"
       /> -->
     </a>
-    <ul class="nav-links">
+
+    <button
+      class="mobile-menu-toggle"
+      aria-label="Abrir menú de navegación"
+      aria-expanded="false"
+      aria-controls="nav-menu"
+    >
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <ul class="nav-links" id="nav-menu" role="navigation">
       <li><a href="/inicio">Inicio</a></li>
       <li><a href="/plans">Plans</a></li>
       <li><a href="#" id="logout-link">Pechar Sesión</a></li>
@@ -20,6 +33,7 @@
 </header>
 
 <script>
+  // Logout functionality
   const logoutLink = document.getElementById("logout-link");
   if (logoutLink) {
     logoutLink.addEventListener("click", (event) => {
@@ -28,61 +42,262 @@
       window.location.href = "/";
     });
   }
+
+  // Mobile menu toggle
+  const mobileMenuToggle = document.querySelector(".mobile-menu-toggle");
+  const navLinks = document.querySelector(".nav-links");
+
+  if (mobileMenuToggle && navLinks) {
+    mobileMenuToggle.addEventListener("click", () => {
+      const isExpanded = mobileMenuToggle.getAttribute("aria-expanded") === "true";
+
+      mobileMenuToggle.setAttribute("aria-expanded", (!isExpanded).toString());
+      mobileMenuToggle.classList.toggle("active");
+      navLinks.classList.toggle("active");
+
+      // Prevent body scroll when menu is open
+      document.body.style.overflow = isExpanded ? "" : "hidden";
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      if (
+        navLinks.classList.contains("active") &&
+        !navLinks.contains(target) &&
+        !mobileMenuToggle.contains(target)
+      ) {
+        mobileMenuToggle.setAttribute("aria-expanded", "false");
+        mobileMenuToggle.classList.remove("active");
+        navLinks.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+    });
+
+    // Close menu on link click (mobile)
+    const links = navLinks.querySelectorAll("a");
+    links.forEach((link) => {
+      link.addEventListener("click", () => {
+        if (window.innerWidth < 768) {
+          mobileMenuToggle.setAttribute("aria-expanded", "false");
+          mobileMenuToggle.classList.remove("active");
+          navLinks.classList.remove("active");
+          document.body.style.overflow = "";
+        }
+      });
+    });
+
+    // Handle window resize
+    window.addEventListener("resize", () => {
+      if (window.innerWidth >= 768) {
+        mobileMenuToggle.setAttribute("aria-expanded", "false");
+        mobileMenuToggle.classList.remove("active");
+        navLinks.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+    });
+  }
 </script>
 
 <style>
   header {
-    background-color: #2a2a2a;
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     padding: 1rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     border-bottom: 1px solid #444;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
   }
+
   nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 0 0.5rem;
+    position: relative;
   }
+
   .logo {
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     color: #fff;
     text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+    letter-spacing: 0.05em;
+    z-index: 1001;
   }
+
+  .logo:hover {
+    color: #0d6efd;
+    transform: scale(1.05);
+  }
+
+  .logo:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  /* Mobile Menu Toggle */
+  .mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-menu-toggle:hover {
+    transform: scale(1.1);
+  }
+
+  .mobile-menu-toggle:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  .hamburger-line {
+    width: 24px;
+    height: 3px;
+    background-color: #fff;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+  }
+
+  .mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+  }
+
+  /* Navigation Links */
   .nav-links {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
   }
+
   .nav-links a {
     text-decoration: none;
     color: #e0e0e0;
     font-weight: 600;
-    font-size: 0.9rem;
-    transition: color 0.2s ease;
-  }
-  .nav-links a:hover {
-    color: #0d6efd;
+    font-size: 0.95rem;
+    transition: color 0.2s ease, transform 0.2s ease;
+    position: relative;
+    padding: 0.5rem 0;
   }
 
-  @media (min-width: 600px) {
+  .nav-links a::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #0d6efd;
+    transition: width 0.3s ease;
+  }
+
+  .nav-links a:hover {
+    color: #0d6efd;
+    transform: translateY(-2px);
+  }
+
+  .nav-links a:hover::after {
+    width: 100%;
+  }
+
+  .nav-links a:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 767px) {
     header {
-      padding: 1.5rem;
+      padding: 0.75rem 1rem;
     }
+
+    .mobile-menu-toggle {
+      display: flex;
+    }
+
+    .nav-links {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      height: 100vh;
+      height: 100dvh;
+      width: 70%;
+      max-width: 300px;
+      background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+      transition: right 0.3s ease;
+      z-index: 1000;
+    }
+
+    .nav-links.active {
+      right: 0;
+    }
+
+    .nav-links a {
+      font-size: 1.25rem;
+      width: 100%;
+      text-align: center;
+      padding: 1rem 2rem;
+    }
+
+    .nav-links a::after {
+      display: none;
+    }
+  }
+
+  @media (min-width: 600px) and (max-width: 767px) {
+    .logo {
+      font-size: 1.4rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    header {
+      padding: 1.25rem 1.5rem;
+    }
+
     nav {
       padding: 0;
     }
+
     .logo {
       font-size: 1.5rem;
     }
+
     .nav-links {
-      gap: 1.5rem;
+      gap: 2rem;
     }
+
     .nav-links a {
       font-size: 1rem;
     }
@@ -90,10 +305,26 @@
 
   @media (min-width: 968px) {
     header {
-      padding: 2rem;
+      padding: 1.5rem 2rem;
     }
+
     .nav-links {
-      gap: 2rem;
+      gap: 2.5rem;
+    }
+
+    .nav-links a {
+      font-size: 1.05rem;
+    }
+  }
+
+  /* Respect user's motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
     }
   }
 </style>

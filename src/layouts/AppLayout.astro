@@ -3,7 +3,7 @@ import Header from "../components/Header.astro";
 const { title } = Astro.props;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="gl">
   <head>
     <meta charset="UTF-8" />
@@ -45,7 +45,8 @@ const { title } = Astro.props;
         --spacing-2xl: 3rem;
 
         /* Typography */
-        --font-family: TexGyre, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --font-family: TexGyre, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
         --font-size-xs: 0.75rem;
         --font-size-sm: 0.875rem;
         --font-size-base: 1rem;
@@ -112,7 +113,11 @@ const { title } = Astro.props;
 
       body {
         font-family: var(--font-family);
-        background: linear-gradient(135deg, var(--color-bg-main) 0%, var(--color-bg-secondary) 100%);
+        background: linear-gradient(
+          135deg,
+          var(--color-bg-main) 0%,
+          var(--color-bg-secondary) 100%
+        );
         margin: 0;
         color: var(--color-text-secondary);
         display: flex;
@@ -218,7 +223,9 @@ const { title } = Astro.props;
         box-shadow: var(--shadow-md);
         border: 1px solid var(--color-border);
         color: var(--color-text-secondary);
-        transition: transform var(--transition-base), box-shadow var(--transition-base);
+        transition:
+          transform var(--transition-base),
+          box-shadow var(--transition-base);
       }
 
       .card:hover {
@@ -277,7 +284,12 @@ const { title } = Astro.props;
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
         transform: translateX(-100%);
         transition: transform 0.6s;
       }
@@ -319,7 +331,9 @@ const { title } = Astro.props;
         box-shadow: var(--shadow-md);
         border: 1px solid var(--color-border);
         color: var(--color-text-secondary);
-        transition: transform var(--transition-base), border-color var(--transition-base);
+        transition:
+          transform var(--transition-base),
+          border-color var(--transition-base);
       }
 
       .session-item:hover {

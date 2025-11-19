@@ -72,19 +72,28 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
             const response = await fetch(`${apiUrl}/api/plans/${planId}/copy`, {
               method: "POST",
               headers: {
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
               },
             });
 
             if (response.ok) {
+              await response.json();
               alert("Plan engadido con éxito aos teus plans!");
-              addButton.textContent = "Engadido!";
+              addButton.textContent = "✓ Engadido!";
+              addButton.style.backgroundColor = "var(--color-success, #10b981)";
+
+              // Redirect to meus-plans after 1.5 seconds
+              setTimeout(() => {
+                window.location.href = "/meus-plans";
+              }, 1500);
             } else {
-              throw new Error("Non se puido engadir o plan");
+              const errorData = await response.json();
+              throw new Error(errorData.error || "Non se puido engadir o plan");
             }
           } catch (error) {
             console.error("Error:", error);
-            alert("Houbo un erro ao engadir o plan.");
+            alert("Houbo un erro ao engadir o plan: " + error.message);
             addButton.textContent = "Engadir aos meus plans";
             addButton.disabled = false;
           }

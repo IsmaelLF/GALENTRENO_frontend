@@ -52,10 +52,15 @@ export default {
         if (response.ok) {
           const data = await response.json();
 
-          const { error } = await supabase.auth.setSession({
+          console.log('Backend response:', data);
+          console.log('Access token from backend:', data.session?.access_token);
+
+          const { data: sessionData, error } = await supabase.auth.setSession({
             access_token: data.session.access_token,
             refresh_token: data.session.refresh_token
           });
+
+          console.log('setSession result:', { sessionData, error });
 
           if (error) {
             console.error('Error setting session:', error);
@@ -63,6 +68,10 @@ export default {
             this.isLoading = false;
             return;
           }
+
+          // Verificar que a sesión se gardou correctamente
+          const { data: { session: verificarSesion } } = await supabase.auth.getSession();
+          console.log('Session after setSession:', verificarSesion);
 
           // Pequeno delay para asegurar que a sesión se gardou
           await new Promise(resolve => setTimeout(resolve, 100));

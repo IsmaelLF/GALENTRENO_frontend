@@ -19,7 +19,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
     <p>Cargando plans...</p>
   </div>
 
-  <!-- Modal para mostrar detalles del plan -->
   <div id="plan-modal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -161,9 +160,9 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
       align-items: center;
       justify-content: center;
       border-radius: var(--radius-sm);
-      transition: background-color var(--transition-base), color var(
-          --transition-base
-        );
+      transition:
+        background-color var(--transition-base),
+        color var(--transition-base);
     }
 
     .close-button:hover {
@@ -268,7 +267,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
 
       let currentPlanId = null;
 
-      // Close modal function
       function closeModal() {
         if (modal) {
           modal.classList.remove("active");
@@ -276,7 +274,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         }
       }
 
-      // Open modal function
       function openModal() {
         if (modal) {
           modal.classList.add("active");
@@ -284,7 +281,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         }
       }
 
-      // Load plan details
       async function loadPlanDetails(planId) {
         currentPlanId = planId;
 
@@ -340,7 +336,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         }
       }
 
-      // Load user's plans
       try {
         const response = await fetch(`${apiUrl}/api/plans/creados`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -382,10 +377,8 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
               </div>
             `;
 
-            // Click event
             card.addEventListener("click", () => loadPlanDetails(plan.id));
 
-            // Keyboard accessibility
             card.addEventListener("keypress", (e) => {
               if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
@@ -402,7 +395,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         plansList.innerHTML = "<p>Erro ao cargar os teus plans.</p>";
       }
 
-      // Modal event listeners
       if (closeModalBtn) {
         closeModalBtn.addEventListener("click", closeModal);
       }
@@ -415,18 +407,15 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         });
       }
 
-      // ESC key to close modal
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && modal?.classList.contains("active")) {
           closeModal();
         }
       });
 
-      // Start training button
       if (startTrainingBtn) {
         startTrainingBtn.addEventListener("click", () => {
           if (currentPlanId) {
-            // TODO: Implement training session start
             alert(
               "Funcionalidade de iniciar adestramento pendente de implementar"
             );

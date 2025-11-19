@@ -15,7 +15,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
     <small id="current-date" data-data-formateada={dataFormateada}></small>
   </div>
 
-  <!-- Sección de Registro de Peso -->
   <section class="weight-section">
     <h2>Rexistro de Peso</h2>
     <div class="weight-card">
@@ -25,10 +24,10 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
           <input
             type="number"
             id="weight-input"
-            placeholder="Ex: 75.5"
+            placeholder="Ex: 75"
             step="0.1"
             min="0"
-            max="500"
+            max="400"
           />
           <button id="save-weight-btn" class="button button-primary">
             Gardar
@@ -38,7 +37,8 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
       </div>
       <div class="weight-display">
         <p id="last-weight">
-          <strong>Último rexistro:</strong> <span>--</span>
+          <strong>Último rexistro:</strong>
+          <span>--</span>
         </p>
       </div>
     </div>
@@ -205,13 +205,11 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         return;
       }
 
-      // Set current date
       const dataActual = document.getElementById("current-date");
       if (dataActual) {
         dataActual.textContent = dataActual.dataset.dataFormateada;
       }
 
-      // Fetch user data and update greeting
       try {
         const response = await fetch(`${apiUrl}/api/sesions/recentes`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -227,7 +225,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         console.error("Erro obtendo datos do usuario:", error);
       }
 
-      // Load today's weight
       async function loadTodayWeight() {
         try {
           const response = await fetch(`${apiUrl}/api/peso/hoy`, {
@@ -253,7 +250,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         }
       }
 
-      // Save weight
       const saveWeightBtn = document.getElementById("save-weight-btn");
       const weightInput = document.getElementById("weight-input");
       const weightStatus = document.getElementById("weight-status");
@@ -301,14 +297,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         });
       }
 
-      // Load initial weight data
       loadTodayWeight();
-
-      // Load stats (placeholder for now)
-      // You can implement these endpoints later
-      // const statsResponse = await fetch(`${apiUrl}/api/stats`, {
-      //   headers: { Authorization: `Bearer ${token}` }
-      // });
     });
   </script>
 </AppLayout>

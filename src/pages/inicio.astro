@@ -3,21 +3,198 @@ import AppLayout from "../layouts/AppLayout.astro";
 import { format } from "date-fns";
 import { gl } from "date-fns/locale";
 const diaActual = new Date();
-const dataFormateada = format(diaActual, "EEEE, d MMMM", { locale: gl });
+const dataFormateada = format(diaActual, "EEEE, d 'de' MMMM 'de' yyyy", {
+  locale: gl,
+});
 const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
-<AppLayout title="GALENTRENO">
-  <h1 id="user-greeting">Ola!</h1>
-  <small id="current-date" data-data-formateada={dataFormateada}></small>
-
-  <div class="stats-grid">
-    <div class="card"><strong>--</strong><br />Adestramentos</div>
-    <div class="card"><strong>--</strong><br />Volume total</div>
-    <div class="card"><strong>--</strong><br />Esta semana</div>
+<AppLayout title="Inicio">
+  <div class="welcome-section">
+    <h1 id="user-greeting">Benvido a Galentreno</h1>
+    <small id="current-date" data-data-formateada={dataFormateada}></small>
   </div>
 
-  <a href="/meus-plans" class="button button-primary">+ Novo Entrenamento</a>
+  <!-- Sección de Registro de Peso -->
+  <section class="weight-section">
+    <h2>Rexistro de Peso</h2>
+    <div class="weight-card">
+      <div class="weight-input-group">
+        <label for="weight-input">Peso de hoxe (kg)</label>
+        <div class="input-with-button">
+          <input
+            type="number"
+            id="weight-input"
+            placeholder="Ex: 75.5"
+            step="0.1"
+            min="0"
+            max="500"
+          />
+          <button id="save-weight-btn" class="button button-primary">
+            Gardar
+          </button>
+        </div>
+        <small id="weight-status" class="weight-status"></small>
+      </div>
+      <div class="weight-display">
+        <p id="last-weight">
+          <strong>Último rexistro:</strong> <span>--</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Estadísticas -->
+  <section class="stats-section">
+    <h2>Estatísticas</h2>
+    <div class="stats-grid">
+      <div class="card">
+        <strong id="total-trainings">--</strong><br />Adestramentos
+      </div>
+      <div class="card">
+        <strong id="total-volume">--</strong><br />Volume total
+      </div>
+      <div class="card">
+        <strong id="week-trainings">--</strong><br />Esta semana
+      </div>
+    </div>
+  </section>
+
+  <a href="/meus-plans" class="button button-primary cta-button"
+    >Ver os Meus Plans</a
+  >
+
+  <style>
+    .welcome-section {
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .welcome-section h1 {
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .welcome-section small {
+      display: block;
+      font-size: var(--font-size-base);
+      color: var(--color-text-muted);
+    }
+
+    /* Weight Section */
+    .weight-section {
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .weight-section h2 {
+      margin-top: 0;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .weight-card {
+      background-color: var(--color-bg-card);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--color-border);
+    }
+
+    .weight-input-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .weight-input-group label {
+      display: block;
+      margin-bottom: var(--spacing-sm);
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .input-with-button {
+      display: flex;
+      gap: var(--spacing-md);
+      align-items: stretch;
+    }
+
+    .input-with-button input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .input-with-button .button {
+      flex-shrink: 0;
+      width: auto;
+      min-width: auto;
+      max-width: none;
+      padding: var(--spacing-md) var(--spacing-xl);
+    }
+
+    .weight-status {
+      display: block;
+      margin-top: var(--spacing-sm);
+      min-height: 1.2em;
+      font-size: var(--font-size-sm);
+    }
+
+    .weight-status.success {
+      color: #10b981;
+    }
+
+    .weight-status.error {
+      color: #ef4444;
+    }
+
+    .weight-display {
+      padding-top: var(--spacing-lg);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .weight-display p {
+      margin: 0;
+      font-size: var(--font-size-lg);
+      color: var(--color-text-secondary);
+    }
+
+    .weight-display strong {
+      color: var(--color-text-primary);
+      font-weight: 600;
+    }
+
+    .weight-display span {
+      color: var(--color-primary);
+      font-weight: 700;
+      font-size: var(--font-size-2xl);
+    }
+
+    /* Stats Section */
+    .stats-section {
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .stats-section h2 {
+      margin-top: 0;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .cta-button {
+      display: block;
+      max-width: 400px;
+      margin: var(--spacing-2xl) auto 0;
+    }
+
+    @media (max-width: 599px) {
+      .input-with-button {
+        flex-direction: column;
+      }
+
+      .input-with-button .button {
+        width: 100%;
+      }
+
+      .weight-card {
+        padding: var(--spacing-lg);
+      }
+    }
+  </style>
 
   <script type="module" define:vars={{ apiUrl: apiUrl }}>
     document.addEventListener("DOMContentLoaded", async () => {
@@ -28,27 +205,110 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         return;
       }
 
+      // Set current date
       const dataActual = document.getElementById("current-date");
-      if (!dataActual) return;
-      else {
+      if (dataActual) {
         dataActual.textContent = dataActual.dataset.dataFormateada;
       }
+
+      // Fetch user data and update greeting
       try {
         const response = await fetch(`${apiUrl}/api/sesions/recentes`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const saudo = document.getElementById("user-greeting");
-        if (!saudo) return;
-        if (response.ok) {
-          const data = await response.json();
 
-          saudo.textContent = `Ola, ${data.nome}! Preparado para adestrar?`;
-        } else {
-          saudo.textContent = `Ola!`;
+        const saudo = document.getElementById("user-greeting");
+
+        if (response.ok && saudo) {
+          const data = await response.json();
+          saudo.textContent = `Benvido, ${data.nome}`;
         }
       } catch (error) {
         console.error("Erro obtendo datos do usuario:", error);
       }
+
+      // Load today's weight
+      async function loadTodayWeight() {
+        try {
+          const response = await fetch(`${apiUrl}/api/peso/hoy`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            const lastWeightSpan = document.querySelector("#last-weight span");
+            const weightInput = document.getElementById("weight-input");
+
+            if (data.peso) {
+              if (lastWeightSpan) {
+                lastWeightSpan.textContent = `${data.peso} kg`;
+              }
+              if (weightInput) {
+                weightInput.value = data.peso;
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Erro cargando peso:", error);
+        }
+      }
+
+      // Save weight
+      const saveWeightBtn = document.getElementById("save-weight-btn");
+      const weightInput = document.getElementById("weight-input");
+      const weightStatus = document.getElementById("weight-status");
+
+      if (saveWeightBtn && weightInput && weightStatus) {
+        saveWeightBtn.addEventListener("click", async () => {
+          const peso = parseFloat(weightInput.value);
+
+          if (!peso || peso <= 0 || peso > 500) {
+            weightStatus.textContent = "Por favor, introduce un peso válido";
+            weightStatus.className = "weight-status error";
+            return;
+          }
+
+          saveWeightBtn.textContent = "Gardando...";
+          saveWeightBtn.disabled = true;
+          weightStatus.textContent = "";
+          weightStatus.className = "weight-status";
+
+          try {
+            const response = await fetch(`${apiUrl}/api/peso`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({ peso_corporal: peso }),
+            });
+
+            if (response.ok) {
+              weightStatus.textContent = "✓ Peso gardado correctamente";
+              weightStatus.className = "weight-status success";
+              await loadTodayWeight();
+            } else {
+              throw new Error("Error ao gardar o peso");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            weightStatus.textContent = "✗ Erro ao gardar o peso";
+            weightStatus.className = "weight-status error";
+          } finally {
+            saveWeightBtn.textContent = "Gardar";
+            saveWeightBtn.disabled = false;
+          }
+        });
+      }
+
+      // Load initial weight data
+      loadTodayWeight();
+
+      // Load stats (placeholder for now)
+      // You can implement these endpoints later
+      // const statsResponse = await fetch(`${apiUrl}/api/stats`, {
+      //   headers: { Authorization: `Bearer ${token}` }
+      // });
     });
   </script>
 </AppLayout>

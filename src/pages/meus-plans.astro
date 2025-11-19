@@ -13,23 +13,241 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
   >
     + Crear Novo Plan
   </a>
-  <p>Selecciona un plan para comezar o teu adestramento.</p>
+  <p>Selecciona un plan para ver os seus exercicios.</p>
 
   <div id="plans-list" class="plans-container">
     <p>Cargando plans...</p>
   </div>
 
+  <!-- Modal para mostrar detalles del plan -->
+  <div id="plan-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-plan-name">Plan</h2>
+        <button id="close-modal" class="close-button" aria-label="Pechar">
+          &times;
+        </button>
+      </div>
+      <div id="modal-plan-detail" class="modal-body">
+        <p>Cargando detalle do plan...</p>
+      </div>
+      <div class="modal-footer">
+        <button id="start-training-btn" class="button button-primary">
+          Iniciar Adestramento
+        </button>
+      </div>
+    </div>
+  </div>
+
   <style>
     .plan-card {
-      background-color: white;
-      padding: 1rem;
-      border-radius: 12px;
-      margin-bottom: 1rem;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(0, 0, 0, 0.05);
+      background-color: var(--color-bg-card);
+      color: var(--color-text-secondary);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      border: 2px solid var(--color-border);
+      cursor: pointer;
+      transition:
+        transform var(--transition-base),
+        border-color var(--transition-base),
+        box-shadow var(--transition-base);
     }
+
+    .plan-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .plan-card:active {
+      transform: translateY(-2px);
+    }
+
     .plan-card h3 {
       margin-top: 0;
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-text-primary);
+      font-size: var(--font-size-xl);
+    }
+
+    .plan-card p {
+      margin: 0;
+      color: var(--color-text-muted);
+    }
+
+    .plan-card-footer {
+      margin-top: var(--spacing-md);
+      padding-top: var(--spacing-md);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: var(--z-modal);
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-md);
+    }
+
+    .modal-content {
+      background-color: var(--color-bg-card);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-border);
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-xl);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: var(--color-text-primary);
+      font-size: var(--font-size-2xl);
+    }
+
+    .close-button {
+      background: transparent;
+      border: none;
+      font-size: 2rem;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      transition: background-color var(--transition-base), color var(
+          --transition-base
+        );
+    }
+
+    .close-button:hover {
+      background-color: var(--color-bg-input);
+      color: var(--color-text-primary);
+    }
+
+    .close-button:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    .modal-body {
+      padding: var(--spacing-xl);
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: var(--spacing-xl);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--spacing-md);
+    }
+
+    .modal-footer .button {
+      max-width: none;
+      width: auto;
+    }
+
+    .dia-card {
+      background-color: var(--color-bg-secondary);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+      border: 1px solid var(--color-border);
+    }
+
+    .dia-card h3 {
+      margin-top: 0;
+      margin-bottom: var(--spacing-md);
+      color: var(--color-text-primary);
+      font-size: var(--font-size-lg);
+    }
+
+    .dia-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .dia-card li {
+      padding: var(--spacing-sm) 0;
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+    }
+
+    .dia-card li:last-child {
+      border-bottom: none;
+    }
+
+    .dia-card li::before {
+      content: "→";
+      color: var(--color-primary);
+      margin-right: var(--spacing-sm);
+      font-weight: bold;
+    }
+
+    @media (max-width: 767px) {
+      .modal-content {
+        max-height: 95vh;
+        margin: var(--spacing-sm);
+      }
+
+      .modal-header,
+      .modal-body,
+      .modal-footer {
+        padding: var(--spacing-lg);
+      }
+
+      .modal-header h2 {
+        font-size: var(--font-size-xl);
+      }
     }
   </style>
 
@@ -42,7 +260,87 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
       }
 
       const plansList = document.getElementById("plans-list");
+      const modal = document.getElementById("plan-modal");
+      const closeModalBtn = document.getElementById("close-modal");
+      const modalPlanName = document.getElementById("modal-plan-name");
+      const modalPlanDetail = document.getElementById("modal-plan-detail");
+      const startTrainingBtn = document.getElementById("start-training-btn");
 
+      let currentPlanId = null;
+
+      // Close modal function
+      function closeModal() {
+        if (modal) {
+          modal.classList.remove("active");
+          document.body.style.overflow = "";
+        }
+      }
+
+      // Open modal function
+      function openModal() {
+        if (modal) {
+          modal.classList.add("active");
+          document.body.style.overflow = "hidden";
+        }
+      }
+
+      // Load plan details
+      async function loadPlanDetails(planId) {
+        currentPlanId = planId;
+
+        if (!modalPlanDetail || !modalPlanName) return;
+
+        modalPlanDetail.innerHTML = "<p>Cargando detalle do plan...</p>";
+        openModal();
+
+        try {
+          const response = await fetch(`${apiUrl}/api/plans/${planId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          if (!response.ok) throw new Error("Non se puido cargar o plan");
+
+          const plan = await response.json();
+
+          modalPlanName.textContent = plan.nome;
+
+          let detailHtml = "";
+
+          if (plan.descricion) {
+            detailHtml += `<p style="margin-bottom: var(--spacing-lg); color: var(--color-text-muted);">${plan.descricion}</p>`;
+          }
+
+          if (plan.dias && plan.dias.length > 0) {
+            plan.dias.forEach((dia) => {
+              let exerciciosHtml = "";
+              if (dia.exercicios && dia.exercicios.length > 0) {
+                dia.exercicios.forEach((ex) => {
+                  exerciciosHtml += `<li>${ex.nome_exercicio} - ${ex.series} series × ${ex.repeticions} reps</li>`;
+                });
+              } else {
+                exerciciosHtml = "<li>Sen exercicios asignados</li>";
+              }
+
+              detailHtml += `
+                <div class="dia-card">
+                  <h3>${dia.nome_dia}</h3>
+                  <ul>${exerciciosHtml}</ul>
+                </div>
+              `;
+            });
+          } else {
+            detailHtml += "<p>Este plan non ten días configurados.</p>";
+          }
+
+          modalPlanDetail.innerHTML = detailHtml;
+        } catch (error) {
+          console.error("Error:", error);
+          modalPlanDetail.innerHTML =
+            "<p>Erro ao cargar os detalles do plan.</p>";
+        }
+      }
+
+      // Load user's plans
       try {
         const response = await fetch(`${apiUrl}/api/plans/creados`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -50,6 +348,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
 
         if (!response.ok) throw new Error("Non se puideron cargar os plans");
         if (!plansList) return;
+
         const plans = await response.json();
         plansList.innerHTML = "";
 
@@ -60,11 +359,40 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
           plans.forEach((plan) => {
             const card = document.createElement("div");
             card.className = "plan-card";
-            // TODO: Engadir para ver os exercicios tamen
+            card.setAttribute("role", "button");
+            card.setAttribute("tabindex", "0");
+            card.setAttribute(
+              "aria-label",
+              `Ver detalles do plan ${plan.nome}`
+            );
+
+            const numDias = plan.dias?.length || 0;
+            const numExercicios =
+              plan.dias?.reduce(
+                (total, dia) => total + (dia.exercicios?.length || 0),
+                0
+              ) || 0;
+
             card.innerHTML = `
-                            <h3>${plan.nome}</h3>
-                            <p>${plan.descricion || "Sen descrición."}</p>
-                        `;
+              <h3>${plan.nome}</h3>
+              <p>${plan.descricion || "Sen descrición"}</p>
+              <div class="plan-card-footer">
+                <span>${numDias} día${numDias !== 1 ? "s" : ""}</span>
+                <span>${numExercicios} exercicio${numExercicios !== 1 ? "s" : ""}</span>
+              </div>
+            `;
+
+            // Click event
+            card.addEventListener("click", () => loadPlanDetails(plan.id));
+
+            // Keyboard accessibility
+            card.addEventListener("keypress", (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                loadPlanDetails(plan.id);
+              }
+            });
+
             plansList.appendChild(card);
           });
         }
@@ -72,6 +400,39 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         console.error("Error:", error);
         if (!plansList) return;
         plansList.innerHTML = "<p>Erro ao cargar os teus plans.</p>";
+      }
+
+      // Modal event listeners
+      if (closeModalBtn) {
+        closeModalBtn.addEventListener("click", closeModal);
+      }
+
+      if (modal) {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) {
+            closeModal();
+          }
+        });
+      }
+
+      // ESC key to close modal
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal?.classList.contains("active")) {
+          closeModal();
+        }
+      });
+
+      // Start training button
+      if (startTrainingBtn) {
+        startTrainingBtn.addEventListener("click", () => {
+          if (currentPlanId) {
+            // TODO: Implement training session start
+            alert(
+              "Funcionalidade de iniciar adestramento pendente de implementar"
+            );
+            closeModal();
+          }
+        });
       }
     });
   </script>

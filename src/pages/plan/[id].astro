@@ -79,7 +79,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
 
             if (response.ok) {
               await response.json();
-              alert("Plan engadido con éxito aos teus plans!");
               addButton.textContent = "✓ Engadido!";
               addButton.style.backgroundColor = "var(--color-success, #10b981)";
 

@@ -146,9 +146,9 @@ export default {
               {{ ex.nome }} ({{ ex.grupo_muscular }})
             </option>
           </select>
-          <input type="number" v-model.number="exercicio.series" placeholder="Series" min="1">
-          <input type="number" v-model.number="exercicio.repeticions" placeholder="Repeticións" min="1">
-          <input type="number" v-model.number="exercicio.peso" placeholder="Peso (kg)" min="0">
+          <input type="number" v-model.number="exercicio.series" placeholder="Series" min="1" required>
+          <input type="number" v-model.number="exercicio.repeticions" placeholder="Repeticións" min="1" required>
+          <input type="number" v-model.number="exercicio.peso" placeholder="Peso" min="0" step="0.5" required>
           <button
             type="button"
             @click="removeExercicio(diaIndex, exercicioIndex)"
@@ -234,6 +234,16 @@ export default {
     align-items: center;
     background-color: #1a1a1e;
     padding: 0.75rem;
+    border-radius: 8px;
+  }
+
+  .exercicio-fila input,
+  .exercicio-fila select {
+    padding: 0.75rem;
+    font-size: 1rem;
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
     border-radius: 8px;
   }
 

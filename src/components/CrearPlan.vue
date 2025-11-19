@@ -8,7 +8,7 @@ export default {
         {
           nome_dia: 'Día 1',
           exercicios: [
-            { exercicio_id: null, series: 3, repeticions: 10, peso: 0 }
+            { exercicio_id: null, series: null, repeticions: null, peso: null }
           ]
         }
       ],
@@ -39,7 +39,7 @@ export default {
       this.dias.push({
         nome_dia: `Día ${diaNum}`,
         exercicios: [
-          { exercicio_id: null, series: 3, repeticions: 10, peso: 0 }
+          { exercicio_id: null, series: null, repeticions: null, peso: null }
         ]
       });
     },
@@ -51,9 +51,9 @@ export default {
     addExercicio(diaIndex) {
       this.dias[diaIndex].exercicios.push({
         exercicio_id: null,
-        series: 3,
-        repeticions: 10,
-        peso: 0
+        series: null,
+        repeticions: null,
+        peso: null
       });
     },
     removeExercicio(diaIndex, exercicioIndex) {
@@ -140,15 +140,27 @@ export default {
         <h4>Exercicios para {{ dia.nome_dia }}</h4>
 
         <div v-for="(exercicio, exercicioIndex) in dia.exercicios" :key="exercicioIndex" class="exercicio-fila">
-          <select v-model="exercicio.exercicio_id" required>
-            <option :value="null" disabled>Selecciona un exercicio...</option>
-            <option v-for="ex in todosExercicios" :key="ex.id" :value="ex.id">
-              {{ ex.nome }} ({{ ex.grupo_muscular }})
-            </option>
-          </select>
-          <input type="number" v-model.number="exercicio.series" placeholder="Series" min="1" required>
-          <input type="number" v-model.number="exercicio.repeticions" placeholder="Repeticións" min="1" required>
-          <input type="number" v-model.number="exercicio.peso" placeholder="Peso" min="0" step="0.5" required>
+          <div class="input-group">
+            <label class="input-label">Exercicio</label>
+            <select v-model="exercicio.exercicio_id" required>
+              <option :value="null" disabled>Selecciona un exercicio...</option>
+              <option v-for="ex in todosExercicios" :key="ex.id" :value="ex.id">
+                {{ ex.nome }} ({{ ex.grupo_muscular }})
+              </option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Series</label>
+            <input type="number" v-model.number="exercicio.series" placeholder="Series" min="1" required>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Repeticións</label>
+            <input type="number" v-model.number="exercicio.repeticions" placeholder="Repeticións" min="1" required>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Peso (kg)</label>
+            <input type="number" v-model.number="exercicio.peso" placeholder="Peso" min="0" step="0.5" required>
+          </div>
           <button
             type="button"
             @click="removeExercicio(diaIndex, exercicioIndex)"
@@ -230,11 +242,25 @@ export default {
   .exercicio-fila {
     display: grid;
     grid-template-columns: 3fr 1fr 1fr 1fr auto;
-    gap: 0.5rem;
-    align-items: center;
+    gap: 0.75rem;
+    align-items: end;
     background-color: #1a1a1e;
     padding: 0.75rem;
     border-radius: 8px;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .input-label {
+    font-size: 0.75rem;
+    color: #aaa;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .exercicio-fila input,
@@ -245,6 +271,7 @@ export default {
     color: #fff;
     border: 1px solid #555;
     border-radius: 8px;
+    width: 100%;
   }
 
   .button-remove {
@@ -280,11 +307,16 @@ export default {
   @media (max-width: 768px) {
     .exercicio-fila {
       grid-template-columns: 1fr;
-      gap: 0.5rem;
+      gap: 0.75rem;
     }
 
     .dia-section {
       padding: 1rem;
+    }
+
+    .button-remove {
+      width: 100%;
+      margin-top: 0.5rem;
     }
   }
 </style>

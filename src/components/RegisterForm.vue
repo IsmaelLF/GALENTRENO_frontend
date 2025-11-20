@@ -19,6 +19,7 @@ export default {
             this.isLoading = true;
             this.errorMessage = '';
             try {
+               // @ts-expect-error
                const urlApi = import.meta.env.PUBLIC_API_URL;
                const response = await fetch(`${urlApi}/api/auth/rexistro`, {
                     method: 'POST',

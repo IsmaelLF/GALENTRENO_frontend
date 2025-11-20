@@ -293,10 +293,13 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
   <script type="module">
     import { supabase } from "../lib/supabase.js";
 
+    // @ts-expect-error
     const apiUrl = import.meta.env.PUBLIC_API_URL;
 
     document.addEventListener("DOMContentLoaded", async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
         window.location.href = "/";
@@ -379,11 +382,12 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
           detallePlanModal.innerHTML = htmlDetalle;
 
           if (selectorDia) {
-            selectorDia.innerHTML = '<option value="">Escolle un día...</option>';
+            selectorDia.innerHTML =
+              '<option value="">Escolle un día...</option>';
 
             if (plan.dias && plan.dias.length > 0) {
               plan.dias.forEach((dia) => {
-                const opcion = document.createElement('option');
+                const opcion = document.createElement("option");
                 opcion.value = dia.id;
                 opcion.textContent = dia.nome_dia;
                 selectorDia.appendChild(opcion);
@@ -393,7 +397,8 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
             selectorDia.disabled = false;
           }
         } catch (erro) {
-          detallePlanModal.innerHTML = "<p>Erro ao cargar os detalles do plan.</p>";
+          detallePlanModal.innerHTML =
+            "<p>Erro ao cargar os detalles do plan.</p>";
         }
       }
 
@@ -409,19 +414,25 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
         listaPlans.innerHTML = "";
 
         if (plans.length === 0) {
-          listaPlans.innerHTML = "<p>Aínda non creaches ningún plan persoal.</p>";
+          listaPlans.innerHTML =
+            "<p>Aínda non creaches ningún plan persoal.</p>";
         } else {
           plans.forEach((plan) => {
             const tarxeta = document.createElement("div");
             tarxeta.className = "plan-card";
             tarxeta.setAttribute("role", "button");
             tarxeta.setAttribute("tabindex", "0");
-            tarxeta.setAttribute("aria-label", `Ver detalles do plan ${plan.nome}`);
+            tarxeta.setAttribute(
+              "aria-label",
+              `Ver detalles do plan ${plan.nome}`
+            );
 
             const numDias = plan.dias?.length || 0;
-            const numExercicios = plan.dias?.reduce(
-              (total, dia) => total + (dia.exercicios?.length || 0), 0
-            ) || 0;
+            const numExercicios =
+              plan.dias?.reduce(
+                (total, dia) => total + (dia.exercicios?.length || 0),
+                0
+              ) || 0;
 
             tarxeta.innerHTML = `
               <h3>${plan.nome}</h3>
@@ -432,7 +443,9 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
               </div>
             `;
 
-            tarxeta.addEventListener("click", () => cargarDetallesPlan(plan.id));
+            tarxeta.addEventListener("click", () =>
+              cargarDetallesPlan(plan.id)
+            );
 
             tarxeta.addEventListener("keypress", (e) => {
               if (e.key === "Enter" || e.key === " ") {

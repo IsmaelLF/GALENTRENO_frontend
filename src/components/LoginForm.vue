@@ -1,6 +1,6 @@
 
 <script>
-import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabase.js';
 export default {
   components: {
     LoginTransition,
@@ -40,6 +40,7 @@ export default {
       this.errorMessage = '';
 
       try {
+        // @ts-expect-error
         const urlApi = import.meta.env.PUBLIC_API_URL;
         const response = await fetch(`${urlApi}/api/auth/login`, {
           method: 'POST',
@@ -94,6 +95,7 @@ export default {
       this.isLoading = true;
       this.errorMessage = '';
       try {
+        // @ts-expect-error
         const urlApi = import.meta.env.PUBLIC_API_URL;
         const response = await fetch(`${urlApi}/api/auth/rexistro`, {
           method: 'POST',

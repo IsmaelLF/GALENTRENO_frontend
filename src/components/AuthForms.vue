@@ -1,5 +1,5 @@
 <script>
-import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabase.js';
 export default {
   data() {
     return {
@@ -38,6 +38,7 @@ export default {
       document.body.style.transition = 'filter 0.2s ease-out';
 
       try {
+        // @ts-expect-error
         const urlApi = import.meta.env.PUBLIC_API_URL;
         const response = await fetch(`${urlApi}/api/auth/login`, {
           method: 'POST',
@@ -95,6 +96,7 @@ export default {
       this.isLoading = true;
       this.errorMessage = '';
       try {
+        // @ts-expect-error
         const urlApi = import.meta.env.PUBLIC_API_URL;
         const response = await fetch(`${urlApi}/api/auth/rexistro`, {
           method: 'POST',

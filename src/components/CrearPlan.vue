@@ -1,5 +1,5 @@
 <script>
-import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabase.js';
 export default {
   data() {
     return {
@@ -30,6 +30,7 @@ export default {
       }
 
       const token = session.access_token;
+      // @ts-expect-error
       const urlApi = import.meta.env.PUBLIC_API_URL;
       try {
         const resposta = await fetch(`${urlApi}/api/exercicios`, {
@@ -79,6 +80,7 @@ export default {
       }
 
       const token = session.access_token;
+      // @ts-expect-error
       const urlApi = import.meta.env.PUBLIC_API_URL;
 
       try {

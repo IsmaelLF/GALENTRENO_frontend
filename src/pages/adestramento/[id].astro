@@ -161,6 +161,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
   <script type="module">
     import { supabase } from "../../lib/supabase.js";
 
+    // @ts-expect-error
     const apiUrl = import.meta.env.PUBLIC_API_URL;
     const planId = window.location.pathname.split("/").pop();
 

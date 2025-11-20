@@ -159,7 +159,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
   </style>
 
   <script type="module">
-    import { supabase } from '@lib/supabase.js';
+    import { supabase } from "../../lib/supabase.js";
 
     const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
     const planId = window.location.pathname.split('/').pop();

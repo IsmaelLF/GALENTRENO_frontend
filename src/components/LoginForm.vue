@@ -1,6 +1,6 @@
 
 <script>
-import { supabase } from '/src/lib/supabase.js';
+import { supabase } from '../lib/supabase';
 export default {
   components: {
     LoginTransition,

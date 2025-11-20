@@ -6,8 +6,8 @@ const diaActual = new Date();
 const dataFormateada = format(diaActual, "EEEE, d 'de' MMMM 'de' yyyy", {
   locale: gl,
 });
-const apiUrl =
-  import.meta.env.PUBLIC_API_URL;
+// @ts-expect-error
+const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <AppLayout title="Inicio">
@@ -197,8 +197,8 @@ const apiUrl =
   <script type="module">
     import { supabase } from "../lib/supabase.js";
 
-    const apiUrl =
-      import.meta.env.PUBLIC_API_URL;
+    // @ts-expect-error
+    const apiUrl = import.meta.env.PUBLIC_API_URL;
 
     document.addEventListener("DOMContentLoaded", async () => {
       const {

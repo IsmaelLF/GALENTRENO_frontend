@@ -1,5 +1,5 @@
 <script>
-import { supabase } from '@lib/supabase';
+import { supabase } from '../lib/supabase';
 export default {
   data() {
     return {
@@ -30,7 +30,7 @@ export default {
       }
 
       const token = session.access_token;
-      const urlApi = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
+      const urlApi = import.meta.env.PUBLIC_API_URL;
       try {
         const resposta = await fetch(`${urlApi}/api/exercicios`, {
           headers: { 'Authorization': `Bearer ${token}` }
@@ -79,7 +79,7 @@ export default {
       }
 
       const token = session.access_token;
-      const urlApi = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
+      const urlApi = import.meta.env.PUBLIC_API_URL;
 
       try {
         const resposta = await fetch(`${urlApi}/api/plans/novo`, {

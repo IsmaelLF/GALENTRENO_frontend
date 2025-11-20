@@ -1,6 +1,6 @@
 ---
 import AppLayout from "../layouts/AppLayout.astro";
-const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
+const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <AppLayout title="Os Meus Plans">
@@ -293,7 +293,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
   <script type="module">
     import { supabase } from "../lib/supabase.js";
 
-    const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
+    const apiUrl = import.meta.env.PUBLIC_API_URL;
 
     document.addEventListener("DOMContentLoaded", async () => {
       const { data: { session } } = await supabase.auth.getSession();

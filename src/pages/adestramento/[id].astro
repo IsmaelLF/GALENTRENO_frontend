@@ -2,7 +2,7 @@
 import AppLayout from "../../layouts/AppLayout.astro";
 const { id } = Astro.params;
 export const prerender = false;
-const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
+const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <AppLayout title="Adestramento">
@@ -161,11 +161,13 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
   <script type="module">
     import { supabase } from "../../lib/supabase.js";
 
-    const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
-    const planId = window.location.pathname.split('/').pop();
+    const apiUrl = import.meta.env.PUBLIC_API_URL;
+    const planId = window.location.pathname.split("/").pop();
 
     document.addEventListener("DOMContentLoaded", async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
       if (!session) {
         window.location.href = "/";
@@ -175,7 +177,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
       const token = session.access_token;
 
       const parametrosUrl = new URLSearchParams(window.location.search);
-      const diaSeleccionadoId = parametrosUrl.get('dia');
+      const diaSeleccionadoId = parametrosUrl.get("dia");
 
       if (!diaSeleccionadoId) {
         window.location.href = "/meus-plans";
@@ -200,14 +202,16 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
 
         datosPlan = await resposta.json();
 
-        diaSeleccionado = datosPlan.dias.find(d => d.id == diaSeleccionadoId);
+        diaSeleccionado = datosPlan.dias.find((d) => d.id == diaSeleccionadoId);
 
         if (!diaSeleccionado) {
           throw new Error("Día non atopado");
         }
 
-        if (elementoNomePlan) elementoNomePlan.textContent = `${datosPlan.nome} - ${diaSeleccionado.nome_dia}`;
-        if (elementoDescPlan) elementoDescPlan.textContent = datosPlan.descricion || "";
+        if (elementoNomePlan)
+          elementoNomePlan.textContent = `${datosPlan.nome} - ${diaSeleccionado.nome_dia}`;
+        if (elementoDescPlan)
+          elementoDescPlan.textContent = datosPlan.descricion || "";
 
         renderizarAdestramento(diaSeleccionado);
 
@@ -307,7 +311,8 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
 
             if (resposta.ok) {
               botonFinalizar.textContent = "✓ Gardado!";
-              botonFinalizar.style.backgroundColor = "var(--color-success, #10b981)";
+              botonFinalizar.style.backgroundColor =
+                "var(--color-success, #10b981)";
 
               setTimeout(() => {
                 window.location.href = "/inicio";
@@ -331,7 +336,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
           const diaId = tarxeta.dataset.diaId;
           const indiceExercicio = parseInt(tarxeta.dataset.exercicioIndex);
 
-          const dia = datosPlan.dias.find(d => d.id == diaId);
+          const dia = datosPlan.dias.find((d) => d.id == diaId);
           const exercicio = dia.exercicios[indiceExercicio];
 
           const series = [];

@@ -8,11 +8,6 @@
     "dist"
   ],
   "compilerOptions": {
-    "jsx": "preserve",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@lib/*": ["src/lib/*"]
-    }
+    "jsx": "preserve"
   }
 }

@@ -6,7 +6,8 @@ const diaActual = new Date();
 const dataFormateada = format(diaActual, "EEEE, d 'de' MMMM 'de' yyyy", {
   locale: gl,
 });
-const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
+const apiUrl =
+  import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
 ---
 
 <AppLayout title="Inicio">
@@ -196,13 +197,16 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
   <script type="module">
     import { supabase } from "../lib/supabase.js";
 
-    const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
+    const apiUrl =
+      import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app";
 
     document.addEventListener("DOMContentLoaded", async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      console.log('Session:', session);
-      console.log('Access token:', session?.access_token);
+      console.log("Session:", session);
+      console.log("Access token:", session?.access_token);
 
       if (!session) {
         window.location.href = "/";
@@ -227,8 +231,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
           const datos = await resposta.json();
           saudo.textContent = `Benvido, ${datos.nome}`;
         }
-      } catch (erro) {
-      }
+      } catch (erro) {}
 
       async function cargarPesoHoxe() {
         try {
@@ -238,7 +241,8 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
 
           if (resposta.ok) {
             const datos = await resposta.json();
-            const elementoPesoAnterior = document.querySelector("#last-weight span");
+            const elementoPesoAnterior =
+              document.querySelector("#last-weight span");
             const inputPeso = document.getElementById("weight-input");
 
             if (datos.peso) {
@@ -250,8 +254,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
               }
             }
           }
-        } catch (erro) {
-        }
+        } catch (erro) {}
       }
 
       const botonGardarPeso = document.getElementById("save-weight-btn");
@@ -312,23 +315,26 @@ const apiUrl = import.meta.env.PUBLIC_API_URL || "https://galentreno.vercel.app"
           if (resposta.ok) {
             const datos = await resposta.json();
 
-            const elementoTotalAdestramentos = document.getElementById("total-trainings");
+            const elementoTotalAdestramentos =
+              document.getElementById("total-trainings");
             const elementoVolumeTotal = document.getElementById("total-volume");
-            const elementoAdestramentosSemana = document.getElementById("week-trainings");
+            const elementoAdestramentosSemana =
+              document.getElementById("week-trainings");
 
             if (elementoTotalAdestramentos) {
-              elementoTotalAdestramentos.textContent = datos.totalAdestramentos || 0;
+              elementoTotalAdestramentos.textContent =
+                datos.totalAdestramentos || 0;
             }
             if (elementoVolumeTotal) {
               const volume = datos.volumeTotal || 0;
               elementoVolumeTotal.textContent = `${Math.round(volume)} kg`;
             }
             if (elementoAdestramentosSemana) {
-              elementoAdestramentosSemana.textContent = datos.adestramentsEstaSemana || 0;
+              elementoAdestramentosSemana.textContent =
+                datos.adestramentsEstaSemana || 0;
             }
           }
-        } catch (erro) {
-        }
+        } catch (erro) {}
       }
     });
   </script>

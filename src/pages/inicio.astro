@@ -193,11 +193,8 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
     }
   </style>
 
-  <script type="module">
+  <script type="module" define:vars={{ apiUrl }}>
     import { supabase } from "../lib/supabase";
-
-    // @ts-expect-error
-    const apiUrl = import.meta.env.PUBLIC_API_URL;
 
     document.addEventListener("DOMContentLoaded", async () => {
       const {

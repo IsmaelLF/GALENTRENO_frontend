@@ -24,6 +24,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       headers: { Authorization: `Bearer ${token}` },
     });
 
+    if (resposta.status === 401) {
+      await supabase.auth.signOut();
+      alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+      window.location.href = "/";
+      return;
+    }
+
     const saudo = document.getElementById("user-greeting");
 
     if (resposta.ok && saudo) {
@@ -39,6 +46,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       const resposta = await fetch(`${apiUrl}/api/peso/hoy`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      if (resposta.status === 401) {
+        await supabase.auth.signOut();
+        alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+        window.location.href = "/";
+        return;
+      }
 
       if (resposta.ok) {
         const datos = await resposta.json();
@@ -89,6 +103,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           body: JSON.stringify({ peso_corporal: peso }),
         });
 
+        if (resposta.status === 401) {
+          await supabase.auth.signOut();
+          alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+          window.location.href = "/";
+          return;
+        }
+
         if (resposta.ok) {
           estadoPeso.textContent = "✓ Peso gardado correctamente";
           estadoPeso.className = "weight-status success";
@@ -111,6 +132,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       const resposta = await fetch(`${apiUrl}/api/sesions/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
+      if (resposta.status === 401) {
+        await supabase.auth.signOut();
+        alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+        window.location.href = "/";
+        return;
+      }
 
       if (resposta.ok) {
         const datos = await resposta.json();

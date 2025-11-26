@@ -19,10 +19,22 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
   </button>
 
   <script type="module" define:vars={{ planId: id, apiUrl: apiUrl }}>
+    import { supabase } from "../../lib/supabase.js";
+
     document.addEventListener("DOMContentLoaded", async () => {
       const planDetail = document.getElementById("plan-detail");
       const addButton = document.getElementById("add-plan-button");
-      const token = localStorage.getItem("jwt_token");
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        window.location.href = "/";
+        return;
+      }
+
+      const token = session.access_token;
 
       try {
         const response = await fetch(
@@ -60,11 +72,6 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
 
       if (addButton) {
         addButton.addEventListener("click", async () => {
-          if (!token) {
-            window.location.href = "/";
-            return;
-          }
-
           addButton.textContent = "Engadindo...";
           addButton.disabled = true;
 
@@ -85,6 +92,11 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
               setTimeout(() => {
                 window.location.href = "/meus-plans";
               }, 1500);
+            } else if (response.status === 401) {
+              // Token expirado ou inválido
+              await supabase.auth.signOut();
+              alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+              window.location.href = "/";
             } else {
               const errorData = await response.json();
               throw new Error(errorData.error || "Non se puido engadir o plan");

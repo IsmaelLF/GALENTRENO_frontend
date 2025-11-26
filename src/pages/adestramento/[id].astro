@@ -197,6 +197,13 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
           headers: { Authorization: `Bearer ${token}` },
         });
 
+        if (resposta.status === 401) {
+          await supabase.auth.signOut();
+          alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+          window.location.href = "/";
+          return;
+        }
+
         if (!resposta.ok) throw new Error("Non se puido cargar o plan");
 
         datosPlan = await resposta.json();
@@ -307,6 +314,13 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
                 exercicios: datosAdestramento,
               }),
             });
+
+            if (resposta.status === 401) {
+              await supabase.auth.signOut();
+              alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+              window.location.href = "/";
+              return;
+            }
 
             if (resposta.ok) {
               botonFinalizar.textContent = "✓ Gardado!";

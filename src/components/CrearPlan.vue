@@ -36,6 +36,12 @@ export default {
         const resposta = await fetch(`${urlApi}/api/exercicios`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
+        if (resposta.status === 401) {
+          await supabase.auth.signOut();
+          alert('A túa sesión expirou. Por favor, inicia sesión novamente.');
+          window.location.href = '/';
+          return;
+        }
         if (!resposta.ok) throw new Error('Non se puideron cargar os exercicios');
         this.todosExercicios = await resposta.json();
       } catch (erro) {
@@ -93,6 +99,13 @@ export default {
             dias: this.dias
           })
         });
+
+        if (resposta.status === 401) {
+          await supabase.auth.signOut();
+          alert('A túa sesión expirou. Por favor, inicia sesión novamente.');
+          window.location.href = '/';
+          return;
+        }
 
         if (resposta.ok) {
           alert('Plan creado con éxito!');

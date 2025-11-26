@@ -51,6 +51,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
+      if (resposta.status === 401) {
+        await supabase.auth.signOut();
+        alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+        window.location.href = "/";
+        return;
+      }
+
       if (!resposta.ok) throw new Error("Non se puido cargar o plan");
 
       const plan = await resposta.json();
@@ -111,6 +118,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const resposta = await fetch(`${apiUrl}/api/plans/creados`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+
+    if (resposta.status === 401) {
+      await supabase.auth.signOut();
+      alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+      window.location.href = "/";
+      return;
+    }
 
     if (!resposta.ok) throw new Error("Non se puideron cargar os plans");
     if (!listaPlans) return;

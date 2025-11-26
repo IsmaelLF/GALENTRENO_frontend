@@ -2,7 +2,7 @@ import { supabase } from "../lib/supabase.js";
 
 const apiUrl = "https://galentreno-backend.onrender.com";
 
-export async function initAdestramento() {
+export async function inicializarAdestramento() {
   const {
     data: { session },
   } = await supabase.auth.getSession();

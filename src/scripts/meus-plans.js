@@ -109,7 +109,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         selectorDia.disabled = false;
       }
     } catch (erro) {
-      console.error(erro);
       detallePlanModal.innerHTML = "<p>Erro ao cargar os detalles do plan.</p>";
     }
   }
@@ -173,7 +172,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
   } catch (erro) {
-    console.error(erro);
     if (listaPlans)
       listaPlans.innerHTML = "<p>Erro ao cargar os teus plans.</p>";
   }

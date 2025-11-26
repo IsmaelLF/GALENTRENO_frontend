@@ -1,6 +1,5 @@
 ---
 import AppLayout from "../../layouts/AppLayout.astro";
-const { id } = Astro.params;
 export const prerender = false;
 ---
 
@@ -17,11 +16,12 @@ export const prerender = false;
     Engadir aos meus plans
   </button>
 
-  <script type="module" define:vars={{ planId: id }}>
-    import { initPlanDetail } from "../../scripts/detalle-plan.js";
-
-    document.addEventListener("DOMContentLoaded", () => {
-      initPlanDetail(planId);
+  <script type="module">
+    const planId = window.location.pathname.split("/").pop();
+    import("../../scripts/detalle-plan.js").then((module) => {
+      document.addEventListener("DOMContentLoaded", () => {
+        module.inicializarDetallePlan(planId);
+      });
     });
   </script>
 

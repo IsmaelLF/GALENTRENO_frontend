@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       saudo.textContent = `Benvido, ${datos.nome}`;
     }
   } catch (erro) {
-    console.error(erro);
   }
 
   async function cargarPesoHoxe() {
@@ -70,7 +69,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }
     } catch (erro) {
-      console.error(erro);
     }
   }
 
@@ -163,7 +161,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }
     } catch (erro) {
-      console.error(erro);
     }
   }
 

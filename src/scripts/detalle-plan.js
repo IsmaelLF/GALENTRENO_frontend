@@ -2,7 +2,7 @@ import { supabase } from "../lib/supabase.js";
 
 const apiUrl = "https://galentreno-backend.onrender.com";
 
-export async function initPlanDetail(planId) {
+export async function inicializarDetallePlan(planId) {
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -44,7 +44,6 @@ export async function initPlanDetail(planId) {
       planDetail.appendChild(diaEx);
     });
   } catch (error) {
-    console.error("Error:", error);
     planDetail.innerHTML = "<p>Erro ao cargar o plan.</p>";
   }
 
@@ -82,7 +81,6 @@ export async function initPlanDetail(planId) {
           throw new Error(errorData.error || "Non se puido engadir o plan");
         }
       } catch (error) {
-        console.error("Error:", error);
         alert("Houbo un erro ao engadir o plan: " + error.message);
         addButton.textContent = "Engadir aos meus plans";
         addButton.disabled = false;

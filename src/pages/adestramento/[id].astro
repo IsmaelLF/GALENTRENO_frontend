@@ -157,10 +157,10 @@ export const prerender = false;
   </style>
 
   <script type="module">
-    import("../../scripts/sesion-adestramento.js").then((module) => {
-      document.addEventListener("DOMContentLoaded", () => {
-        module.inicializarAdestramento();
-      });
+    import { inicializarAdestramento } from "../../scripts/sesion-adestramento.js";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      inicializarAdestramento();
     });
   </script>
 </AppLayout>

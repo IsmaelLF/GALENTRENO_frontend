@@ -2,7 +2,7 @@ import { supabase } from "../lib/supabase.js";
 
 const apiUrl = "https://galentreno-backend.onrender.com";
 
-export async function inicializarAdestramento() {
+document.addEventListener("DOMContentLoaded", async () => {
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -212,4 +212,4 @@ export async function inicializarAdestramento() {
 
     return datos;
   }
-}
+});

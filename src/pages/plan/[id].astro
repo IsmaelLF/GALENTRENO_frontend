@@ -16,14 +16,7 @@ export const prerender = false;
     Engadir aos meus plans
   </button>
 
-  <script type="module">
-    import { inicializarDetallePlan } from "../../scripts/detalle-plan.js";
-
-    const planId = window.location.pathname.split("/").pop();
-    document.addEventListener("DOMContentLoaded", () => {
-      inicializarDetallePlan(planId);
-    });
-  </script>
+  <script src="../../scripts/detalle-plan.js"></script>
 
   <style>
     .dia-card {

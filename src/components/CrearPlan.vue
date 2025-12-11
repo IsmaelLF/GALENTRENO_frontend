@@ -333,7 +333,28 @@ export default {
     background-color: #218838;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 968px) {
+    .exercicio-fila {
+      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      gap: 0.5rem;
+    }
+
+    .dia-section {
+      padding: 1.25rem;
+    }
+
+    .dias-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+    }
+
+    .dias-header h3 {
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 599px) {
     .exercicio-fila {
       grid-template-columns: 1fr;
       gap: 0.75rem;
@@ -341,11 +362,31 @@ export default {
 
     .dia-section {
       padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .dia-nombre-input {
+      font-size: 1rem;
+    }
+
+    .exercicio-fila input,
+    .exercicio-fila select {
+      padding: 0.65rem;
+      font-size: 0.95rem;
     }
 
     .button-remove {
       width: 100%;
       margin-top: 0.5rem;
+      padding: 0.75rem;
+    }
+
+    .input-label {
+      font-size: 0.7rem;
+    }
+
+    .exercicios-container h4 {
+      font-size: 1rem;
     }
   }
 </style>

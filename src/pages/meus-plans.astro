@@ -272,20 +272,53 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
       box-shadow: 0 0 0 3px var(--color-primary-light);
     }
 
-    @media (max-width: 767px) {
+    @media (max-width: 968px) {
+      .modal-footer {
+        flex-direction: column;
+        gap: var(--spacing-md);
+      }
+
+      .modal-footer .button {
+        width: 100%;
+      }
+
+      .day-selection {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 599px) {
+      .modal.active {
+        padding: 0;
+      }
+
       .modal-content {
-        max-height: 95vh;
-        margin: var(--spacing-sm);
+        max-height: 100vh;
+        max-height: 100dvh;
+        border-radius: 0;
+        margin: 0;
       }
 
       .modal-header,
       .modal-body,
       .modal-footer {
-        padding: var(--spacing-lg);
+        padding: var(--spacing-md);
       }
 
       .modal-header h2 {
-        font-size: var(--font-size-xl);
+        font-size: var(--font-size-lg);
+      }
+
+      .plan-card {
+        padding: var(--spacing-lg);
+      }
+
+      .plan-card h3 {
+        font-size: var(--font-size-lg);
+      }
+
+      .dia-card {
+        padding: var(--spacing-md);
       }
     }
   </style>

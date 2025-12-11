@@ -55,8 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (resposta.ok) {
         const datos = await resposta.json();
-        const elementoPesoAnterior =
-          document.querySelector("#last-weight span");
+        const elementoPesoAnterior = document.querySelector("#last-weight");
         const inputPeso = document.getElementById("weight-input");
 
         if (datos.peso) {
@@ -65,6 +64,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
           if (inputPeso) {
             inputPeso.value = datos.peso;
+          }
+        } else {
+          if (elementoPesoAnterior) {
+            elementoPesoAnterior.textContent = "Sen datos";
           }
         }
       }

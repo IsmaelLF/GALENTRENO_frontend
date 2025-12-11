@@ -9,6 +9,18 @@ export const prerender = false;
     <p id="plan-description"></p>
   </div>
 
+  <div class="info-box">
+    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>
+    <p>
+      <strong>Nota importante:</strong> Se modificas as series, repeticións ou peso suxeridos, gardarase a execución real que fixeches do plan.
+      Isto permitirache analizar a túa evolución e ver estatísticas precisas do teu progreso.
+    </p>
+  </div>
+
   <div id="training-content">
     <p>Cargando exercicios...</p>
   </div>
@@ -34,6 +46,35 @@ export const prerender = false;
 
     .training-header p {
       color: var(--color-text-muted);
+    }
+
+    .info-box {
+      background-color: #1e3a5f;
+      border-left: 4px solid #0d6efd;
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-xl);
+      display: flex;
+      gap: var(--spacing-md);
+      align-items: flex-start;
+    }
+
+    .info-icon {
+      color: #0d6efd;
+      flex-shrink: 0;
+      margin-top: 0.2rem;
+    }
+
+    .info-box p {
+      margin: 0;
+      color: #e0e0e0;
+      font-size: var(--font-size-sm);
+      line-height: 1.5;
+    }
+
+    .info-box strong {
+      color: #fff;
+      font-weight: 600;
     }
 
     #training-content {
@@ -136,7 +177,47 @@ export const prerender = false;
       border-color: var(--color-primary);
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 968px) {
+      .dia-section {
+        padding: var(--spacing-lg);
+      }
+
+      .exercicio-card {
+        padding: var(--spacing-md);
+      }
+
+      .serie-row {
+        grid-template-columns: auto 1fr 1fr;
+        gap: var(--spacing-sm);
+      }
+    }
+
+    @media (max-width: 599px) {
+      .training-header h1 {
+        font-size: var(--font-size-xl);
+      }
+
+      .info-box {
+        flex-direction: column;
+        padding: var(--spacing-md);
+      }
+
+      .info-box p {
+        font-size: 0.85rem;
+      }
+
+      .dia-section {
+        padding: var(--spacing-md);
+      }
+
+      .exercicio-card {
+        padding: var(--spacing-sm);
+      }
+
+      .exercicio-card h3 {
+        font-size: var(--font-size-lg);
+      }
+
       .serie-row {
         grid-template-columns: 1fr;
         gap: var(--spacing-sm);
@@ -148,10 +229,12 @@ export const prerender = false;
 
       .training-actions {
         flex-direction: column;
+        gap: var(--spacing-sm);
       }
 
       .training-actions button {
         width: 100%;
+        padding: var(--spacing-md);
       }
     }
   </style>

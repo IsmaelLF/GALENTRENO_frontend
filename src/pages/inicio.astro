@@ -15,11 +15,36 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
     <small id="current-date" data-data-formateada={dataFormateada}></small>
   </div>
 
-  <section class="weight-section">
-    <h2>Rexistro de Peso</h2>
+  <section class="stats-section">
+    <h2>Estatísticas do Teu Progreso</h2>
+    <div class="stats-grid">
+      <div class="card large-card">
+        <div class="card-icon">💪</div>
+        <strong id="total-trainings">--</strong>
+        <p>Adestramentos Totais</p>
+      </div>
+      <div class="card large-card">
+        <div class="card-icon">📊</div>
+        <strong id="total-volume">--</strong>
+        <p>Volume Total (kg)</p>
+      </div>
+      <div class="card large-card">
+        <div class="card-icon">📅</div>
+        <strong id="week-trainings">--</strong>
+        <p>Adestramentos Esta Semana</p>
+      </div>
+      <div class="card large-card">
+        <div class="card-icon">⚖️</div>
+        <strong id="last-weight">--</strong>
+        <p>Último Peso Rexistrado</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="weight-section compact">
+    <h2>Rexistro Rápido de Peso</h2>
     <div class="weight-card">
       <div class="weight-input-group">
-        <label for="weight-input">Peso de hoxe (kg)</label>
         <div class="input-with-button">
           <input
             type="number"
@@ -30,31 +55,10 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
             max="400"
           />
           <button id="save-weight-btn" class="button button-primary">
-            Gardar
+            Gardar Peso
           </button>
         </div>
         <small id="weight-status" class="weight-status"></small>
-      </div>
-      <div class="weight-display">
-        <p id="last-weight">
-          <strong>Último rexistro:</strong>
-          <span>--</span>
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <section class="stats-section">
-    <h2>Estatísticas</h2>
-    <div class="stats-grid">
-      <div class="card">
-        <strong id="total-trainings">--</strong><br />Adestramentos
-      </div>
-      <div class="card">
-        <strong id="total-volume">--</strong><br />Volume total
-      </div>
-      <div class="card">
-        <strong id="week-trainings">--</strong><br />Esta semana
       </div>
     </div>
   </section>
@@ -83,21 +87,26 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
       margin-bottom: var(--spacing-2xl);
     }
 
+    .weight-section.compact {
+      margin-bottom: var(--spacing-xl);
+    }
+
     .weight-section h2 {
       margin-top: 0;
-      margin-bottom: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+      font-size: var(--font-size-xl);
     }
 
     .weight-card {
       background-color: var(--color-bg-card);
-      padding: var(--spacing-xl);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
       border: 1px solid var(--color-border);
     }
 
     .weight-input-group {
-      margin-bottom: var(--spacing-lg);
+      margin-bottom: 0;
     }
 
     .weight-input-group label {
@@ -141,35 +150,59 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
       color: #ef4444;
     }
 
-    .weight-display {
-      padding-top: var(--spacing-lg);
-      border-top: 1px solid var(--color-border);
-    }
-
-    .weight-display p {
-      margin: 0;
-      font-size: var(--font-size-lg);
-      color: var(--color-text-secondary);
-    }
-
-    .weight-display strong {
-      color: var(--color-text-primary);
-      font-weight: 600;
-    }
-
-    .weight-display span {
-      color: var(--color-primary);
-      font-weight: 700;
-      font-size: var(--font-size-2xl);
-    }
-
     .stats-section {
       margin-bottom: var(--spacing-2xl);
     }
 
     .stats-section h2 {
       margin-top: 0;
-      margin-bottom: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+      font-size: var(--font-size-2xl);
+      text-align: center;
+      color: var(--color-text-primary);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-lg);
+    }
+
+    .card.large-card {
+      padding: var(--spacing-xl);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-sm);
+      min-height: 160px;
+      justify-content: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card.large-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(13, 110, 253, 0.2);
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .card.large-card strong {
+      font-size: var(--font-size-3xl);
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+
+    .card.large-card p {
+      margin: 0;
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
     }
 
     .cta-button {
@@ -178,7 +211,39 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
       margin: var(--spacing-2xl) auto 0;
     }
 
+    @media (max-width: 968px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .card.large-card {
+        min-height: 140px;
+      }
+
+      .card-icon {
+        font-size: 2rem;
+      }
+    }
+
     @media (max-width: 599px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+      }
+
+      .card.large-card {
+        min-height: 120px;
+        padding: var(--spacing-lg);
+      }
+
+      .card-icon {
+        font-size: 1.8rem;
+      }
+
+      .card.large-card strong {
+        font-size: var(--font-size-2xl);
+      }
+
       .input-with-button {
         flex-direction: column;
       }
@@ -188,7 +253,12 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
       }
 
       .weight-card {
-        padding: var(--spacing-lg);
+        padding: var(--spacing-md);
+      }
+
+      .stats-section h2,
+      .weight-section h2 {
+        font-size: var(--font-size-xl);
       }
     }
   </style>

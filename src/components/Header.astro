@@ -43,6 +43,11 @@
   const enlacesNav = document.querySelector(".nav-links");
 
   if (botonMenuMovil && enlacesNav) {
+    // Asegurar estado inicial correcto
+    enlacesNav.classList.remove("active");
+    botonMenuMovil.classList.remove("active");
+    botonMenuMovil.setAttribute("aria-expanded", "false");
+
     botonMenuMovil.addEventListener("click", () => {
       const estaExpandido =
         botonMenuMovil.getAttribute("aria-expanded") === "true";
@@ -251,10 +256,16 @@
       transition: right 0.3s ease;
       z-index: 1000;
       padding: 2rem 0;
+      visibility: hidden;
+      opacity: 0;
+      transition: right 0.3s ease, opacity 0.3s ease, visibility 0s 0.3s;
     }
 
     .nav-links.active {
       right: 0;
+      visibility: visible;
+      opacity: 1;
+      transition: right 0.3s ease, opacity 0.3s ease;
     }
 
     .nav-links li {

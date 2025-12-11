@@ -15,6 +15,7 @@ export default {
       ],
       todosExercicios: [],
       estaCargando: false,
+      planCreado: false,
       mensaxeErro: '',
     };
   },
@@ -108,15 +109,18 @@ export default {
         }
 
         if (resposta.ok) {
-          alert('Plan creado con éxito!');
-          window.location.href = '/meus-plans';
+          this.planCreado = true;
+          this.estaCargando = false;
+          setTimeout(() => {
+            window.location.href = '/meus-plans';
+          }, 1500);
         } else {
           const datosErro = await resposta.json();
           this.mensaxeErro = datosErro.error || 'Non se puido crear o plan.';
+          this.estaCargando = false;
         }
       } catch (erro) {
         this.mensaxeErro = 'Erro de conexión ao crear o plan.';
-      } finally {
         this.estaCargando = false;
       }
     }
@@ -210,8 +214,14 @@ export default {
       </div>
     </div>
 
-    <button type="submit" :disabled="estaCargando" class="button button-primary">
-      <span v-if="estaCargando">Gardando...</span>
+    <button
+      type="submit"
+      :disabled="estaCargando || planCreado"
+      class="button button-primary"
+      :class="{ 'plan-creado': planCreado }"
+    >
+      <span v-if="planCreado">✓ Plan Creado!</span>
+      <span v-else-if="estaCargando">Gardando...</span>
       <span v-else>Crear Plan</span>
     </button>
   </form>
@@ -331,6 +341,14 @@ export default {
 
   .button-tertiary:hover {
     background-color: #218838;
+  }
+
+  .plan-creado {
+    background-color: #10b981 !important;
+  }
+
+  .plan-creado:hover {
+    background-color: #059669 !important;
   }
 
   @media (max-width: 968px) {

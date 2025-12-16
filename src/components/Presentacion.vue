@@ -159,7 +159,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
 
             <div :class="[TRANSITION, getStepClass(3)]" class="bg-neutral-900/50 p-6 rounded-2xl border-l-4 border-yellow-500 border-y border-r border-neutral-800 hover:bg-neutral-800 transition-colors">
               <div class="flex justify-between items-start mb-2">
-                <h3 class="text-2xl font-bold text-white">🇬🇧 Barreira Idiomática</h3>
+                <h3 class="text-2xl font-bold text-white">💬 Barreira Idiomática</h3>
                 <span class="text-3xl">🌐</span>
               </div>
               <p class="text-gray-400">Dificultade para atopar ferramentas de calidade na nosa lingua.</p>

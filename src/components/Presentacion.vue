@@ -8,8 +8,14 @@ const videoRef = ref(null);
 const videoContainerRef = ref(null);
 
 // Pasos por diapositiva
-// 0: Portada | 1: Problema (3 cards) | 2: Solución (2 grupos) | 3: Stack (Bento completo) | 4: Fluxo (3 pasos visuais) | 5: Video (Intro + Play)
-const stepsPerSlide = [0, 3, 2, 4, 3, 1];
+// 0: Portada 
+// 1: Problema (3 cards) 
+// 2: Solución (2 grupos) 
+// 3: Stack (Bento completo) 
+// 4: Fluxo (3 pasos visuais) 
+// 5: Melloras Futuras (3 pasos)
+// 6: Video (Intro + Play)
+const stepsPerSlide = [0, 3, 2, 4, 3, 3, 1];
 const totalSlides = stepsPerSlide.length;
 
 // --- UTILIDADES ---
@@ -26,8 +32,8 @@ const next = () => {
   const maxSteps = stepsPerSlide[currentSlide.value];
   if (currentStep.value < maxSteps) {
     currentStep.value++;
-    // Auto-play vídeo na slide final e scroll
-    if (currentSlide.value === 5 && currentStep.value === 1) {
+    // Auto-play vídeo na slide final
+    if (currentSlide.value === 6 && currentStep.value === 1) {
       setTimeout(() => {
           if (videoRef.value) videoRef.value.play();
           if (videoContainerRef.value) videoContainerRef.value.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -154,7 +160,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
             <div :class="[TRANSITION, getStepClass(3)]" class="bg-neutral-900/50 p-6 rounded-2xl border-l-4 border-yellow-500 border-y border-r border-neutral-800 hover:bg-neutral-800 transition-colors">
               <div class="flex justify-between items-start mb-2">
                 <h3 class="text-2xl font-bold text-white">🇬🇧 Barreira Idiomática</h3>
-                <span class="text-3xl">🗣️</span>
+                <span class="text-3xl">🌐</span>
               </div>
               <p class="text-gray-400">Dificultade para atopar ferramentas de calidade na nosa lingua.</p>
             </div>
@@ -243,7 +249,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
             <p class="text-xs text-gray-400">Deseño moderno e responsive.</p>
           </div>
 
-           <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-neutral-900 rounded-3xl border border-neutral-800 p-6 flex flex-col justify-center hover:border-emerald-500/50 transition-colors">
+          <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-neutral-900 rounded-3xl border border-neutral-800 p-6 flex flex-col justify-center hover:border-emerald-500/50 transition-colors">
             <div class="text-3xl mb-3 text-emerald-400">⚡</div>
             <h3 class="font-bold text-white">Supabase</h3>
             <p class="text-xs text-gray-400">Autenticación e APIs.</p>
@@ -303,9 +309,50 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
              <p class="font-bold text-white text-xl">Progreso</p>
           </div>
         </div>
-        </div>
+      </div>
 
-      <div v-if="currentSlide === 5" class="w-full h-full flex flex-col items-center justify-center relative bg-black">
+      <div v-if="currentSlide === 5" class="w-full h-full flex flex-col justify-center px-16 max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-white mb-20 text-center flex items-center justify-center gap-4 animate-in slide-in-from-top">
+           <span>🔮</span> Melloras Futuras
+        </h2>
+
+        <div class="grid grid-cols-3 gap-10 relative items-center">
+           
+           <div :class="['absolute top-1/2 left-0 h-1 bg-gradient-to-r from-orange-600 to-purple-600 -translate-y-1/2 rounded-full transition-all duration-1000', currentStep >= 1 ? 'w-full' : 'w-0']"></div>
+           
+           <div :class="[TRANSITION, getStepClass(1)]" class="relative bg-neutral-900 p-8 rounded-3xl border border-neutral-700 shadow-2xl hover:-translate-y-4 hover:border-gray-500 transition-all group z-10 opacity-80 hover:opacity-100">
+              <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-16 h-16 bg-neutral-800 rounded-full border-4 border-neutral-950 flex items-center justify-center text-3xl shadow-lg">
+                 📱
+              </div>
+              <h3 class="text-xl font-bold text-white mt-6 text-center mb-3">Modo Offline (PWA)</h3>
+              <p class="text-gray-400 text-center text-xs">
+                 Uso sen conexión en ximnasios.
+              </p>
+           </div>
+
+           <div :class="[TRANSITION, getStepClass(2)]" class="relative bg-neutral-900 p-10 rounded-[2rem] border-2 border-orange-500 shadow-[0_0_40px_rgba(249,115,22,0.2)] hover:-translate-y-4 hover:shadow-orange-500/40 transition-all group z-20 scale-110">
+              <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-neutral-800 rounded-full border-4 border-orange-500 flex items-center justify-center text-5xl shadow-xl">
+                 📈
+              </div>
+              <h3 class="text-3xl font-bold text-white mt-10 text-center mb-4 text-orange-400">Historial Avanzado</h3>
+              <p class="text-gray-300 text-center text-sm leading-relaxed">
+                 Gráficas detalladas de volume, proxección de 1RM e comparativas visuais de rendemento.
+              </p>
+           </div>
+
+           <div :class="[TRANSITION, getStepClass(3)]" class="relative bg-neutral-900 p-8 rounded-3xl border border-neutral-700 shadow-2xl hover:-translate-y-4 hover:border-gray-500 transition-all group z-10 opacity-80 hover:opacity-100">
+              <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-16 h-16 bg-neutral-800 rounded-full border-4 border-neutral-950 flex items-center justify-center text-3xl shadow-lg">
+                 🌍
+              </div>
+              <h3 class="text-xl font-bold text-white mt-6 text-center mb-3">Comunidade</h3>
+              <p class="text-gray-400 text-center text-xs">
+                 Compartir plans e perfís públicos.
+              </p>
+           </div>
+        </div>
+      </div>
+
+      <div v-if="currentSlide === 6" class="w-full h-full flex flex-col items-center justify-center relative bg-black">
          
          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-orange-900/20 via-black to-black pointer-events-none animate-pulse-slow"></div>
          
@@ -364,7 +411,6 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
 </template>
 
 <style scoped>
-/* Máscara para o reflexo do vídeo */
 .mask-gradient-b {
   mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 50%);
   -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 50%);

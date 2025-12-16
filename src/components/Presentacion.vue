@@ -1,24 +1,24 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue';
 
-// --- CONFIGURACIÓN ---
+// --- CONFIGURACIÓN E ESTADO ---
 const currentSlide = ref(0);
 const currentStep = ref(0);
 const videoRef = ref(null);
 const videoContainerRef = ref(null);
 
-// Pasos por diapositiva
+// Pasos por diapositiva:
 // 0: Portada 
 // 1: Problema (3 cards) 
 // 2: Solución (2 grupos) 
-// 3: Stack (Bento completo) 
+// 3: Stack (4 pasos para o Bento Grid) 
 // 4: Fluxo (3 pasos visuais) 
 // 5: Melloras Futuras (3 pasos)
 // 6: Video (Intro + Play)
 const stepsPerSlide = [0, 3, 2, 4, 3, 3, 1];
 const totalSlides = stepsPerSlide.length;
 
-// --- UTILIDADES ---
+// --- UTILIDADES VISUAIS ---
 const TRANSITION = "transition-all duration-700 ease-out";
 
 const getStepClass = (stepTrigger) => {
@@ -30,12 +30,15 @@ const getStepClass = (stepTrigger) => {
 // --- NAVEGACIÓN ---
 const next = () => {
   const maxSteps = stepsPerSlide[currentSlide.value];
+  
   if (currentStep.value < maxSteps) {
     currentStep.value++;
-    // Auto-play vídeo na slide final
+    
+    // Lóxica específica para a slide de VÍDEO (Slide 6)
     if (currentSlide.value === 6 && currentStep.value === 1) {
       setTimeout(() => {
           if (videoRef.value) videoRef.value.play();
+          // Scroll suave cara o vídeo por se a pantalla é pequena
           if (videoContainerRef.value) videoContainerRef.value.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 500);
     }
@@ -226,47 +229,50 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
 
         <div class="grid grid-cols-4 grid-rows-3 gap-4 h-[65vh]">
           
-          <div :class="[TRANSITION, getStepClass(1)]" class="col-span-2 row-span-2 bg-neutral-900 rounded-3xl border border-neutral-800 p-8 flex flex-col justify-between hover:border-orange-500/50 transition-colors group relative overflow-hidden">
-            <div class="absolute top-0 right-0 p-8 opacity-10 text-9xl grayscale group-hover:grayscale-0 transition-all">🚀</div>
+          <div :class="[TRANSITION, getStepClass(1)]" class="col-span-2 row-span-2 bg-gradient-to-br from-neutral-900 to-orange-900/20 rounded-3xl border border-orange-500/20 p-8 flex flex-col justify-between hover:border-orange-500/60 hover:to-orange-900/40 transition-all group relative overflow-hidden shadow-[0_0_30px_rgba(249,115,22,0.1)] hover:shadow-[0_0_50px_rgba(249,115,22,0.3)]">
+            <div class="absolute top-0 right-0 p-8 opacity-10 text-9xl grayscale group-hover:grayscale-0 transition-all text-orange-500">🚀</div>
             <div class="relative z-10">
-              <div class="w-14 h-14 bg-orange-500/10 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform text-orange-500">🚀</div>
-              <h3 class="text-4xl font-bold text-white">Astro</h3>
-              <p class="text-gray-400 mt-4 text-lg">Arquitectura de Illas para un rendemento web extremo. O núcleo do frontend.</p>
+              <div class="w-14 h-14 bg-orange-500/20 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform text-orange-500 shadow-inner">🚀</div>
+              <h3 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-orange-500">Astro</h3>
+              <p class="text-gray-300 mt-4 text-lg">Arquitectura de Illas para un rendemento web extremo. O núcleo do frontend.</p>
+            </div>
+            <div class="bg-black/50 p-4 rounded-xl font-mono text-xs text-orange-400 border border-orange-500/20 w-fit relative z-10">
+              npm create astro@latest
             </div>
           </div>
 
-          <div :class="[TRANSITION, getStepClass(2)]" class="col-span-2 bg-neutral-900 rounded-3xl border border-neutral-800 p-6 flex items-center gap-6 hover:border-green-500/50 transition-colors">
-            <div class="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center text-4xl">💚</div>
+          <div :class="[TRANSITION, getStepClass(2)]" class="col-span-2 bg-gradient-to-br from-neutral-900 to-green-900/20 rounded-3xl border border-green-500/20 p-6 flex items-center gap-6 hover:border-green-500/60 hover:to-green-900/40 transition-all shadow-[0_0_20px_rgba(34,197,94,0.1)] hover:shadow-[0_0_40px_rgba(34,197,94,0.2)]">
+            <div class="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center text-4xl text-green-500 shadow-inner">💚</div>
             <div>
-              <h3 class="text-2xl font-bold text-white">Vue.js</h3>
-              <p class="text-sm text-gray-400">Compoñentes interactivos e reactividade.</p>
+              <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-green-400">Vue.js</h3>
+              <p class="text-sm text-gray-300">Compoñentes interactivos e reactividade.</p>
             </div>
           </div>
 
-          <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-neutral-900 rounded-3xl border border-neutral-800 p-6 flex flex-col justify-center hover:border-cyan-500/50 transition-colors">
-            <div class="text-3xl mb-3 text-cyan-400">🎨</div>
+          <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-gradient-to-br from-neutral-900 to-cyan-900/20 rounded-3xl border border-cyan-500/20 p-6 flex flex-col justify-center hover:border-cyan-500/60 hover:to-cyan-900/40 transition-all shadow-[0_0_20px_rgba(6,182,212,0.1)] hover:shadow-[0_0_40px_rgba(6,182,212,0.2)]">
+            <div class="text-4xl mb-3 text-cyan-400">🎨</div>
             <h3 class="font-bold text-white">Tailwind CSS</h3>
             <p class="text-xs text-gray-400">Deseño moderno e responsive.</p>
           </div>
 
-          <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-neutral-900 rounded-3xl border border-neutral-800 p-6 flex flex-col justify-center hover:border-emerald-500/50 transition-colors">
-            <div class="text-3xl mb-3 text-emerald-400">⚡</div>
+          <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-gradient-to-br from-neutral-900 to-emerald-900/20 rounded-3xl border border-emerald-500/20 p-6 flex flex-col justify-center hover:border-emerald-500/60 hover:to-emerald-900/40 transition-all shadow-[0_0_20px_rgba(16,185,129,0.1)] hover:shadow-[0_0_40px_rgba(16,185,129,0.2)]">
+            <div class="text-4xl mb-3 text-emerald-400">⚡</div>
             <h3 class="font-bold text-white">Supabase</h3>
             <p class="text-xs text-gray-400">Autenticación e APIs.</p>
           </div>
 
-          <div :class="[TRANSITION, getStepClass(4)]" class="col-span-4 bg-neutral-900/80 rounded-3xl border border-neutral-800 p-6 flex items-center justify-around hover:border-white/30 transition-colors">
+          <div :class="[TRANSITION, getStepClass(4)]" class="col-span-4 bg-gradient-to-r from-neutral-900/90 via-purple-900/10 to-neutral-900/90 rounded-3xl border border-purple-500/20 p-6 flex items-center justify-around hover:border-purple-500/50 transition-all shadow-[0_0_20px_rgba(168,85,247,0.1)] hover:shadow-[0_0_40px_rgba(168,85,247,0.2)]">
              <div class="flex items-center gap-4">
-                <span class="text-4xl">☁️</span>
+                <span class="text-4xl text-purple-300">☁️</span>
                 <h3 class="text-xl font-bold text-white">Despregamento e Infraestrutura</h3>
              </div>
              <div class="flex gap-8">
-                <div class="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-neutral-700">
+                <div class="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-neutral-700 hover:border-white/50 transition-colors">
                    <span class="text-2xl">▲</span>
                    <div><p class="font-bold text-white">Vercel</p><p class="text-xs text-gray-500">Frontend Edge</p></div>
                 </div>
-                 <div class="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-neutral-700">
-                   <span class="text-2xl">🟣</span>
+                 <div class="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-neutral-700 hover:border-purple-400/50 transition-colors">
+                   <span class="text-2xl text-purple-400">🟣</span>
                    <div><p class="font-bold text-white">Render</p><p class="text-xs text-gray-500">Backend PostgreSQL</p></div>
                 </div>
              </div>

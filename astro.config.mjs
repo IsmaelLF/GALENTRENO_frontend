@@ -5,9 +5,15 @@ import tailwind from "@astrojs/tailwind";
 import vercel from "@astrojs/vercel";
 import vue from "@astrojs/vue";
 
+import tailwindcss from "@tailwindcss/vite";
+
 // https://astro.build/config
 export default defineConfig({
   output: "server",
   integrations: [vue(), tailwind()],
   adapter: vercel(),
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
 });

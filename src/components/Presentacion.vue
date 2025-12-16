@@ -5,10 +5,11 @@ import { onMounted, onUnmounted, ref } from 'vue';
 const currentSlide = ref(0);
 const currentStep = ref(0);
 const videoRef = ref(null);
+const videoContainerRef = ref(null);
 
-// Pasos por diapositiva (Axustado aos elementos de cada slide)
-// 0: Portada | 1: Problema (3 cards) | 2: Solución (2 grupos) | 3: Stack (3 bloques) | 4: Fluxo (3 pasos) | 5: Video
-const stepsPerSlide = [0, 3, 2, 3, 3, 1];
+// Pasos por diapositiva
+// 0: Portada | 1: Problema (3 cards) | 2: Solución (2 grupos) | 3: Stack (Bento completo) | 4: Fluxo (3 pasos visuais) | 5: Video (Intro + Play)
+const stepsPerSlide = [0, 3, 2, 4, 3, 1];
 const totalSlides = stepsPerSlide.length;
 
 // --- UTILIDADES ---
@@ -25,9 +26,12 @@ const next = () => {
   const maxSteps = stepsPerSlide[currentSlide.value];
   if (currentStep.value < maxSteps) {
     currentStep.value++;
-    // Auto-play vídeo na slide final
-    if (currentSlide.value === 5 && currentStep.value === 1 && videoRef.value) {
-      videoRef.value.play();
+    // Auto-play vídeo na slide final e scroll
+    if (currentSlide.value === 5 && currentStep.value === 1) {
+      setTimeout(() => {
+          if (videoRef.value) videoRef.value.play();
+          if (videoContainerRef.value) videoContainerRef.value.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 500);
     }
   } else if (currentSlide.value < totalSlides - 1) {
     currentSlide.value++;
@@ -174,7 +178,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
       <div v-if="currentSlide === 2" class="w-full h-full flex flex-col justify-center px-16 max-w-7xl mx-auto">
         <div class="mb-12 border-l-8 border-orange-500 pl-6 animate-in slide-in-from-left">
           <span class="text-orange-400 font-mono text-sm tracking-widest uppercase mb-2 block">A Proposta</span>
-          <h2 class="text-6xl font-black text-white">Software Libre e Accesible</h2>
+          <h2 class="text-6xl font-black text-white">Plataforma Gratuíta e Accesible</h2>
         </div>
 
         <div class="grid grid-cols-3 gap-8">
@@ -202,7 +206,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
               <div class="absolute -right-4 -bottom-4 opacity-20 text-9xl">🦁</div>
               <h3 class="text-2xl font-bold mb-4 relative z-10">Compromiso</h3>
               <p class="text-orange-100 text-lg mb-6 relative z-10 leading-relaxed">
-                Unha ferramenta pensada para a comunidade, non para o lucro.
+                Unha ferramenta pensada para a comunidade, baixo licenza CC BY-NC 4.0.
               </p>
               <div class="inline-block bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide w-fit">
                 100% Galego
@@ -212,19 +216,16 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
       </div>
 
       <div v-if="currentSlide === 3" class="w-full h-full flex flex-col justify-center px-16 max-w-7xl mx-auto">
-        <h2 class="text-5xl font-bold text-white mb-12 text-center">Tecnoloxía Moderna</h2>
+        <h2 class="text-5xl font-bold text-white mb-12 text-center animate-in slide-in-from-top">Stack Tecnolóxico Completo</h2>
 
-        <div class="grid grid-cols-4 grid-rows-2 gap-4 h-[50vh]">
+        <div class="grid grid-cols-4 grid-rows-3 gap-4 h-[65vh]">
           
           <div :class="[TRANSITION, getStepClass(1)]" class="col-span-2 row-span-2 bg-neutral-900 rounded-3xl border border-neutral-800 p-8 flex flex-col justify-between hover:border-orange-500/50 transition-colors group relative overflow-hidden">
             <div class="absolute top-0 right-0 p-8 opacity-10 text-9xl grayscale group-hover:grayscale-0 transition-all">🚀</div>
             <div class="relative z-10">
               <div class="w-14 h-14 bg-orange-500/10 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform text-orange-500">🚀</div>
-              <h3 class="text-3xl font-bold text-white">Astro</h3>
-              <p class="text-gray-400 mt-2">O núcleo da aplicación. Arquitectura de Illas para máximo rendemento.</p>
-            </div>
-            <div class="bg-black/50 p-4 rounded-xl font-mono text-xs text-orange-400 border border-orange-500/20 w-fit relative z-10">
-              npm create astro@latest
+              <h3 class="text-4xl font-bold text-white">Astro</h3>
+              <p class="text-gray-400 mt-4 text-lg">Arquitectura de Illas para un rendemento web extremo. O núcleo do frontend.</p>
             </div>
           </div>
 
@@ -232,98 +233,121 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
             <div class="w-16 h-16 bg-green-500/10 rounded-2xl flex items-center justify-center text-4xl">💚</div>
             <div>
               <h3 class="text-2xl font-bold text-white">Vue.js</h3>
-              <p class="text-sm text-gray-400">Compoñentes interactivos e xestión de estado.</p>
+              <p class="text-sm text-gray-400">Compoñentes interactivos e reactividade.</p>
             </div>
           </div>
 
-          <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-neutral-900 rounded-3xl border border-neutral-800 p-6 flex flex-col justify-center hover:border-emerald-500/50 transition-colors">
-            <div class="text-3xl mb-2">⚡</div>
-            <h3 class="font-bold text-white">Supabase</h3>
-            <p class="text-xs text-gray-400">Auth & DB</p>
+          <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-neutral-900 rounded-3xl border border-neutral-800 p-6 flex flex-col justify-center hover:border-cyan-500/50 transition-colors">
+            <div class="text-3xl mb-3 text-cyan-400">🎨</div>
+            <h3 class="font-bold text-white">Tailwind CSS</h3>
+            <p class="text-xs text-gray-400">Deseño moderno e responsive.</p>
           </div>
 
-          <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-neutral-900 rounded-3xl border border-neutral-800 p-6 flex flex-col justify-center hover:border-blue-500/50 transition-colors">
-            <div class="text-3xl mb-2">🐘</div>
-            <h3 class="font-bold text-white">PostgreSQL</h3>
-            <p class="text-xs text-gray-400">Render.com</p>
+           <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-neutral-900 rounded-3xl border border-neutral-800 p-6 flex flex-col justify-center hover:border-emerald-500/50 transition-colors">
+            <div class="text-3xl mb-3 text-emerald-400">⚡</div>
+            <h3 class="font-bold text-white">Supabase</h3>
+            <p class="text-xs text-gray-400">Autenticación e APIs.</p>
+          </div>
+
+          <div :class="[TRANSITION, getStepClass(4)]" class="col-span-4 bg-neutral-900/80 rounded-3xl border border-neutral-800 p-6 flex items-center justify-around hover:border-white/30 transition-colors">
+             <div class="flex items-center gap-4">
+                <span class="text-4xl">☁️</span>
+                <h3 class="text-xl font-bold text-white">Despregamento e Infraestrutura</h3>
+             </div>
+             <div class="flex gap-8">
+                <div class="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-neutral-700">
+                   <span class="text-2xl">▲</span>
+                   <div><p class="font-bold text-white">Vercel</p><p class="text-xs text-gray-500">Frontend Edge</p></div>
+                </div>
+                 <div class="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-neutral-700">
+                   <span class="text-2xl">🟣</span>
+                   <div><p class="font-bold text-white">Render</p><p class="text-xs text-gray-500">Backend PostgreSQL</p></div>
+                </div>
+             </div>
           </div>
 
         </div>
       </div>
 
       <div v-if="currentSlide === 4" class="w-full h-full flex flex-col justify-center px-16 max-w-7xl mx-auto">
-        <h2 class="text-4xl font-bold text-white mb-16 text-center">Fluxo da Información</h2>
+        <h2 class="text-4xl font-bold text-white mb-24 text-center animate-in slide-in-from-bottom">Fluxo da Información</h2>
         
         <div class="relative flex items-center justify-between px-10">
           
           <div class="absolute top-1/2 left-0 w-full h-1 bg-neutral-800 -translate-y-1/2 z-0"></div>
           <div :class="['absolute top-1/2 left-0 h-1 bg-gradient-to-r from-orange-500 to-red-600 -translate-y-1/2 z-0 transition-all duration-1000', currentStep >= 1 ? 'w-full' : 'w-0']"></div>
 
-          <div :class="[TRANSITION, getStepClass(1)]" class="relative z-10 flex flex-col items-center gap-4">
-             <div class="w-24 h-24 bg-neutral-900 border-2 border-neutral-700 rounded-full flex items-center justify-center text-4xl shadow-xl">👤</div>
-             <p class="font-bold text-white">Usuario</p>
+          <div :class="[TRANSITION, getStepClass(1)]" class="relative z-10 flex flex-col items-center gap-6 group">
+             <div class="w-28 h-28 bg-neutral-900 border-4 border-neutral-700 group-hover:border-white rounded-full flex items-center justify-center text-5xl shadow-2xl transition-colors">👤</div>
+             <p class="font-bold text-white text-xl">Usuario</p>
           </div>
 
-          <div :class="[TRANSITION, getStepClass(2)]" class="relative z-10 flex flex-col items-center gap-4">
-             <div class="w-24 h-24 bg-neutral-900 border-2 border-orange-500 rounded-2xl flex items-center justify-center text-4xl shadow-[0_0_20px_rgba(249,115,22,0.3)]">📋</div>
+          <div :class="[TRANSITION, getStepClass(2)]" class="relative z-10 flex flex-col items-center gap-6 group">
+             <div class="w-28 h-28 bg-neutral-900 border-4 border-orange-500 rounded-2xl flex items-center justify-center text-5xl shadow-[0_0_30px_rgba(249,115,22,0.4)] group-hover:scale-110 transition-transform">📋</div>
              <div class="text-center">
-               <p class="font-bold text-white">Plan</p>
-               <p class="text-xs text-gray-500">Días / Exercicios</p>
+               <p class="font-bold text-white text-xl">Plan</p>
+               <p class="text-sm text-gray-500">Días / Exercicios</p>
              </div>
           </div>
 
-          <div :class="[TRANSITION, getStepClass(3)]" class="relative z-10 flex flex-col items-center gap-4">
-             <div class="w-24 h-24 bg-neutral-900 border-2 border-red-500 rounded-2xl flex items-center justify-center text-4xl shadow-[0_0_20px_rgba(239,68,68,0.3)]">🔥</div>
+          <div :class="[TRANSITION, getStepClass(3)]" class="relative z-10 flex flex-col items-center gap-6 group">
+             <div class="w-28 h-28 bg-neutral-900 border-4 border-red-600 rounded-2xl flex items-center justify-center text-5xl shadow-[0_0_30px_rgba(220,38,38,0.4)] group-hover:scale-110 transition-transform">🔥</div>
              <div class="text-center">
-               <p class="font-bold text-white">Sesión</p>
-               <p class="text-xs text-gray-500">Inputs Reais</p>
+               <p class="font-bold text-white text-xl">Sesión</p>
+               <p class="text-sm text-gray-500">Inputs Reais</p>
              </div>
           </div>
 
-           <div :class="[TRANSITION, getStepClass(3)]" class="relative z-10 flex flex-col items-center gap-4">
-             <div class="w-24 h-24 bg-neutral-900 border-2 border-green-500 rounded-full flex items-center justify-center text-4xl shadow-[0_0_20px_rgba(34,197,94,0.3)]">📊</div>
-             <p class="font-bold text-white">Progreso</p>
+           <div :class="[TRANSITION, getStepClass(3)]" class="relative z-10 flex flex-col items-center gap-6 group">
+             <div class="w-28 h-28 bg-neutral-900 border-4 border-green-500 rounded-full flex items-center justify-center text-5xl shadow-[0_0_30px_rgba(34,197,94,0.4)] group-hover:rotate-12 transition-transform">📊</div>
+             <p class="font-bold text-white text-xl">Progreso</p>
           </div>
         </div>
-        
-        <div :class="['mt-20 text-center bg-neutral-900/50 p-6 rounded-xl border border-neutral-800 mx-auto max-w-2xl font-mono text-sm text-gray-300', TRANSITION, getStepClass(2)]">
-           <span class="text-red-400">const</span> <span class="text-orange-300">data</span> = <span class="text-white">await</span> supabase.from('plans').select('*');
         </div>
-      </div>
 
       <div v-if="currentSlide === 5" class="w-full h-full flex flex-col items-center justify-center relative bg-black">
          
-         <div v-if="currentStep === 0" class="text-center animate-in zoom-in duration-500">
-            <h2 class="text-6xl font-black text-white mb-4">A Verdade</h2>
-            <p class="text-2xl text-gray-400">Unha imaxe vale máis que mil palabras...</p>
-            <p class="text-sm text-orange-500 mt-8 animate-pulse font-bold">Preme para ver a Demo</p>
+         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-orange-900/20 via-black to-black pointer-events-none animate-pulse-slow"></div>
+         
+         <div v-if="currentStep === 0" class="text-center animate-in zoom-in duration-700 relative z-10">
+            <h2 class="text-7xl font-black text-white mb-6 tracking-tight">
+               Menos teoría. <span class="text-orange-500">Máis acción.</span>
+            </h2>
+            <p class="text-3xl text-gray-400 font-light">Vexamos Galentreno en funcionamento.</p>
+            <div class="mt-12 inline-flex items-center gap-2 text-orange-500 border border-orange-500/30 px-6 py-3 rounded-full animate-bounce cursor-pointer hover:bg-orange-500/10 transition-colors">
+               <span>👇</span>
+               <span class="font-bold uppercase tracking-widest text-sm">Preme para iniciar Demo</span>
+            </div>
          </div>
 
-         <div v-else class="relative w-[80%] max-w-5xl aspect-video animate-in slide-in-from-bottom duration-1000">
-            
-            <div class="absolute inset-0 bg-[#1a1a1a] rounded-t-2xl border-x-4 border-t-4 border-[#333] shadow-2xl overflow-hidden">
-               <div class="w-full h-full bg-black relative">
-                  <video 
-                    ref="videoRef"
-                    class="w-full h-full object-cover" 
-                    src="/video/demo.mp4" 
-                    controls
-                    muted
-                  >
-                    O teu navegador non soporta video.
-                  </video>
-                  
-                  <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none" v-if="!videoRef">
-                    <p class="text-gray-500 mb-4">Garda o teu vídeo en /public/video/demo.mp4</p>
-                    <a href="https://galentreno.vercel.app" target="_blank" class="px-6 py-3 bg-orange-600 text-white rounded-lg font-bold hover:bg-orange-500 transition pointer-events-auto">
-                        Abrir Web
-                    </a>
-                  </div>
+         <div 
+            ref="videoContainerRef"
+            v-else 
+            class="relative w-[85%] max-w-6xl aspect-video animate-in slide-in-from-bottom duration-1000 group perspective-1000 z-10"
+         >
+            <div class="relative rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(234,88,12,0.3)] border-2 border-orange-500/20 group-hover:border-orange-500/50 transition-all duration-500 transform group-hover:scale-[1.01]">
+               <div class="absolute inset-0 bg-orange-500/10 mix-blend-overlay pointer-events-none z-20"></div>
+               <video 
+                 ref="videoRef"
+                 class="w-full h-full object-cover bg-neutral-900" 
+                 src="/video/demo.mp4" 
+                 controls
+                 autoplay
+               >
+                 O teu navegador non soporta video.
+               </video>
+               
+               <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none bg-neutral-900/90" v-if="!videoRef">
+                 <p class="text-gray-500 mb-4 font-mono">/public/video/demo.mp4 non atopado</p>
+                 <a href="https://galentreno.vercel.app" target="_blank" class="px-8 py-4 bg-orange-600 text-white rounded-xl font-bold hover:bg-orange-500 transition pointer-events-auto shadow-lg flex items-center gap-3">
+                     <span>⚡</span> Abrir Web Real
+                 </a>
                </div>
             </div>
-            
-            <div class="absolute -bottom-4 left-0 w-full h-4 bg-[#2a2a2a] rounded-b-xl shadow-lg border-t border-[#444]"></div>
-            <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-32 h-2 bg-[#111] rounded-b-lg"></div>
+
+            <div class="absolute top-full left-0 w-full h-full overflow-hidden rounded-3xl mt-4 opacity-30 blur-xl transform scale-y-[-1] mask-gradient-b pointer-events-none">
+                <video class="w-full h-full object-cover" src="/video/demo.mp4" muted></video>
+            </div>
 
          </div>
       </div>
@@ -338,3 +362,17 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
 
   </div>
 </template>
+
+<style scoped>
+/* Máscara para o reflexo do vídeo */
+.mask-gradient-b {
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 50%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 50%);
+}
+.perspective-1000 {
+    perspective: 1000px;
+}
+.animate-pulse-slow {
+    animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+</style>

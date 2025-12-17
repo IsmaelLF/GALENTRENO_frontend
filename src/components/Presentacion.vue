@@ -176,7 +176,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
                 <h3 class="text-2xl font-bold text-white">📢 Publicidade Intrusiva</h3>
                 <span class="text-3xl">🚫</span>
               </div>
-              <p class="text-gray-400">As versións "gratuítas" interrompen o adestramento con anuncios constantes.</p>
+              <p class="text-gray-400">As versións "gratuítas" interrompen o adestramento con anuncios constantes e invasivos.</p>
             </div>
             <div :class="[TRANSITION, getStepClass(3)]" class="bg-neutral-900/50 p-6 rounded-2xl border-l-4 border-yellow-500 border-y border-r border-neutral-800 hover:bg-neutral-800 transition-colors">
               <div class="flex justify-between items-start mb-2">
@@ -211,7 +211,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
               <div class="text-4xl mb-6 bg-orange-900/20 w-fit p-4 rounded-2xl">📋</div>
               <h3 class="text-2xl font-bold text-white mb-3">Xestión de Plans</h3>
               <ul class="space-y-2 text-gray-400 text-sm">
-                <li>• Plans predefinidos por expertos</li>
+                <li>• Plans predefinidos creados por expertos</li>
                 <li>• Creación personalizada</li>
                 <li>• Organizado por días e exercicios</li>
               </ul>
@@ -222,7 +222,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
               <h3 class="text-2xl font-bold text-white mb-3">Progreso Real</h3>
               <ul class="space-y-2 text-gray-400 text-sm">
                 <li>• Rexistro de series/reps/peso</li>
-                <li>• Estatísticas na Home</li>
+                <li>• Estatísticas de adestramentos</li>
                 <li>• Seguimento de peso corporal</li>
               </ul>
            </div>
@@ -246,7 +246,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
             <div class="relative z-10">
               <div class="w-14 h-14 bg-orange-500/20 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform text-orange-500 shadow-inner">🚀</div>
               <h3 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-orange-500">Astro</h3>
-              <p class="text-gray-300 mt-4 text-lg">Arquitectura de Illas para un rendemento web extremo. O núcleo do frontend.</p>
+              <p class="text-gray-300 mt-4 text-lg">Arquitectura de illas para un rendemento web extremo.</p>
             </div>
             <div class="bg-black/50 p-4 rounded-xl font-mono text-xs text-orange-400 border border-orange-500/20 w-fit relative z-10">npm create astro@latest</div>
           </div>
@@ -259,13 +259,13 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
           </div>
           <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-gradient-to-br from-neutral-900 to-cyan-900/20 rounded-3xl border border-cyan-500/20 p-6 flex flex-col justify-center hover:border-cyan-500/60 hover:to-cyan-900/40 transition-all shadow-[0_0_20px_rgba(6,182,212,0.1)] hover:shadow-[0_0_40px_rgba(6,182,212,0.2)]">
             <div class="text-4xl mb-3 text-cyan-400">🎨</div>
-            <h3 class="font-bold text-white">Tailwind CSS</h3>
+            <h3 class="font-bold text-white">Tailwind e CSS</h3>
             <p class="text-xs text-gray-400">Deseño moderno e responsive.</p>
           </div>
           <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-gradient-to-br from-neutral-900 to-emerald-900/20 rounded-3xl border border-emerald-500/20 p-6 flex flex-col justify-center hover:border-emerald-500/60 hover:to-emerald-900/40 transition-all shadow-[0_0_20px_rgba(16,185,129,0.1)] hover:shadow-[0_0_40px_rgba(16,185,129,0.2)]">
             <div class="text-4xl mb-3 text-emerald-400">⚡</div>
             <h3 class="font-bold text-white">Supabase</h3>
-            <p class="text-xs text-gray-400">Autenticación e APIs.</p>
+            <p class="text-xs text-gray-400">Autenticación con RLS e APIs.</p>
           </div>
           <div :class="[TRANSITION, getStepClass(4)]" class="col-span-4 bg-gradient-to-r from-neutral-900/90 via-purple-900/10 to-neutral-900/90 rounded-3xl border border-purple-500/20 p-6 flex items-center justify-around hover:border-purple-500/50 transition-all shadow-[0_0_20px_rgba(168,85,247,0.1)] hover:shadow-[0_0_40px_rgba(168,85,247,0.2)]">
              <div class="flex items-center gap-4">
@@ -275,7 +275,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
              <div class="flex gap-8">
                 <div class="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-neutral-700 hover:border-white/50 transition-colors">
                    <span class="text-2xl">▲</span>
-                   <div><p class="font-bold text-white">Vercel</p><p class="text-xs text-gray-500">Frontend Edge</p></div>
+                   <div><p class="font-bold text-white">Vercel</p><p class="text-xs text-gray-500">Frontend</p></div>
                 </div>
                  <div class="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-neutral-700 hover:border-purple-400/50 transition-colors">
                    <span class="text-2xl text-purple-400">🟣</span>
@@ -324,8 +324,8 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
            <div :class="['absolute top-1/2 left-0 h-1 bg-gradient-to-r from-orange-600 to-purple-600 -translate-y-1/2 rounded-full transition-all duration-1000', currentStep >= 1 ? 'w-full' : 'w-0']"></div>
            <div :class="[TRANSITION, getStepClass(1)]" class="relative bg-neutral-900 p-8 rounded-3xl border border-neutral-700 shadow-2xl hover:-translate-y-4 hover:border-gray-500 transition-all group z-10 opacity-80 hover:opacity-100">
               <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-16 h-16 bg-neutral-800 rounded-full border-4 border-neutral-950 flex items-center justify-center text-3xl shadow-lg">📱</div>
-              <h3 class="text-xl font-bold text-white mt-6 text-center mb-3">Modo Offline (PWA)</h3>
-              <p class="text-gray-400 text-center text-xs">Uso sen conexión en ximnasios.</p>
+              <h3 class="text-xl font-bold text-white mt-6 text-center mb-3">Modo Offline</h3>
+              <p class="text-gray-400 text-center text-xs">Uso sen conexión en ximnasios con sincronización ao recuperala.</p>
            </div>
            <div :class="[TRANSITION, getStepClass(2)]" class="relative bg-neutral-900 p-10 rounded-[2rem] border-2 border-orange-500 shadow-[0_0_40px_rgba(249,115,22,0.2)] hover:-translate-y-4 hover:shadow-orange-500/40 transition-all group z-20 scale-110">
               <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-neutral-800 rounded-full border-4 border-orange-500 flex items-center justify-center text-5xl shadow-xl">📈</div>

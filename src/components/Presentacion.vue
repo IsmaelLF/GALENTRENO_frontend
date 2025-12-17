@@ -4,7 +4,9 @@ import { onMounted, onUnmounted, ref } from 'vue';
 // --- CONFIGURACIÓN E ESTADO ---
 const currentSlide = ref(0);
 const currentStep = ref(0);
-const videoRef = ref(null);
+// Referencias para os dous vídeos
+const desktopVideoRef = ref(null);
+const mobileVideoRef = ref(null);
 const videoContainerRef = ref(null);
 
 // Pasos por diapositiva:
@@ -14,7 +16,7 @@ const videoContainerRef = ref(null);
 // 3: Stack (4 pasos para o Bento Grid) 
 // 4: Fluxo (3 pasos visuais) 
 // 5: Melloras Futuras (3 pasos)
-// 6: Video (Intro + Play)
+// 6: Video (Intro + Play Dual)
 const stepsPerSlide = [0, 3, 2, 4, 3, 3, 1];
 const totalSlides = stepsPerSlide.length;
 
@@ -34,11 +36,12 @@ const next = () => {
   if (currentStep.value < maxSteps) {
     currentStep.value++;
     
-    // Lóxica específica para a slide de VÍDEO (Slide 6)
+    // Auto-play para AMBOS vídeos na slide final
     if (currentSlide.value === 6 && currentStep.value === 1) {
       setTimeout(() => {
-          if (videoRef.value) videoRef.value.play();
-          // Scroll suave cara o vídeo por se a pantalla é pequena
+          if (desktopVideoRef.value) desktopVideoRef.value.play();
+          if (mobileVideoRef.value) mobileVideoRef.value.play();
+          // Scroll suave cara o contedor por se a pantalla é pequena
           if (videoContainerRef.value) videoContainerRef.value.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 500);
     }
@@ -362,44 +365,58 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
          
          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-orange-900/20 via-black to-black pointer-events-none animate-pulse-slow"></div>
          
-         <div v-if="currentStep === 0" class="text-center animate-in zoom-in duration-700 relative z-10">
-            <h2 class="text-7xl font-black text-white mb-6 tracking-tight">
-               Menos teoría. <span class="text-orange-500">Máis acción.</span>
+         <div v-if="currentStep === 0" class="text-center animate-in zoom-in duration-700 relative z-10 px-4">
+            <h2 class="text-6xl md:text-7xl font-black text-white mb-6 tracking-tight">
+               Web & Móbil. <span class="text-orange-500">Todo en un.</span>
             </h2>
-            <p class="text-3xl text-gray-400 font-light">Vexamos Galentreno en funcionamento.</p>
+            <p class="text-2xl md:text-3xl text-gray-400 font-light">Unha experiencia fluída en calquera dispositivo.</p>
             <div class="mt-12 inline-flex items-center gap-2 text-orange-500 border border-orange-500/30 px-6 py-3 rounded-full animate-bounce cursor-pointer hover:bg-orange-500/10 transition-colors">
                <span>👇</span>
-               <span class="font-bold uppercase tracking-widest text-sm">Preme para iniciar Demo</span>
+               <span class="font-bold uppercase tracking-widest text-sm">Ver Demo Multiplataforma</span>
             </div>
          </div>
 
          <div 
             ref="videoContainerRef"
             v-else 
-            class="relative w-[85%] max-w-6xl aspect-video animate-in slide-in-from-bottom duration-1000 group perspective-1000 z-10"
+            class="relative w-full max-w-7xl h-[80vh] flex items-center justify-center gap-4 md:gap-10 animate-in slide-in-from-bottom duration-1000 z-10 px-4"
          >
-            <div class="relative rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(234,88,12,0.3)] border-2 border-orange-500/20 group-hover:border-orange-500/50 transition-all duration-500 transform group-hover:scale-[1.01]">
-               <div class="absolute inset-0 bg-orange-500/10 mix-blend-overlay pointer-events-none z-20"></div>
-               <video 
-                 ref="videoRef"
-                 class="w-full h-full object-cover bg-neutral-900" 
-                 src="/video/demo.mp4" 
-                 controls
-                 autoplay
-               >
-                 O teu navegador non soporta video.
-               </video>
-               
-               <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none bg-neutral-900/90" v-if="!videoRef">
-                 <p class="text-gray-500 mb-4 font-mono">/public/video/demo.mp4 non atopado</p>
-                 <a href="https://galentreno.vercel.app" target="_blank" class="px-8 py-4 bg-orange-600 text-white rounded-xl font-bold hover:bg-orange-500 transition pointer-events-auto shadow-lg flex items-center gap-3">
-                     <span>⚡</span> Abrir Web Real
-                 </a>
+            
+            <div class="relative w-[60%] aspect-video rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-neutral-800 bg-neutral-900 group">
+               <div class="absolute inset-0 border-[1px] border-white/5 rounded-xl overflow-hidden">
+                  <video 
+                    ref="desktopVideoRef"
+                    class="w-full h-full object-cover" 
+                    src="/video/desktop.mp4" 
+                    loop
+                    muted
+                    playsinline
+                  ></video>
+                  <div class="absolute inset-0 bg-gradient-to-tr from-orange-500/10 to-transparent pointer-events-none mix-blend-overlay"></div>
                </div>
+               
+               <div class="absolute -bottom-3 left-0 w-full h-3 bg-neutral-800 rounded-b-lg border-t border-black"></div>
+               <div class="absolute top-full left-0 w-full h-20 bg-gradient-to-b from-orange-500/10 to-transparent opacity-20 blur-xl transform scale-y-[-1] mask-gradient-b"></div>
             </div>
 
-            <div class="absolute top-full left-0 w-full h-full overflow-hidden rounded-3xl mt-4 opacity-30 blur-xl transform scale-y-[-1] mask-gradient-b pointer-events-none">
-                <video class="w-full h-full object-cover" src="/video/demo.mp4" muted></video>
+            <div class="relative w-[20%] aspect-[9/19] rounded-[2.5rem] shadow-[0_20px_50px_rgba(234,88,12,0.2)] border-[6px] border-neutral-800 bg-black group transform translate-y-10 hover:-translate-y-2 transition-transform duration-500">
+               <div class="absolute top-2 left-1/2 -translate-x-1/2 w-1/3 h-6 bg-black rounded-full z-20"></div>
+               
+               <div class="w-full h-full rounded-[2rem] overflow-hidden border border-white/5 relative">
+                  <video 
+                    ref="mobileVideoRef"
+                    class="w-full h-full object-cover" 
+                    src="/video/mobile.mp4" 
+                    loop
+                    muted
+                    playsinline
+                  ></video>
+                  <div class="absolute inset-0 bg-gradient-to-b from-orange-500/5 to-transparent pointer-events-none"></div>
+               </div>
+
+               <div class="absolute top-20 -right-2 w-1 h-12 bg-neutral-800 rounded-r-md"></div>
+               <div class="absolute top-20 -left-2 w-1 h-8 bg-neutral-800 rounded-l-md"></div>
+               <div class="absolute top-32 -left-2 w-1 h-12 bg-neutral-800 rounded-l-md"></div>
             </div>
 
          </div>

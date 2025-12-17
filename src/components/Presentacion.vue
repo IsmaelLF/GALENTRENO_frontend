@@ -8,17 +8,17 @@ const currentStep = ref(0);
 const desktopVideoRef = ref(null);
 const mobileVideoRef = ref(null);
 const videoContainerRef = ref(null);
-const isPlaying = ref(false); // Estado para controlar Play/Pause
+const isPlaying = ref(false); 
 
 // Pasos por diapositiva:
 // 0: Portada 
 // 1: Problema 
-// 2: Solución 
+// 2: Solución (MODIFICADA)
 // 3: Stack 
 // 4: Fluxo 
 // 5: Melloras Futuras 
-// 6: Aprendizaxes (NOVA - 3 pasos)
-// 7: Video Demo (Slide final)
+// 6: Aprendizaxes 
+// 7: Video Demo 
 const stepsPerSlide = [0, 3, 2, 4, 3, 3, 3, 1];
 const totalSlides = stepsPerSlide.length;
 
@@ -53,7 +53,7 @@ const next = () => {
   if (currentStep.value < maxSteps) {
     currentStep.value++;
     
-    // Auto-play para AMBOS vídeos na slide final (Agora é a 7)
+    // Auto-play para AMBOS vídeos na slide final (Slide 7)
     if (currentSlide.value === 7 && currentStep.value === 1) {
       setTimeout(() => {
           if (desktopVideoRef.value) desktopVideoRef.value.play();
@@ -208,20 +208,22 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
                 <li>• Organizado por días e exercicios</li>
               </ul>
            </div>
+           
            <div :class="[TRANSITION, getStepClass(1)]" class="bg-neutral-900 p-8 rounded-3xl border-t-4 border-orange-500 shadow-xl hover:-translate-y-2 transition-transform duration-300 delay-100">
               <div class="text-4xl mb-6 bg-orange-900/20 w-fit p-4 rounded-2xl">📈</div>
               <h3 class="text-2xl font-bold text-white mb-3">Progreso Real</h3>
               <ul class="space-y-2 text-gray-400 text-sm">
                 <li>• Rexistro de series/reps/peso</li>
-                <li>• Historial de evolución</li>
+                <li>• Estatísticas de adestramento</li>
                 <li>• Seguimento de peso corporal</li>
               </ul>
            </div>
+
            <div :class="[TRANSITION, getStepClass(2)]" class="bg-gradient-to-br from-orange-600 to-red-700 p-8 rounded-3xl shadow-2xl hover:-translate-y-2 transition-transform duration-300 text-white relative overflow-hidden flex flex-col justify-center">
               <div class="absolute -right-4 -bottom-4 opacity-20 text-9xl">🦁</div>
               <h3 class="text-2xl font-bold mb-4 relative z-10">Compromiso</h3>
               <p class="text-orange-100 text-lg mb-6 relative z-10 leading-relaxed">
-                Unha ferramenta pensada para a comunidade, baixo licenza CC BY-NC 4.0.
+                Un proxecto social para democratizar o acceso ao deporte e normalizar o galego na tecnoloxía.
               </p>
               <div class="inline-block bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide w-fit">100% Galego</div>
            </div>
@@ -325,7 +327,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
            <div :class="[TRANSITION, getStepClass(3)]" class="relative bg-neutral-900 p-8 rounded-3xl border border-neutral-700 shadow-2xl hover:-translate-y-4 hover:border-gray-500 transition-all group z-10 opacity-80 hover:opacity-100">
               <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-16 h-16 bg-neutral-800 rounded-full border-4 border-neutral-950 flex items-center justify-center text-3xl shadow-lg">🌍</div>
               <h3 class="text-xl font-bold text-white mt-6 text-center mb-3">Comunidade</h3>
-              <p class="text-gray-400 text-center text-xs">Compartir plans e perfís públicos.</p>
+              <p class="text-gray-400 text-center text-xs">Compartir plans coa comunidade.</p>
            </div>
         </div>
       </div>
@@ -334,30 +336,21 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
         <h2 class="text-5xl font-bold text-white mb-20 text-center flex items-center justify-center gap-4 animate-in slide-in-from-top">
            <span>🎓</span> O que aprendemos
         </h2>
-
         <div class="grid grid-cols-3 gap-8">
            <div :class="[TRANSITION, getStepClass(1)]" class="bg-neutral-900 p-8 rounded-3xl border border-neutral-800 hover:border-orange-500 transition-all group hover:-translate-y-2">
               <div class="w-16 h-16 bg-orange-900/20 rounded-2xl flex items-center justify-center text-3xl text-orange-500 mb-6 group-hover:scale-110 transition-transform">🏗️</div>
               <h3 class="text-2xl font-bold text-white mb-4">Proxecto Real</h3>
-              <p class="text-gray-400 leading-relaxed">
-                 A diferenza entre a teoría e levar unha idea á produción real, enfrontando retos de arquitectura e despregamento.
-              </p>
+              <p class="text-gray-400 leading-relaxed">A diferenza entre a teoría e levar unha idea á produción real, enfrontando retos de arquitectura e despregamento.</p>
            </div>
-
            <div :class="[TRANSITION, getStepClass(2)]" class="bg-neutral-900 p-8 rounded-3xl border border-neutral-800 hover:border-red-500 transition-all group hover:-translate-y-2">
               <div class="w-16 h-16 bg-red-900/20 rounded-2xl flex items-center justify-center text-3xl text-red-500 mb-6 group-hover:scale-110 transition-transform">🧩</div>
               <h3 class="text-2xl font-bold text-white mb-4">Solución Propia</h3>
-              <p class="text-gray-400 leading-relaxed">
-                 A satisfacción de crear unha ferramenta que resolve un problema persoal diario de forma efectiva.
-              </p>
+              <p class="text-gray-400 leading-relaxed">A satisfacción de crear unha ferramenta que resolve un problema persoal diario de forma efectiva.</p>
            </div>
-
            <div :class="[TRANSITION, getStepClass(3)]" class="bg-neutral-900 p-8 rounded-3xl border border-neutral-800 hover:border-green-500 transition-all group hover:-translate-y-2">
               <div class="w-16 h-16 bg-green-900/20 rounded-2xl flex items-center justify-center text-3xl text-green-500 mb-6 group-hover:scale-110 transition-transform">🤝</div>
               <h3 class="text-2xl font-bold text-white mb-4">Valor Social</h3>
-              <p class="text-gray-400 leading-relaxed">
-                 O potencial de axudar a outras persoas da comunidade a mellorar a súa saúde.
-              </p>
+              <p class="text-gray-400 leading-relaxed">O potencial de axudar a outras persoas da comunidade a mellorar a súa saúde.</p>
            </div>
         </div>
       </div>

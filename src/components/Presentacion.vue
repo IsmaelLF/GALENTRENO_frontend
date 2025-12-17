@@ -4,15 +4,22 @@ import { onMounted, onUnmounted, ref } from 'vue';
 // --- CONFIGURACIÓN E ESTADO ---
 const currentSlide = ref(0);
 const currentStep = ref(0);
-
-// Referencias de vídeo
+// Referencias para os dous vídeos
 const desktopVideoRef = ref(null);
 const mobileVideoRef = ref(null);
 const videoContainerRef = ref(null);
 const isPlaying = ref(false); // Estado para controlar Play/Pause
 
 // Pasos por diapositiva:
-const stepsPerSlide = [0, 3, 2, 4, 3, 3, 1];
+// 0: Portada 
+// 1: Problema 
+// 2: Solución 
+// 3: Stack 
+// 4: Fluxo 
+// 5: Melloras Futuras 
+// 6: Aprendizaxes (NOVA - 3 pasos)
+// 7: Video Demo (Slide final)
+const stepsPerSlide = [0, 3, 2, 4, 3, 3, 3, 1];
 const totalSlides = stepsPerSlide.length;
 
 // --- UTILIDADES VISUAIS ---
@@ -24,7 +31,7 @@ const getStepClass = (stepTrigger) => {
     : 'opacity-0 translate-y-8 blur-sm scale-95 pointer-events-none';
 };
 
-// --- CONTROL DE VÍDEO (Novo) ---
+// --- CONTROL DE VÍDEO ---
 const togglePlayback = () => {
   if (!desktopVideoRef.value || !mobileVideoRef.value) return;
 
@@ -46,19 +53,19 @@ const next = () => {
   if (currentStep.value < maxSteps) {
     currentStep.value++;
     
-    // Auto-play ao entrar na slide 6
-    if (currentSlide.value === 6 && currentStep.value === 1) {
+    // Auto-play para AMBOS vídeos na slide final (Agora é a 7)
+    if (currentSlide.value === 7 && currentStep.value === 1) {
       setTimeout(() => {
           if (desktopVideoRef.value) desktopVideoRef.value.play();
           if (mobileVideoRef.value) mobileVideoRef.value.play();
-          isPlaying.value = true; // Marcamos como reproducindo
+          isPlaying.value = true;
           if (videoContainerRef.value) videoContainerRef.value.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 500);
     }
   } else if (currentSlide.value < totalSlides - 1) {
     currentSlide.value++;
     currentStep.value = 0;
-    isPlaying.value = false; // Reset ao cambiar de slide
+    isPlaying.value = false;
   }
 };
 
@@ -89,8 +96,8 @@ const handleKey = (e) => {
     prev();
   }
   if (e.key === 'f') toggleFullScreen();
-  // Engadimos a tecla 'Espazo' para pausar se estamos na slide final
-  if (e.key === ' ' && currentSlide.value === 6 && currentStep.value === 1) {
+  // Pausa na slide final (7)
+  if (e.key === ' ' && currentSlide.value === 7 && currentStep.value === 1) {
      togglePlayback();
   }
 };
@@ -323,7 +330,39 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
         </div>
       </div>
 
-      <div v-if="currentSlide === 6" class="w-full h-full flex flex-col items-center justify-center relative bg-black" @click.stop="togglePlayback">
+      <div v-if="currentSlide === 6" class="w-full h-full flex flex-col justify-center px-16 max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-white mb-20 text-center flex items-center justify-center gap-4 animate-in slide-in-from-top">
+           <span>🎓</span> O que aprendemos
+        </h2>
+
+        <div class="grid grid-cols-3 gap-8">
+           <div :class="[TRANSITION, getStepClass(1)]" class="bg-neutral-900 p-8 rounded-3xl border border-neutral-800 hover:border-orange-500 transition-all group hover:-translate-y-2">
+              <div class="w-16 h-16 bg-orange-900/20 rounded-2xl flex items-center justify-center text-3xl text-orange-500 mb-6 group-hover:scale-110 transition-transform">🏗️</div>
+              <h3 class="text-2xl font-bold text-white mb-4">Proxecto Real</h3>
+              <p class="text-gray-400 leading-relaxed">
+                 A diferenza entre a teoría e levar unha idea á produción real, enfrontando retos de arquitectura e despregamento.
+              </p>
+           </div>
+
+           <div :class="[TRANSITION, getStepClass(2)]" class="bg-neutral-900 p-8 rounded-3xl border border-neutral-800 hover:border-red-500 transition-all group hover:-translate-y-2">
+              <div class="w-16 h-16 bg-red-900/20 rounded-2xl flex items-center justify-center text-3xl text-red-500 mb-6 group-hover:scale-110 transition-transform">🧩</div>
+              <h3 class="text-2xl font-bold text-white mb-4">Solución Propia</h3>
+              <p class="text-gray-400 leading-relaxed">
+                 A satisfacción de crear unha ferramenta ("dogfooding") que resolve un problema persoal diario de forma efectiva.
+              </p>
+           </div>
+
+           <div :class="[TRANSITION, getStepClass(3)]" class="bg-neutral-900 p-8 rounded-3xl border border-neutral-800 hover:border-green-500 transition-all group hover:-translate-y-2">
+              <div class="w-16 h-16 bg-green-900/20 rounded-2xl flex items-center justify-center text-3xl text-green-500 mb-6 group-hover:scale-110 transition-transform">🤝</div>
+              <h3 class="text-2xl font-bold text-white mb-4">Valor Social</h3>
+              <p class="text-gray-400 leading-relaxed">
+                 O potencial de escalar o proxecto para axudar a outras persoas da comunidade a mellorar a súa saúde.
+              </p>
+           </div>
+        </div>
+      </div>
+
+      <div v-if="currentSlide === 7" class="w-full h-full flex flex-col items-center justify-center relative bg-black" @click.stop="togglePlayback">
          
          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-orange-900/20 via-black to-black pointer-events-none animate-pulse-slow"></div>
          
@@ -343,7 +382,6 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
             v-else 
             class="relative w-[95vw] h-[85vh] flex items-center justify-center gap-4 animate-in slide-in-from-bottom duration-1000 z-10 px-4"
          >
-            
             <div class="relative w-[65%] aspect-video rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-neutral-800 bg-neutral-900 group">
                <div class="absolute inset-0 border-[1px] border-white/5 rounded-xl overflow-hidden">
                   <video 

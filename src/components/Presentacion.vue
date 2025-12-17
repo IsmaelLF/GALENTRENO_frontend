@@ -13,13 +13,14 @@ const isPlaying = ref(false);
 // Pasos por diapositiva:
 // 0: Portada 
 // 1: Problema 
-// 2: Solución (MODIFICADA)
+// 2: Solución 
 // 3: Stack 
 // 4: Fluxo 
 // 5: Melloras Futuras 
-// 6: Aprendizaxes 
+// 6: O que aprendín (3 pasos)
 // 7: Video Demo 
-const stepsPerSlide = [0, 3, 2, 4, 3, 3, 3, 1];
+// 8: Final / Preguntas (NOVA)
+const stepsPerSlide = [0, 3, 2, 4, 3, 3, 3, 1, 0];
 const totalSlides = stepsPerSlide.length;
 
 // --- UTILIDADES VISUAIS ---
@@ -53,7 +54,7 @@ const next = () => {
   if (currentStep.value < maxSteps) {
     currentStep.value++;
     
-    // Auto-play para AMBOS vídeos na slide final (Slide 7)
+    // Auto-play na slide 7 (Demo)
     if (currentSlide.value === 7 && currentStep.value === 1) {
       setTimeout(() => {
           if (desktopVideoRef.value) desktopVideoRef.value.play();
@@ -63,9 +64,16 @@ const next = () => {
       }, 500);
     }
   } else if (currentSlide.value < totalSlides - 1) {
+    
+    // IMPORTANTE: Pausar vídeos ao saír da slide 7 cara a final
+    if (currentSlide.value === 7) {
+        if (desktopVideoRef.value) desktopVideoRef.value.pause();
+        if (mobileVideoRef.value) mobileVideoRef.value.pause();
+        isPlaying.value = false;
+    }
+
     currentSlide.value++;
     currentStep.value = 0;
-    isPlaying.value = false;
   }
 };
 
@@ -96,7 +104,7 @@ const handleKey = (e) => {
     prev();
   }
   if (e.key === 'f') toggleFullScreen();
-  // Pausa na slide final (7)
+  // Pausa na slide de video (7)
   if (e.key === ' ' && currentSlide.value === 7 && currentStep.value === 1) {
      togglePlayback();
   }
@@ -214,7 +222,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
               <h3 class="text-2xl font-bold text-white mb-3">Progreso Real</h3>
               <ul class="space-y-2 text-gray-400 text-sm">
                 <li>• Rexistro de series/reps/peso</li>
-                <li>• Estatísticas de adestramento</li>
+                <li>• Estatísticas na Home</li>
                 <li>• Seguimento de peso corporal</li>
               </ul>
            </div>
@@ -327,14 +335,14 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
            <div :class="[TRANSITION, getStepClass(3)]" class="relative bg-neutral-900 p-8 rounded-3xl border border-neutral-700 shadow-2xl hover:-translate-y-4 hover:border-gray-500 transition-all group z-10 opacity-80 hover:opacity-100">
               <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-16 h-16 bg-neutral-800 rounded-full border-4 border-neutral-950 flex items-center justify-center text-3xl shadow-lg">🌍</div>
               <h3 class="text-xl font-bold text-white mt-6 text-center mb-3">Comunidade</h3>
-              <p class="text-gray-400 text-center text-xs">Compartir plans coa comunidade.</p>
+              <p class="text-gray-400 text-center text-xs">Compartir plans e perfís públicos.</p>
            </div>
         </div>
       </div>
 
       <div v-if="currentSlide === 6" class="w-full h-full flex flex-col justify-center px-16 max-w-7xl mx-auto">
         <h2 class="text-5xl font-bold text-white mb-20 text-center flex items-center justify-center gap-4 animate-in slide-in-from-top">
-           <span>🎓</span> O que aprendemos
+           <span>🎓</span> O que aprendín
         </h2>
         <div class="grid grid-cols-3 gap-8">
            <div :class="[TRANSITION, getStepClass(1)]" class="bg-neutral-900 p-8 rounded-3xl border border-neutral-800 hover:border-orange-500 transition-all group hover:-translate-y-2">
@@ -414,6 +422,37 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
                    <span class="text-6xl text-white">⏸️</span>
                 </div>
              </div>
+         </div>
+      </div>
+
+      <div v-if="currentSlide === 8" class="w-full h-full flex flex-col items-center justify-center relative overflow-hidden animate-in fade-in zoom-in duration-1000">
+         <div class="absolute inset-0 bg-gradient-to-t from-orange-900/10 via-transparent to-transparent pointer-events-none"></div>
+         
+         <div class="relative z-10 text-center space-y-12">
+            <div class="inline-block animate-bounce mb-4">
+               <span class="text-8xl">🙏</span>
+            </div>
+            
+            <h2 class="text-8xl font-black text-white tracking-tighter drop-shadow-2xl">
+               Moitas Grazas
+            </h2>
+            
+            <p class="text-3xl text-orange-500 font-light tracking-wide">
+               Rolda de Preguntas
+            </p>
+
+            <div class="flex items-center justify-center gap-8 mt-12">
+               <a href="https://galentreno.vercel.app" target="_blank" class="px-8 py-4 bg-neutral-900 border border-neutral-700 text-white rounded-xl hover:border-orange-500 hover:text-orange-500 transition-all flex items-center gap-3 shadow-lg">
+                  <span>⚡</span> Probar App
+               </a>
+               <a href="https://github.com/IsmaelLF/GALENTRENO_frontend" target="_blank" class="px-8 py-4 bg-neutral-900 border border-neutral-700 text-white rounded-xl hover:border-orange-500 hover:text-orange-500 transition-all flex items-center gap-3 shadow-lg">
+                  <span>💻</span> Ver Código
+               </a>
+            </div>
+         </div>
+         
+         <div class="absolute bottom-10 text-gray-600 font-mono text-sm">
+            Ismael Lens • TFC 2025
          </div>
       </div>
 

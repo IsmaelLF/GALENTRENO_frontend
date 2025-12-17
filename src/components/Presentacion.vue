@@ -348,7 +348,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
               <div class="w-16 h-16 bg-red-900/20 rounded-2xl flex items-center justify-center text-3xl text-red-500 mb-6 group-hover:scale-110 transition-transform">🧩</div>
               <h3 class="text-2xl font-bold text-white mb-4">Solución Propia</h3>
               <p class="text-gray-400 leading-relaxed">
-                 A satisfacción de crear unha ferramenta ("dogfooding") que resolve un problema persoal diario de forma efectiva.
+                 A satisfacción de crear unha ferramenta que resolve un problema persoal diario de forma efectiva.
               </p>
            </div>
 
@@ -356,7 +356,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey));
               <div class="w-16 h-16 bg-green-900/20 rounded-2xl flex items-center justify-center text-3xl text-green-500 mb-6 group-hover:scale-110 transition-transform">🤝</div>
               <h3 class="text-2xl font-bold text-white mb-4">Valor Social</h3>
               <p class="text-gray-400 leading-relaxed">
-                 O potencial de escalar o proxecto para axudar a outras persoas da comunidade a mellorar a súa saúde.
+                 O potencial de axudar a outras persoas da comunidade a mellorar a súa saúde.
               </p>
            </div>
         </div>

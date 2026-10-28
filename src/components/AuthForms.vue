@@ -1,6 +1,27 @@
 <script>
 import { supabase } from "../lib/supabase.js";
 
+const BLOCKED_DOMAINS = new Set([
+  "hi.com",
+  "test.com",
+  "example.com",
+  "ejemplo.com",
+  "exemplo.com",
+  "mail.com",
+  "email.com",
+  "123.com",
+  "abc.com",
+  "qwerty.com",
+  "temp.com",
+  "fake.com",
+  "tempmail.com",
+  "mailinator.com",
+  "guerrillamail.com",
+  "yopmail.com",
+  "10minutemail.com",
+  "trashmail.com",
+]);
+
 export default {
   data() {
     return {
@@ -11,6 +32,21 @@ export default {
       isLoading: false,
       errorMessage: "",
     };
+  },
+  computed: {
+    passwordChecks() {
+      const pwd = this.contrasinal || "";
+      return {
+        length: pwd.length >= 8,
+        upper: /[A-ZÁÉÍÓÚÑ]/.test(pwd),
+        lower: /[a-záéíóúñ]/.test(pwd),
+        number: /\d/.test(pwd),
+      };
+    },
+    isPasswordStrong() {
+      const c = this.passwordChecks;
+      return c.length && c.upper && c.lower && c.number;
+    },
   },
   methods: {
     showLogin() {
@@ -31,17 +67,72 @@ export default {
       this.correo = "";
       this.contrasinal = "";
     },
+    validateEmail(rawEmail) {
+      const email = (rawEmail || "").trim().toLowerCase();
+      const strictEmailRegex =
+        /^[a-z0-9]+([._+-][a-z0-9]+)*@[a-z0-9]+([.-][a-z0-9]+)*\.[a-z]{2,12}$/;
+
+      if (!strictEmailRegex.test(email)) {
+        return "Introduce un enderezo de correo electrónico válido.";
+      }
+
+      const [localPart, domain] = email.split("@");
+      const domainParts = domain.split(".");
+      const domainName = domainParts[0];
+
+      if (localPart.length < 2) {
+        return "O nome de usuario do correo é demasiado curto.";
+      }
+
+      if (domainName.length < 3) {
+        return "O dominio do correo non é válido (ex: gmail.com, outlook.es).";
+      }
+
+      if (BLOCKED_DOMAINS.has(domain) || localPart === domainName) {
+        return "Por favor, utiliza un correo electrónico persoal real.";
+      }
+
+      return null;
+    },
+    validatePassword(password) {
+      if (!password || password.length < 8) {
+        return "O contrasinal debe ter polo menos 8 caracteres.";
+      }
+      if (!/[A-ZÁÉÍÓÚÑ]/.test(password)) {
+        return "O contrasinal debe incluír polo menos unha letra maiúscula.";
+      }
+      if (!/[a-záéíóúñ]/.test(password)) {
+        return "O contrasinal debe incluír polo menos unha letra minúscula.";
+      }
+      if (!/\d/.test(password)) {
+        return "O contrasinal debe incluír polo menos un número.";
+      }
+      return null;
+    },
     async handleLogin() {
+      const emailError = this.validateEmail(this.correo);
+      if (emailError) {
+        this.errorMessage = emailError;
+        return;
+      }
+
+      if (!this.contrasinal || this.contrasinal.length < 6) {
+        this.errorMessage = "Introduce o teu contrasinal.";
+        return;
+      }
+
       this.isLoading = true;
       this.errorMessage = "";
 
       try {
-        const urlApi = import.meta.env.PUBLIC_API_URL;
+        const urlApi =
+          import.meta.env.PUBLIC_API_URL ||
+          "https://galentreno-backend.onrender.com";
         const response = await fetch(`${urlApi}/api/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            email: this.correo,
+            email: this.correo.trim().toLowerCase(),
             contrasinal: this.contrasinal,
           }),
         });
@@ -55,7 +146,7 @@ export default {
           });
 
           if (error) {
-            this.errorMessage = "Erro ao gardar a sesión";
+            this.errorMessage = "Erro ao gardar a sesión.";
             this.isLoading = false;
             return;
           }
@@ -74,22 +165,36 @@ export default {
       }
     },
     async handleRegister() {
-      const emailRegex =
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      if (!emailRegex.test(this.correo)) {
-        this.errorMessage = "Introduce un formato de correo electrónico válido.";
+      const cleanName = (this.nome || "").trim();
+      if (cleanName.length < 2) {
+        this.errorMessage = "O nome debe ter polo menos 2 caracteres.";
         return;
       }
+
+      const emailError = this.validateEmail(this.correo);
+      if (emailError) {
+        this.errorMessage = emailError;
+        return;
+      }
+
+      const passwordError = this.validatePassword(this.contrasinal);
+      if (passwordError) {
+        this.errorMessage = passwordError;
+        return;
+      }
+
       this.isLoading = true;
       this.errorMessage = "";
       try {
-        const urlApi = import.meta.env.PUBLIC_API_URL;
+        const urlApi =
+          import.meta.env.PUBLIC_API_URL ||
+          "https://galentreno-backend.onrender.com";
         const response = await fetch(`${urlApi}/api/auth/rexistro`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            nome: this.nome,
-            email: this.correo,
+            nome: cleanName,
+            email: this.correo.trim().toLowerCase(),
             contrasinal: this.contrasinal,
           }),
         });
@@ -103,7 +208,7 @@ export default {
           });
 
           if (error) {
-            this.errorMessage = "Erro ao gardar a sesión";
+            this.errorMessage = "Erro ao gardar a sesión.";
             this.isLoading = false;
             return;
           }
@@ -150,7 +255,7 @@ export default {
         </button>
         <h3>Iniciar Sesión</h3>
       </div>
-      <form @submit.prevent="handleLogin">
+      <form @submit.prevent="handleLogin" novalidate>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <div class="field">
@@ -159,7 +264,8 @@ export default {
             type="email"
             id="email"
             v-model="correo"
-            placeholder="nome@exemplo.gal"
+            placeholder="nome@gmail.com"
+            autocomplete="email"
             required
           />
         </div>
@@ -171,6 +277,7 @@ export default {
             id="password"
             v-model="contrasinal"
             placeholder="••••••••"
+            autocomplete="current-password"
             required
           />
         </div>
@@ -189,7 +296,7 @@ export default {
         </button>
         <h3>Crear Conta</h3>
       </div>
-      <form @submit.prevent="handleRegister">
+      <form @submit.prevent="handleRegister" novalidate>
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
         <div class="field">
@@ -199,6 +306,7 @@ export default {
             id="nome"
             v-model="nome"
             placeholder="O teu nome"
+            autocomplete="name"
             required
           />
         </div>
@@ -209,7 +317,8 @@ export default {
             type="email"
             id="email"
             v-model="correo"
-            placeholder="nome@exemplo.gal"
+            placeholder="nome@gmail.com"
+            autocomplete="email"
             required
           />
         </div>
@@ -220,12 +329,23 @@ export default {
             type="password"
             id="password"
             v-model="contrasinal"
-            placeholder="Mínimo 6 caracteres"
+            placeholder="Mínimo 8 caracteres"
+            autocomplete="new-password"
             required
           />
+          <ul class="password-Checklist" aria-label="Requisitos do contrasinal">
+            <li :class="{ met: passwordChecks.length }">8+ caracteres</li>
+            <li :class="{ met: passwordChecks.upper }">1 maiúscula</li>
+            <li :class="{ met: passwordChecks.lower }">1 minúscula</li>
+            <li :class="{ met: passwordChecks.number }">1 número</li>
+          </ul>
         </div>
 
-        <button type="submit" class="btn-auth btn-auth-primary" :disabled="isLoading">
+        <button
+          type="submit"
+          class="btn-auth btn-auth-primary"
+          :disabled="isLoading || !isPasswordStrong"
+        >
           <span v-if="isLoading">Creando conta...</span>
           <span v-else>Rexistrarse</span>
         </button>
@@ -261,7 +381,7 @@ export default {
 }
 
 .welcome-intro h2 {
-  font-size: 1.65rem;
+  font-size: clamp(1.4rem, 4vw, 1.65rem);
   font-weight: 800;
   color: #f8fafc;
   margin-bottom: 0.5rem;
@@ -272,6 +392,7 @@ export default {
   font-size: 0.95rem;
   color: #94a3b8;
   line-height: 1.5;
+  margin: 0;
 }
 
 .welcome-buttons {
@@ -321,8 +442,9 @@ export default {
 }
 
 .btn-auth:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .auth-form {
@@ -353,7 +475,7 @@ export default {
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 600;
-  padding: 0.25rem 0.5rem;
+  padding: 0.35rem 0.6rem;
   border-radius: 0.5rem;
   transition: color 0.2s ease, background-color 0.2s ease;
 }
@@ -390,7 +512,7 @@ input {
   color: #f8fafc;
   border: 1px solid rgba(148, 163, 184, 0.2);
   border-radius: 0.75rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -404,6 +526,38 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
+.password-Checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0.35rem 0 0 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.35rem;
+}
+
+.password-Checklist li {
+  font-size: 0.75rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: color 0.2s ease;
+}
+
+.password-Checklist li::before {
+  content: "○";
+  font-size: 0.7rem;
+}
+
+.password-Checklist li.met {
+  color: #34d399;
+  font-weight: 600;
+}
+
+.password-Checklist li.met::before {
+  content: "✓";
+}
+
 .error-message {
   color: #fca5a5;
   background: rgba(239, 68, 68, 0.12);
@@ -413,5 +567,11 @@ input:focus {
   font-size: 0.875rem;
   margin: 0;
   text-align: center;
+}
+
+@media (max-width: 480px) {
+  .password-Checklist {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 </style>

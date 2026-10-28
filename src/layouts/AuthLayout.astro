@@ -17,29 +17,10 @@ const { title } = Astro.props;
     />
   </head>
   <body>
-    <div class="deco-under" aria-hidden="true">
-      <div class="scroll-gallery">
-        <div class="scroll-track">
-          <img
-            fetchpriority="high"
-            src="/img/galeria/foto1.webp"
-            alt="Imaxe 1"
-            loading="eager"
-          />
-          <img
-            fetchpriority="high"
-            src="/img/galeria/foto2.webp"
-            alt="Imaxe 2"
-            loading="eager"
-          />
-          <img
-            fetchpriority="high"
-            src="/img/galeria/foto3.webp"
-            alt="Imaxe 3"
-            loading="eager"
-          />
-        </div>
-      </div>
+    <div class="auth-backdrop" aria-hidden="true">
+      <div class="glow-orb orb-1"></div>
+      <div class="glow-orb orb-2"></div>
+      <div class="grid-overlay"></div>
     </div>
 
     <main class="auth-shell">
@@ -50,28 +31,28 @@ const { title } = Astro.props;
           <img src="/img/GALENTRENO.webp" alt="Galentreno Logo" />
         </a>
 
-        <nav class="links-container" aria-label="Redes sociais">
+        <nav class="links-container" aria-label="Contacto profesional">
           <a
-            class="social-pill"
-            href="https://instagram.com/galentreno"
+            class="linkedin-pill"
+            href="https://www.linkedin.com/in/ismaellens/"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Visitar o noso perfil de Instagram">Instagram</a
+            aria-label="Visitar o perfil de LinkedIn de Ismael Lens"
           >
-          <a
-            class="social-pill"
-            href="https://galentreno.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Ir á páxina web principal de Galentreno">Web</a
-          >
-          <a
-            class="social-pill"
-            href="https://facebook.com/galentreno"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visitar a nosa páxina de Facebook">Facebook</a
-          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
+              ></path>
+            </svg>
+            <span>LinkedIn</span>
+          </a>
         </nav>
       </header>
 
@@ -101,46 +82,31 @@ const { title } = Astro.props;
         ).matches;
 
         const authContent = document.querySelector(".auth-content");
-        if (authContent && !prefersReducedMotion) {
-          gsap.fromTo(
-            authContent,
-            { opacity: 0, y: 20, scale: 0.98 },
-            { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" }
-          );
-        }
+        const brandLogo = document.querySelector(".brand-link");
 
-        const track = document.querySelector(".scroll-track") as HTMLElement;
-        if (track) {
-          const originalImages = Array.from(track.querySelectorAll("img"));
-          originalImages.forEach((img) => {
-            const clone = img.cloneNode(true) as HTMLElement;
-            track.appendChild(clone);
-          });
+        if (!prefersReducedMotion) {
+          if (brandLogo) {
+            gsap.fromTo(
+              brandLogo,
+              { opacity: 0, y: -12 },
+              { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+            );
+          }
 
-          const baseSpeed = prefersReducedMotion ? 0.08 : 0.35;
-          let scrollAmount = 0;
-          let resetPoint = 0;
-
-          const calculateResetPoint = () => {
-            if (track.scrollWidth > 0) {
-              resetPoint = track.scrollWidth / 2;
-            }
-          };
-
-          calculateResetPoint();
-          window.addEventListener("resize", calculateResetPoint);
-
-          const animateScroll = () => {
-            if (resetPoint === 0) calculateResetPoint();
-            scrollAmount += baseSpeed;
-            if (scrollAmount >= resetPoint) {
-              scrollAmount -= resetPoint;
-            }
-            track.style.transform = `translate3d(-${scrollAmount}px, 0, 0)`;
-            requestAnimationFrame(animateScroll);
-          };
-
-          requestAnimationFrame(animateScroll);
+          if (authContent) {
+            gsap.fromTo(
+              authContent,
+              { opacity: 0, y: 20, scale: 0.98 },
+              {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                duration: 0.55,
+                delay: 0.08,
+                ease: "power3.out",
+              }
+            );
+          }
         }
 
         const quotes = [
@@ -201,7 +167,7 @@ const { title } = Astro.props;
     --auth-primary-hover: #2563eb;
     --auth-bg: #070b14;
     --auth-surface: rgba(15, 23, 42, 0.82);
-    --auth-border: rgba(148, 163, 184, 0.18);
+    --auth-border: rgba(148, 163, 184, 0.16);
     --auth-text: #f8fafc;
     --auth-muted: #94a3b8;
   }
@@ -215,7 +181,8 @@ const { title } = Astro.props;
   }
 
   body {
-    font-family: "Plus Jakarta Sans", TexGyre, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: "Plus Jakarta Sans", TexGyre, -apple-system, BlinkMacSystemFont,
+      sans-serif;
     background-color: var(--auth-bg);
     color: var(--auth-text);
     min-height: 100vh;
@@ -236,47 +203,52 @@ const { title } = Astro.props;
     border: 0;
   }
 
-  .deco-under {
+  .auth-backdrop {
     position: fixed;
     inset: 0;
     z-index: 0;
     overflow: hidden;
     pointer-events: none;
+    background: linear-gradient(180deg, #070b14 0%, #0b1324 100%);
   }
 
-  .deco-under::after {
-    content: "";
+  .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(110px);
+    opacity: 0.45;
+  }
+
+  .orb-1 {
+    width: 480px;
+    height: 480px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.35), transparent 70%);
+    top: -120px;
+    left: -100px;
+  }
+
+  .orb-2 {
+    width: 520px;
+    height: 520px;
+    background: radial-gradient(circle, rgba(29, 78, 216, 0.28), transparent 70%);
+    bottom: -160px;
+    right: -120px;
+  }
+
+  .grid-overlay {
     position: absolute;
     inset: 0;
-    background:
-      radial-gradient(circle at 50% 35%, rgba(15, 23, 42, 0.6) 0%, rgba(7, 11, 20, 0.94) 100%),
-      linear-gradient(180deg, rgba(7, 11, 20, 0.78) 0%, rgba(7, 11, 20, 0.92) 100%);
-    z-index: 1;
-  }
-
-  .scroll-gallery {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-  }
-
-  .scroll-track {
-    display: flex;
-    height: 100%;
-    will-change: transform;
-    gap: 1rem;
-    padding: 1rem;
-  }
-
-  .scroll-track img {
-    width: 48vw;
-    min-width: 320px;
-    height: 100%;
-    object-fit: cover;
-    filter: saturate(25%) contrast(1.05) brightness(0.7);
-    border-radius: 1rem;
+    background-image: radial-gradient(
+      rgba(148, 163, 184, 0.12) 1px,
+      transparent 1px
+    );
+    background-size: 28px 28px;
+    mask-image: radial-gradient(circle at center, black 35%, transparent 85%);
+    -webkit-mask-image: radial-gradient(
+      circle at center,
+      black 35%,
+      transparent 85%
+    );
   }
 
   .auth-shell {
@@ -286,17 +258,17 @@ const { title } = Astro.props;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding: 1.5rem clamp(1rem, 4vw, 3rem);
+    padding: 1.75rem clamp(1rem, 4vw, 3rem);
+    gap: 1.5rem;
   }
 
   .auth-topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
+    gap: 1.25rem;
     width: 100%;
-    max-width: 1360px;
+    max-width: 1280px;
     margin: 0 auto;
   }
 
@@ -308,43 +280,53 @@ const { title } = Astro.props;
 
   .brand-link:hover {
     transform: translateY(-1px);
-    opacity: 0.92;
+    opacity: 0.95;
   }
 
   .brand-link img {
-    height: clamp(36px, 5vw, 50px);
+    height: clamp(68px, 9vw, 115px);
     width: auto;
+    max-width: min(320px, 65vw);
     object-fit: contain;
+    filter: drop-shadow(0 6px 20px rgba(59, 130, 246, 0.22));
   }
 
   .links-container {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
   }
 
-  .social-pill {
-    font-size: 0.8125rem;
+  .linkedin-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
     font-weight: 600;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
+    letter-spacing: 0.02em;
     text-decoration: none;
     color: var(--auth-text);
-    background: rgba(15, 23, 42, 0.65);
+    background: rgba(15, 23, 42, 0.75);
     border: 1px solid var(--auth-border);
-    padding: 0.5rem 0.9rem;
+    padding: 0.6rem 1.1rem;
     border-radius: 9999px;
     backdrop-filter: blur(10px);
     transition:
       background-color 0.2s ease,
       border-color 0.2s ease,
-      transform 0.2s ease;
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
   }
 
-  .social-pill:hover {
+  .linkedin-pill svg {
+    color: #60a5fa;
+    flex-shrink: 0;
+  }
+
+  .linkedin-pill:hover {
     background: rgba(59, 130, 246, 0.18);
     border-color: rgba(59, 130, 246, 0.55);
     transform: translateY(-1px);
+    box-shadow: 0 6px 18px -4px rgba(59, 130, 246, 0.35);
   }
 
   .deco-right {
@@ -354,7 +336,7 @@ const { title } = Astro.props;
     align-items: center;
     flex-grow: 1;
     width: 100%;
-    padding: 2rem 0;
+    padding: 0.5rem 0;
   }
 
   .auth-content {
@@ -378,9 +360,9 @@ const { title } = Astro.props;
     justify-content: space-between;
     gap: 0.75rem;
     width: 100%;
-    max-width: 1360px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding-top: 1rem;
+    padding-top: 0.5rem;
   }
 
   .div-text-copy {
@@ -415,14 +397,26 @@ const { title } = Astro.props;
   }
 
   @media (max-width: 640px) {
+    .auth-shell {
+      padding: 1.25rem 1rem;
+      gap: 1.25rem;
+    }
+
     .auth-topbar {
       flex-direction: column;
       align-items: center;
-      gap: 0.875rem;
+      text-align: center;
+      gap: 1rem;
     }
 
-    .scroll-track img {
-      width: 85vw;
+    .brand-link img {
+      height: 76px;
+      max-width: 80vw;
+    }
+
+    .auth-content {
+      padding: 1.35rem 1.15rem;
+      border-radius: 1rem;
     }
   }
 </style>

@@ -1,4 +1,25 @@
 <script>
+const BLOCKED_DOMAINS = new Set([
+  "hi.com",
+  "test.com",
+  "example.com",
+  "ejemplo.com",
+  "exemplo.com",
+  "mail.com",
+  "email.com",
+  "123.com",
+  "abc.com",
+  "qwerty.com",
+  "temp.com",
+  "fake.com",
+  "tempmail.com",
+  "mailinator.com",
+  "guerrillamail.com",
+  "yopmail.com",
+  "10minutemail.com",
+  "trashmail.com",
+]);
+
 export default {
   data() {
     return {
@@ -10,24 +31,73 @@ export default {
     };
   },
   methods: {
+    validateEmail(rawEmail) {
+      const email = (rawEmail || "").trim().toLowerCase();
+      const strictEmailRegex =
+        /^[a-z0-9]+([._+-][a-z0-9]+)*@[a-z0-9]+([.-][a-z0-9]+)*\.[a-z]{2,12}$/;
+
+      if (!strictEmailRegex.test(email)) {
+        return "Por favor, introduce un formato de correo electrónico válido.";
+      }
+
+      const [localPart, domain] = email.split("@");
+      const domainName = domain.split(".")[0];
+
+      if (
+        localPart.length < 2 ||
+        domainName.length < 3 ||
+        BLOCKED_DOMAINS.has(domain) ||
+        localPart === domainName
+      ) {
+        return "Por favor, utiliza un correo electrónico persoal válido.";
+      }
+
+      return null;
+    },
+    validatePassword(password) {
+      if (!password || password.length < 8) {
+        return "O contrasinal debe ter polo menos 8 caracteres.";
+      }
+      if (
+        !/[A-ZÁÉÍÓÚÑ]/.test(password) ||
+        !/[a-záéíóúñ]/.test(password) ||
+        !/\d/.test(password)
+      ) {
+        return "O contrasinal debe incluír maiúsculas, minúsculas e números.";
+      }
+      return null;
+    },
     async handleRegister() {
-      const emailRegex =
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      if (!emailRegex.test(this.correo)) {
-        this.errorMessage =
-          "Por favor, introduce un formato de correo electrónico válido.";
+      const cleanName = (this.nome || "").trim();
+      if (cleanName.length < 2) {
+        this.errorMessage = "O nome debe ter polo menos 2 caracteres.";
         return;
       }
+
+      const emailError = this.validateEmail(this.correo);
+      if (emailError) {
+        this.errorMessage = emailError;
+        return;
+      }
+
+      const passwordError = this.validatePassword(this.contrasinal);
+      if (passwordError) {
+        this.errorMessage = passwordError;
+        return;
+      }
+
       this.isLoading = true;
       this.errorMessage = "";
       try {
-        const urlApi = import.meta.env.PUBLIC_API_URL;
+        const urlApi =
+          import.meta.env.PUBLIC_API_URL ||
+          "https://galentreno-backend.onrender.com";
         const response = await fetch(`${urlApi}/api/auth/rexistro`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            nome: this.nome,
-            email: this.correo,
+            nome: cleanName,
+            email: this.correo.trim().toLowerCase(),
             contrasinal: this.contrasinal,
           }),
         });
@@ -52,7 +122,7 @@ export default {
 <template>
   <div class="register-card">
     <h2 class="h2-form">Rexistrarse</h2>
-    <form @submit.prevent="handleRegister">
+    <form @submit.prevent="handleRegister" novalidate>
       <p v-if="errorMessage" class="error-msg">{{ errorMessage }}</p>
 
       <div>
@@ -67,7 +137,13 @@ export default {
 
       <div>
         <label for="password">Contrasinal</label>
-        <input type="password" id="password" v-model="contrasinal" required />
+        <input
+          type="password"
+          id="password"
+          v-model="contrasinal"
+          placeholder="Mín. 8 caracteres, maiúscula e número"
+          required
+        />
       </div>
 
       <button type="submit" class="button" :disabled="isLoading">
@@ -103,6 +179,7 @@ export default {
   padding: 0.75rem;
   border-radius: 0.5rem;
   text-align: center;
+  font-size: 0.875rem;
 }
 
 .login-section {

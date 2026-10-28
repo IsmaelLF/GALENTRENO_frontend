@@ -430,6 +430,39 @@ const { title } = Astro.props;
         }
       }
 
+      @media (max-width: 640px) {
+        .content-wrapper {
+          padding: var(--spacing-lg) var(--spacing-md);
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr 1fr;
+          gap: var(--spacing-sm);
+        }
+
+        .plans-container {
+          grid-template-columns: 1fr;
+          gap: var(--spacing-md);
+        }
+
+        .card,
+        .plan-card {
+          padding: var(--spacing-lg);
+        }
+
+        .button,
+        .button-register,
+        .button-login {
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 400px) {
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
       .sr-only {
         position: absolute;
         width: 1px;

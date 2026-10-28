@@ -1,49 +1,49 @@
 <script>
-import { supabase } from '../lib/supabase.js';
+import { supabase } from "../lib/supabase.js";
+
 export default {
   data() {
     return {
-      currentView: 'inicio',
-      nome: '',
-      correo: '',
-      contrasinal: '',
+      currentView: "inicio",
+      nome: "",
+      correo: "",
+      contrasinal: "",
       isLoading: false,
-      errorMessage: '',
+      errorMessage: "",
     };
   },
   methods: {
     showLogin() {
-      this.currentView = 'login';
+      this.currentView = "login";
       this.resetForm();
     },
     showRegister() {
-      this.currentView = 'registro';
+      this.currentView = "registro";
       this.resetForm();
     },
     goBack() {
-      this.currentView = 'inicio';
+      this.currentView = "inicio";
       this.resetForm();
     },
     resetForm() {
-      this.errorMessage = '';
-      this.nome = '';
-      this.correo = '';
-      this.contrasinal = '';
+      this.errorMessage = "";
+      this.nome = "";
+      this.correo = "";
+      this.contrasinal = "";
     },
     async handleLogin() {
       this.isLoading = true;
-      this.errorMessage = '';
-
-      document.body.style.filter = 'blur(2px)';
-      document.body.style.transition = 'filter 0.2s ease-out';
+      this.errorMessage = "";
 
       try {
-        // @ts-expect-error
         const urlApi = import.meta.env.PUBLIC_API_URL;
         const response = await fetch(`${urlApi}/api/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: this.correo, contrasinal: this.contrasinal }),
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: this.correo,
+            contrasinal: this.contrasinal,
+          }),
         });
 
         if (response.ok) {
@@ -51,46 +51,47 @@ export default {
 
           const { error } = await supabase.auth.setSession({
             access_token: data.session.access_token,
-            refresh_token: data.session.refresh_token
+            refresh_token: data.session.refresh_token,
           });
 
           if (error) {
-            document.body.style.filter = 'none';
-            this.errorMessage = 'Erro ao gardar a sesión';
+            this.errorMessage = "Erro ao gardar a sesión";
             this.isLoading = false;
             return;
           }
 
-          await new Promise(resolve => setTimeout(resolve, 100));
-
-          window.location.href = '/inicio';
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          window.location.href = "/inicio";
         } else {
-          document.body.style.filter = 'none';
           const errorData = await response.json();
-          this.errorMessage = errorData.error || 'Email o contrasinal incorrectos.';
+          this.errorMessage =
+            errorData.error || "Email ou contrasinal incorrectos.";
         }
       } catch (error) {
-        document.body.style.filter = 'none';
-        this.errorMessage = 'Erro de conexión co servidor.';
+        this.errorMessage = "Erro de conexión co servidor.";
       } finally {
         this.isLoading = false;
       }
     },
     async handleRegister() {
-      const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      const emailRegex =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       if (!emailRegex.test(this.correo)) {
-        this.errorMessage = 'Introduce un formato de correo electrónico válido.';
+        this.errorMessage = "Introduce un formato de correo electrónico válido.";
         return;
       }
       this.isLoading = true;
-      this.errorMessage = '';
+      this.errorMessage = "";
       try {
-        // @ts-expect-error
         const urlApi = import.meta.env.PUBLIC_API_URL;
         const response = await fetch(`${urlApi}/api/auth/rexistro`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nome: this.nome, email: this.correo, contrasinal: this.contrasinal }),
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nome: this.nome,
+            email: this.correo,
+            contrasinal: this.contrasinal,
+          }),
         });
 
         if (response.ok) {
@@ -98,24 +99,24 @@ export default {
 
           const { error } = await supabase.auth.setSession({
             access_token: data.session.access_token,
-            refresh_token: data.session.refresh_token
+            refresh_token: data.session.refresh_token,
           });
 
           if (error) {
-            this.errorMessage = 'Erro ao gardar a sesión';
+            this.errorMessage = "Erro ao gardar a sesión";
             this.isLoading = false;
             return;
           }
 
-          await new Promise(resolve => setTimeout(resolve, 100));
-
-          window.location.href = '/inicio';
+          await new Promise((resolve) => setTimeout(resolve, 100));
+          window.location.href = "/inicio";
         } else {
           const errorData = await response.json();
-          this.errorMessage = errorData.error || 'Erro ao rexistrar. Tente de novo.';
+          this.errorMessage =
+            errorData.error || "Erro ao rexistrar. Tente de novo.";
         }
       } catch (error) {
-        this.errorMessage = 'Erro de conexión co servidor.';
+        this.errorMessage = "Erro de conexión co servidor.";
       } finally {
         this.isLoading = false;
       }
@@ -126,315 +127,291 @@ export default {
 
 <template>
   <div class="auth-container" :class="{ 'form-active': currentView !== 'inicio' }">
-
     <div v-if="currentView === 'inicio'" class="welcome-screen">
+      <div class="welcome-intro">
+        <span class="welcome-badge">Adestramento Intelixente</span>
+        <h2>Benvido a Galentreno</h2>
+        <p>Xestiona as túas rutinas, rexistra as túas series e mide a túa evolución.</p>
+      </div>
       <div class="welcome-buttons">
-        <button @click="showLogin" class="button button-primary">
-          INICIAR SESIÓN
+        <button @click="showLogin" class="btn-auth btn-auth-primary">
+          Iniciar Sesión
         </button>
-        <button @click="showRegister" class="button button-secondary">
-          REXISTRARSE
+        <button @click="showRegister" class="btn-auth btn-auth-secondary">
+          Crear Conta
         </button>
       </div>
     </div>
 
     <div v-if="currentView === 'login'" class="auth-form">
       <div class="form-header">
-        <button @click="goBack" class="button-back">←</button>
+        <button @click="goBack" class="button-back" aria-label="Voltar">
+          ← Voltar
+        </button>
+        <h3>Iniciar Sesión</h3>
       </div>
       <form @submit.prevent="handleLogin">
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-        <div>
-          <label for="email">Correo:</label>
-          <input type="email" id="email" v-model="correo" required>
+        <div class="field">
+          <label for="email">Correo electrónico</label>
+          <input
+            type="email"
+            id="email"
+            v-model="correo"
+            placeholder="nome@exemplo.gal"
+            required
+          />
         </div>
 
-        <div>
-          <label for="password">Contrasinal:</label>
-          <input type="password" id="password" v-model="contrasinal" required>
+        <div class="field">
+          <label for="password">Contrasinal</label>
+          <input
+            type="password"
+            id="password"
+            v-model="contrasinal"
+            placeholder="••••••••"
+            required
+          />
         </div>
 
-        <button type="submit" class="button button-submit" :disabled="isLoading">
-          <span v-if="isLoading">Cargando...</span>
-          <span v-else>Iniciar Sesión</span>
+        <button type="submit" class="btn-auth btn-auth-primary" :disabled="isLoading">
+          <span v-if="isLoading">Accedendo...</span>
+          <span v-else>Entrar</span>
         </button>
       </form>
     </div>
 
     <div v-if="currentView === 'registro'" class="auth-form">
       <div class="form-header">
-        <button @click="goBack" class="button-back">←</button>
+        <button @click="goBack" class="button-back" aria-label="Voltar">
+          ← Voltar
+        </button>
+        <h3>Crear Conta</h3>
       </div>
       <form @submit.prevent="handleRegister">
         <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
-        <div>
+        <div class="field">
           <label for="nome">Nome</label>
-          <input type="text" id="nome" v-model="nome" required>
+          <input
+            type="text"
+            id="nome"
+            v-model="nome"
+            placeholder="O teu nome"
+            required
+          />
         </div>
 
-        <div>
-          <label for="email">Correo</label>
-          <input type="email" id="email" v-model="correo" required>
+        <div class="field">
+          <label for="email">Correo electrónico</label>
+          <input
+            type="email"
+            id="email"
+            v-model="correo"
+            placeholder="nome@exemplo.gal"
+            required
+          />
         </div>
 
-        <div>
+        <div class="field">
           <label for="password">Contrasinal</label>
-          <input type="password" id="password" v-model="contrasinal" required>
+          <input
+            type="password"
+            id="password"
+            v-model="contrasinal"
+            placeholder="Mínimo 6 caracteres"
+            required
+          />
         </div>
 
-        <button type="submit" class="button button-submit" :disabled="isLoading">
-          <span v-if="isLoading">Cargando...</span>
+        <button type="submit" class="btn-auth btn-auth-primary" :disabled="isLoading">
+          <span v-if="isLoading">Creando conta...</span>
           <span v-else>Rexistrarse</span>
         </button>
       </form>
     </div>
-
   </div>
 </template>
 
-<style>
+<style scoped>
 .auth-container {
   width: 100%;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
-
 
 .welcome-screen {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 2rem;
-  padding: 0 2rem 2rem 2rem;
-  max-width: 400px;
-  width: 100%;
+  gap: 1.75rem;
+  text-align: center;
+}
+
+.welcome-badge {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.14);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  margin-bottom: 0.75rem;
+}
+
+.welcome-intro h2 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #f8fafc;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.welcome-intro p {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  line-height: 1.5;
 }
 
 .welcome-buttons {
   display: flex;
   flex-direction: column;
-  gap: 4rem;
+  gap: 0.875rem;
   width: 100%;
 }
 
-
-.button-primary,
-.button-secondary {
+.btn-auth {
   width: 100%;
-  padding: 16px;
-  background-color: transparent;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+  padding: 0.875rem 1.25rem;
+  border-radius: 0.75rem;
   font-family: inherit;
   font-weight: 600;
-  font-size: 1.5rem;
-  transition: color 0.2s ease, transform 0.1s ease;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.button-primary:hover,
-.button-secondary:hover {
-  color: #0d6efd;
-  transform: translateY(-0.5dvh);
-  cursor: none;
+.btn-auth-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 20px -4px rgba(59, 130, 246, 0.45);
+}
+
+.btn-auth-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -4px rgba(59, 130, 246, 0.6);
+}
+
+.btn-auth-secondary {
+  background: rgba(30, 41, 59, 0.7);
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+}
+
+.btn-auth-secondary:hover:not(:disabled) {
+  background: rgba(51, 65, 85, 0.8);
+  border-color: rgba(59, 130, 246, 0.5);
+  transform: translateY(-2px);
+}
+
+.btn-auth:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 .form-header {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.form-header h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
 }
 
 .button-back {
   background: transparent;
-  color: #fff;
+  color: #94a3b8;
   border: none;
   cursor: pointer;
-  font-size: 1.5rem;
-  padding: 0;
-  transition: color 0.2s ease;
-  flex-shrink: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .button-back:hover {
-  color: #0d6efd;
-}
-
-
-
-.auth-form {
-  padding: 20px;
-  border-radius: 12px;
-  max-width: 500px;
-  width: 100%;
-  box-sizing: border-box;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  color: #f0f0f0;
+  color: #f8fafc;
+  background: rgba(148, 163, 184, 0.1);
 }
 
 .auth-form form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1.125rem;
 }
 
-.error-message {
-  color: #ff4444;
-  background: rgba(255, 68, 68, 0.1);
-  padding: 10px;
-  border-radius: 6px;
-  margin: 0;
-  text-align: center;
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
 }
 
 label {
-  display: block;
-  margin-bottom: 5px;
-  color: #f0f0f0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #cbd5e1;
 }
 
 input {
   width: 100%;
-  padding: 12px;
-  margin: 0 auto;
-  display: block;
-  background: rgba(34, 34, 34, 0.95);
-  color: #ffffff;
-  border: 1px solid #ffffff65;
-  border-radius: 10px;
-  box-sizing: border-box;
+  padding: 0.8rem 1rem;
+  background: rgba(9, 13, 22, 0.85);
+  color: #f8fafc;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 0.75rem;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+input::placeholder {
+  color: #64748b;
+}
 
-input:focus,
-input:hover {
+input:focus {
   outline: none;
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
-  cursor: none !important;
-}
-input:active{
-  cursor: auto !important;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
-.button-submit {
-  width: 50%;
-  padding: 12px;
-  color: #fff;
-  background-color: #0d6dfd;
-  border-radius: 10px;
-  text-transform: uppercase;
-  border: none;
-  font-weight: 900;
-  cursor: none;
-  margin: 0 auto;
-  font-family: inherit;
-  font-size: 16px;
-}
-
-.button-submit:hover:not(:disabled) {
-  background-color: #094094 ;
-  transition: background-color 200ms linear;
-  -webkit-transition: background-color 200ms linear;
-  -ms-transition: background-color 200ms linear;
-
-}
-
-.button-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-@media (max-width: 967px) {
-  .button-primary,
-  .button-secondary {
-    color: #fff;
-    background: rgba(34, 34, 34, 0.85);
-    font-size: 1rem;
-    border-radius: 10px;
-    width: 70%;
-    margin: 0 auto;
-    display: block;
-  }
-  
-  .auth-form {
-    padding: 10px;
-  }
-
-  .auth-form form {
-    gap: 10px;
-  }
-
-  input {
-    padding: 10px;
-    margin: 0 auto;
-    display: block;
-    width: 80%;
-  }
-
-  label {
-    width: 80%;
-    margin: 0 auto;
-    display: block;
-    font-size: 1rem;
-  }
-
-  .button-submit {
-    padding: 10px;
-    margin-top: 8px;
-  }
-
-  .form-header {
-    margin-bottom: 8px;
-  }
-}
-
-@media (max-width: 358px) {
-  .button-primary,
-  .button-secondary {
-    width: 70%;
-    font-size: 0.9rem;
-    padding: 12px;
-  }
-
-  .auth-form {
-    padding: 8px;
-  }
-
-  .auth-form form {
-    gap: 8px;
-  }
-
-  input {
-    padding: 8px;
-    width: 85%;
-    font-size: 0.9rem;
-  }
-
-  label {
-    width: 85%;
-    font-size: 0.9rem;
-  }
-
-  .button-submit {
-    padding: 8px;
-    font-size: 0.85rem;
-    width: 60%;
-  }
-
-  .error-message {
-    font-size: 0.85rem;
-    padding: 8px;
-  }
+.error-message {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 0.75rem;
+  border-radius: 0.625rem;
+  font-size: 0.875rem;
+  margin: 0;
+  text-align: center;
 }
 </style>

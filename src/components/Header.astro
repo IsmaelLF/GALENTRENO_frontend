@@ -1,10 +1,11 @@
 ---
-
+const pathname = Astro.url.pathname;
 ---
 
 <header>
   <nav>
     <a href="/inicio" class="logo" aria-label="Ir ao inicio">
+      <span class="logo-dot"></span>
       <span>GALENTRENO</span>
     </a>
 
@@ -20,16 +21,42 @@
     </button>
 
     <ul class="nav-links" id="nav-menu" role="navigation">
-      <li><a href="/plans">Plans Predefinidos</a></li>
-      <li><a href="/meus-plans">Os Meus Plans</a></li>
-      <li><a href="/plans/novo">Crear Plan</a></li>
-      <li><a href="#" id="logout-link">Pechar Sesión</a></li>
+      <li>
+        <a href="/inicio" class:list={[{ active: pathname === "/inicio" }]}>
+          Inicio
+        </a>
+      </li>
+      <li>
+        <a href="/plans" class:list={[{ active: pathname === "/plans" }]}>
+          Plans Predefinidos
+        </a>
+      </li>
+      <li>
+        <a
+          href="/meus-plans"
+          class:list={[{ active: pathname.startsWith("/meus-plans") }]}
+        >
+          Os Meus Plans
+        </a>
+      </li>
+      <li>
+        <a
+          href="/plans/novo"
+          class:list={[{ active: pathname === "/plans/novo" }]}
+        >
+          Crear Plan
+        </a>
+      </li>
+      <li>
+        <a href="#" id="logout-link" class="logout-btn">Pechar Sesión</a>
+      </li>
     </ul>
   </nav>
 </header>
 
 <script>
   import { supabase } from "../lib/supabase.js";
+
   const enlacePecharSesion = document.getElementById("logout-link");
   if (enlacePecharSesion) {
     enlacePecharSesion.addEventListener("click", async (evento) => {
@@ -43,7 +70,6 @@
   const enlacesNav = document.querySelector(".nav-links");
 
   if (botonMenuMovil && enlacesNav) {
-    // Asegurar estado inicial correcto
     enlacesNav.classList.remove("active");
     botonMenuMovil.classList.remove("active");
     botonMenuMovil.setAttribute("aria-expanded", "false");
@@ -98,47 +124,49 @@
 
 <style>
   header {
-    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-    padding: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    border-bottom: 1px solid #444;
+    background: rgba(9, 13, 22, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 0.875rem 1.5rem;
+    border-bottom: 1px solid var(--color-border);
     position: sticky;
     top: 0;
-    z-index: 1000;
-    backdrop-filter: blur(10px);
+    z-index: var(--z-sticky);
   }
 
   nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 0 0.5rem;
     position: relative;
   }
 
   .logo {
-    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-weight: 800;
     font-size: 1.25rem;
-    color: #fff;
+    color: var(--color-text-primary);
     text-decoration: none;
-    transition:
-      color 0.2s ease,
-      transform 0.2s ease;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     z-index: 1001;
+    transition: opacity var(--transition-base);
   }
 
   .logo:hover {
-    color: #0d6efd;
-    transform: scale(1.05);
+    opacity: 0.9;
+    color: var(--color-text-primary);
   }
 
-  .logo:focus-visible {
-    outline: 2px solid #0d6efd;
-    outline-offset: 4px;
-    border-radius: 4px;
+  .logo-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    box-shadow: 0 0 12px var(--color-primary);
   }
 
   .mobile-menu-toggle {
@@ -146,33 +174,28 @@
     flex-direction: column;
     gap: 5px;
     background: transparent;
-    border: none;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
     cursor: pointer;
     padding: 0.5rem;
     z-index: 1001;
-    transition: transform 0.2s ease;
+    transition: border-color var(--transition-base);
   }
 
   .mobile-menu-toggle:hover {
-    transform: scale(1.1);
-  }
-
-  .mobile-menu-toggle:focus-visible {
-    outline: 2px solid #0d6efd;
-    outline-offset: 4px;
-    border-radius: 4px;
+    border-color: var(--color-border-hover);
   }
 
   .hamburger-line {
-    width: 24px;
-    height: 3px;
-    background-color: #fff;
-    border-radius: 3px;
-    transition: all 0.3s ease;
+    width: 20px;
+    height: 2px;
+    background-color: var(--color-text-primary);
+    border-radius: 2px;
+    transition: all 0.25s ease;
   }
 
   .mobile-menu-toggle.active .hamburger-line:nth-child(1) {
-    transform: rotate(45deg) translate(8px, 8px);
+    transform: rotate(45deg) translate(5px, 5px);
   }
 
   .mobile-menu-toggle.active .hamburger-line:nth-child(2) {
@@ -180,7 +203,7 @@
   }
 
   .mobile-menu-toggle.active .hamburger-line:nth-child(3) {
-    transform: rotate(-45deg) translate(7px, -7px);
+    transform: rotate(-45deg) translate(5px, -5px);
   }
 
   .nav-links {
@@ -188,53 +211,45 @@
     margin: 0;
     padding: 0;
     display: flex;
-    gap: 1.5rem;
+    gap: 0.5rem;
     align-items: center;
   }
 
   .nav-links a {
     text-decoration: none;
-    color: #e0e0e0;
+    color: var(--color-text-secondary);
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.875rem;
+    padding: 0.5rem 0.875rem;
+    border-radius: var(--radius-md);
     transition:
-      color 0.2s ease,
-      transform 0.2s ease;
-    position: relative;
-    padding: 0.5rem 0;
+      color var(--transition-base),
+      background-color var(--transition-base);
   }
 
-  .nav-links a::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: #0d6efd;
-    transition: width 0.3s ease;
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--color-text-primary);
+    background-color: rgba(59, 130, 246, 0.12);
   }
 
-  .nav-links a:hover {
-    color: #0d6efd;
-    transform: translateY(-2px);
+  .nav-links a.active {
+    color: var(--color-primary);
   }
 
-  .nav-links a:hover::after {
-    width: 100%;
+  .nav-links a.logout-btn {
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    margin-left: 0.5rem;
   }
 
-  .nav-links a:focus-visible {
-    outline: 2px solid #0d6efd;
-    outline-offset: 4px;
-    border-radius: 4px;
+  .nav-links a.logout-btn:hover {
+    background-color: rgba(239, 68, 68, 0.14);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #fecaca;
   }
 
   @media (max-width: 767px) {
-    header {
-      padding: 0.75rem 1rem;
-    }
-
     .mobile-menu-toggle {
       display: flex;
     }
@@ -243,19 +258,18 @@
       position: fixed;
       top: 0;
       right: -100%;
-      height: 100vh;
       height: 100dvh;
       width: 80%;
-      max-width: 320px;
-      background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+      max-width: 300px;
+      background: #0b1120;
+      border-left: 1px solid var(--color-border);
       flex-direction: column;
       justify-content: center;
-      align-items: center;
-      gap: 1.5rem;
-      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
-      transition: right 0.3s ease;
+      align-items: stretch;
+      gap: 0.75rem;
+      box-shadow: -12px 0 30px rgba(0, 0, 0, 0.6);
       z-index: 1000;
-      padding: 2rem 0;
+      padding: 2rem 1.25rem;
       visibility: hidden;
       opacity: 0;
       transition: right 0.3s ease, opacity 0.3s ease, visibility 0s 0.3s;
@@ -268,81 +282,17 @@
       transition: right 0.3s ease, opacity 0.3s ease;
     }
 
-    .nav-links li {
-      width: 100%;
-      padding: 0 1.5rem;
-    }
-
-    .nav-links a {
-      font-size: 1.1rem;
-      width: 100%;
-      text-align: center;
-      padding: 1rem 1.5rem;
-      display: block;
-      border-radius: var(--radius-md);
-      transition: background-color 0.2s ease, transform 0.2s ease;
-    }
-
-    .nav-links a:hover,
-    .nav-links a:focus {
-      background-color: rgba(13, 110, 253, 0.15);
-      transform: translateX(0);
-    }
-
-    .nav-links a::after {
-      display: none;
-    }
-  }
-
-  @media (min-width: 600px) and (max-width: 767px) {
-    .logo {
-      font-size: 1.4rem;
-    }
-  }
-
-  @media (min-width: 768px) {
-    header {
-      padding: 1.25rem 1.5rem;
-    }
-
-    nav {
-      padding: 0;
-    }
-
-    .logo {
-      font-size: 1.5rem;
-    }
-
-    .nav-links {
-      gap: 2rem;
-    }
-
     .nav-links a {
       font-size: 1rem;
-    }
-  }
-
-  @media (min-width: 968px) {
-    header {
-      padding: 1.5rem 2rem;
+      padding: 0.875rem 1rem;
+      display: block;
+      text-align: left;
     }
 
-    .nav-links {
-      gap: 2.5rem;
-    }
-
-    .nav-links a {
-      font-size: 1.05rem;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
+    .nav-links a.logout-btn {
+      margin-left: 0;
+      margin-top: 1rem;
+      text-align: center;
     }
   }
 </style>

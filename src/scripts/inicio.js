@@ -1,6 +1,7 @@
 import { supabase } from "../lib/supabase.js";
 
-const apiUrl = "https://galentreno-backend.onrender.com";
+const apiUrl =
+  import.meta.env.PUBLIC_API_URL || "https://galentreno-backend.onrender.com";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const {

@@ -2,263 +2,170 @@
 import AppLayout from "../layouts/AppLayout.astro";
 import { format } from "date-fns";
 import { gl } from "date-fns/locale";
+
 const diaActual = new Date();
 const dataFormateada = format(diaActual, "EEEE, d 'de' MMMM 'de' yyyy", {
   locale: gl,
 });
-const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <AppLayout title="Inicio">
-  <div class="welcome-section">
-    <h1 id="user-greeting">Benvido a Galentreno</h1>
-    <small id="current-date" data-data-formateada={dataFormateada}></small>
+  <div class="dashboard-header">
+    <div>
+      <small id="current-date" data-data-formateada={dataFormateada}></small>
+      <h1 id="user-greeting">Benvido a Galentreno</h1>
+    </div>
+    <a href="/meus-plans" class="button">Ver os Meus Plans →</a>
   </div>
 
   <section class="stats-section">
-    <h2>Estatísticas do Teu Progreso</h2>
     <div class="stats-grid">
-      <div class="card large-card">
-        <div class="card-icon">💪</div>
+      <div class="card stat-card">
+        <span class="stat-label">Adestramentos Totais</span>
         <strong id="total-trainings">--</strong>
-        <p>Adestramentos Totais</p>
       </div>
-      <div class="card large-card">
-        <div class="card-icon">📊</div>
+      <div class="card stat-card">
+        <span class="stat-label">Volume Total</span>
         <strong id="total-volume">--</strong>
-        <p>Volume Total (kg)</p>
       </div>
-      <div class="card large-card">
-        <div class="card-icon">📅</div>
+      <div class="card stat-card">
+        <span class="stat-label">Esta Semana</span>
         <strong id="week-trainings">--</strong>
-        <p>Adestramentos Esta Semana</p>
       </div>
-      <div class="card large-card">
-        <div class="card-icon">⚖️</div>
+      <div class="card stat-card">
+        <span class="stat-label">Último Peso</span>
         <strong id="last-weight">--</strong>
-        <p>Último Peso Rexistrado</p>
       </div>
     </div>
   </section>
 
-  <section class="weight-section compact">
-    <h2>Rexistro Rápido de Peso</h2>
+  <section class="weight-section">
     <div class="weight-card">
-      <div class="weight-input-group">
+      <div class="weight-info">
+        <h2>Rexistro Rápido de Peso</h2>
+        <p>Actualiza o teu peso corporal de hoxe para seguir a túa evolución.</p>
+      </div>
+      <div class="weight-controls">
         <div class="input-with-button">
           <input
             type="number"
             id="weight-input"
-            placeholder="Ex: 75"
+            placeholder="Ex: 75.5"
             step="0.1"
             min="0"
             max="400"
           />
-          <button id="save-weight-btn" class="button button-primary">
-            Gardar Peso
-          </button>
+          <button id="save-weight-btn" class="button">Gardar Peso</button>
         </div>
         <small id="weight-status" class="weight-status"></small>
       </div>
     </div>
   </section>
 
-  <a href="/meus-plans" class="button button-primary cta-button"
-    >Ver os Meus Plans</a
-  >
-
   <style>
-    .welcome-section {
-      text-align: center;
-      margin-bottom: var(--spacing-2xl);
-    }
-
-    .welcome-section h1 {
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .welcome-section small {
-      display: block;
-      font-size: var(--font-size-base);
-      color: var(--color-text-muted);
-    }
-
-    .weight-section {
-      margin-bottom: var(--spacing-2xl);
-    }
-
-    .weight-section.compact {
-      margin-bottom: var(--spacing-xl);
-    }
-
-    .weight-section h2 {
-      margin-top: 0;
-      margin-bottom: var(--spacing-md);
-      font-size: var(--font-size-xl);
-    }
-
-    .weight-card {
-      background-color: var(--color-bg-card);
-      padding: var(--spacing-lg);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-sm);
-      border: 1px solid var(--color-border);
-    }
-
-    .weight-input-group {
-      margin-bottom: 0;
-    }
-
-    .weight-input-group label {
-      display: block;
-      margin-bottom: var(--spacing-sm);
-      font-weight: 600;
-      color: var(--color-text-primary);
-    }
-
-    .input-with-button {
+    .dashboard-header {
       display: flex;
-      gap: var(--spacing-md);
-      align-items: stretch;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: var(--spacing-xl);
+      padding-bottom: var(--spacing-lg);
+      border-bottom: 1px solid var(--color-border);
     }
 
-    .input-with-button input {
-      flex: 1;
-      min-width: 0;
+    .dashboard-header h1 {
+      text-align: left;
+      margin: 0.25rem 0 0 0;
     }
 
-    .input-with-button .button {
-      flex-shrink: 0;
-      width: auto;
-      min-width: auto;
-      max-width: none;
-      padding: var(--spacing-md) var(--spacing-xl);
-    }
-
-    .weight-status {
-      display: block;
-      margin-top: var(--spacing-sm);
-      min-height: 1.2em;
-      font-size: var(--font-size-sm);
-    }
-
-    .weight-status.success {
-      color: #10b981;
-    }
-
-    .weight-status.error {
-      color: #ef4444;
+    .dashboard-header small {
+      text-transform: capitalize;
+      color: var(--color-primary);
+      font-weight: 600;
     }
 
     .stats-section {
       margin-bottom: var(--spacing-2xl);
     }
 
-    .stats-section h2 {
-      margin-top: 0;
-      margin-bottom: var(--spacing-xl);
-      font-size: var(--font-size-2xl);
-      text-align: center;
-      color: var(--color-text-primary);
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--spacing-lg);
-    }
-
-    .card.large-card {
-      padding: var(--spacing-xl);
-      text-align: center;
+    .stat-card {
+      text-align: left;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: var(--spacing-sm);
-      min-height: 160px;
-      justify-content: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 1.5rem;
     }
 
-    .card.large-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(13, 110, 253, 0.2);
-    }
-
-    .card-icon {
-      font-size: 2.5rem;
-      margin-bottom: var(--spacing-sm);
-    }
-
-    .card.large-card strong {
-      font-size: var(--font-size-3xl);
-      color: var(--color-primary);
-      font-weight: 700;
-    }
-
-    .card.large-card p {
-      margin: 0;
-      font-size: var(--font-size-sm);
-      color: var(--color-text-muted);
+    .stat-label {
+      font-size: var(--font-size-xs);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
+      color: var(--color-text-muted);
       font-weight: 600;
     }
 
-    .cta-button {
+    .stat-card strong {
+      font-size: 2rem;
+      color: var(--color-text-primary);
+      margin: 0;
+    }
+
+    .weight-card {
+      background: var(--color-bg-card);
+      backdrop-filter: blur(12px);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--color-border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-xl);
+      align-items: center;
+    }
+
+    .weight-info h2 {
+      margin: 0 0 0.35rem 0;
+      font-size: var(--font-size-xl);
+    }
+
+    .weight-info p {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: var(--font-size-sm);
+    }
+
+    .input-with-button {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .input-with-button input {
+      flex: 1;
+    }
+
+    .weight-status {
       display: block;
-      max-width: 400px;
-      margin: var(--spacing-2xl) auto 0;
+      margin-top: 0.5rem;
+      min-height: 1.25em;
     }
 
-    @media (max-width: 968px) {
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .card.large-card {
-        min-height: 140px;
-      }
-
-      .card-icon {
-        font-size: 2rem;
-      }
+    .weight-status.success {
+      color: var(--color-success);
     }
 
-    @media (max-width: 599px) {
-      .stats-grid {
+    .weight-status.error {
+      color: var(--color-danger);
+    }
+
+    @media (max-width: 768px) {
+      .weight-card {
         grid-template-columns: 1fr;
         gap: var(--spacing-md);
       }
 
-      .card.large-card {
-        min-height: 120px;
-        padding: var(--spacing-lg);
-      }
-
-      .card-icon {
-        font-size: 1.8rem;
-      }
-
-      .card.large-card strong {
-        font-size: var(--font-size-2xl);
-      }
-
       .input-with-button {
         flex-direction: column;
-      }
-
-      .input-with-button .button {
-        width: 100%;
-      }
-
-      .weight-card {
-        padding: var(--spacing-md);
-      }
-
-      .stats-section h2,
-      .weight-section h2 {
-        font-size: var(--font-size-xl);
       }
     }
   </style>

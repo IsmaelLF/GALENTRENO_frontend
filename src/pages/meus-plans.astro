@@ -1,19 +1,15 @@
 ---
 import AppLayout from "../layouts/AppLayout.astro";
-const apiUrl = import.meta.env.PUBLIC_API_URL;
 ---
 
 <AppLayout title="Os Meus Plans">
-  <h2>Os Meus Plans</h2>
-
-  <a
-    href="/plans/novo"
-    class="button button-primary"
-    style="margin-bottom: 1.5rem;"
-  >
-    + Crear Novo Plan
-  </a>
-  <p>Selecciona un plan para ver os seus exercicios.</p>
+  <div class="page-top">
+    <div>
+      <h2>Os Meus Plans</h2>
+      <p>Selecciona un plan para ver os seus exercicios ou iniciar unha sesión.</p>
+    </div>
+    <a href="/plans/novo" class="button">+ Crear Novo Plan</a>
+  </div>
 
   <div id="plans-list" class="plans-container">
     <p>Cargando plans...</p>
@@ -24,7 +20,7 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
       <div class="modal-header">
         <h2 id="modal-plan-name">Plan</h2>
         <button id="close-modal" class="close-button" aria-label="Pechar">
-          &times;
+          ✕
         </button>
       </div>
       <div id="modal-plan-detail" class="modal-body">
@@ -32,79 +28,62 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
       </div>
       <div class="modal-footer">
         <div id="day-selection" class="day-selection">
-          <label for="day-select">Selecciona o día de adestramento:</label>
+          <label for="day-select">Día de adestramento</label>
           <select id="day-select" class="day-select">
             <option value="">Escolle un día...</option>
           </select>
         </div>
-        <button id="start-training-btn" class="button button-primary" disabled>
+        <button id="start-training-btn" class="button" disabled>
           Iniciar Adestramento
         </button>
       </div>
     </div>
   </div>
 
-  <style>
-    .plan-card {
-      background-color: var(--color-bg-card);
-      color: var(--color-text-secondary);
-      padding: var(--spacing-xl);
-      border-radius: var(--radius-xl);
-      box-shadow: var(--shadow-md);
-      border: 2px solid var(--color-border);
-      cursor: pointer;
-      transition:
-        transform var(--transition-base),
-        border-color var(--transition-base),
-        box-shadow var(--transition-base);
+  <style is:global>
+    .page-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: var(--spacing-lg);
     }
 
-    .plan-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--color-primary);
-      box-shadow: var(--shadow-lg);
+    .page-top h2 {
+      margin: 0 0 0.25rem 0;
     }
 
-    .plan-card:active {
-      transform: translateY(-2px);
-    }
-
-    .plan-card h3 {
-      margin-top: 0;
-      margin-bottom: var(--spacing-sm);
-      color: var(--color-text-primary);
-      font-size: var(--font-size-xl);
-    }
-
-    .plan-card p {
+    .page-top p {
       margin: 0;
       color: var(--color-text-muted);
     }
 
+    .plan-card {
+      cursor: pointer;
+    }
+
     .plan-card-footer {
-      margin-top: var(--spacing-md);
+      margin-top: var(--spacing-lg);
       padding-top: var(--spacing-md);
       border-top: 1px solid var(--color-border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: var(--font-size-sm);
-      color: var(--color-text-muted);
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-primary);
     }
 
-    /* Modal Styles */
     .modal {
       display: none;
       position: fixed;
       z-index: var(--z-modal);
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(4px);
-      animation: fadeIn 0.2s ease-out;
+      inset: 0;
+      background-color: rgba(2, 6, 23, 0.78);
+      backdrop-filter: blur(8px);
     }
 
     .modal.active {
@@ -115,104 +94,84 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
     }
 
     .modal-content {
-      background-color: var(--color-bg-card);
+      background: #0f172a;
       border-radius: var(--radius-xl);
       width: 100%;
-      max-width: 800px;
-      max-height: 90vh;
+      max-width: 720px;
+      max-height: 88vh;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       box-shadow: var(--shadow-lg);
       border: 1px solid var(--color-border);
-      animation: slideUp 0.3s ease-out;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: var(--spacing-xl);
+      padding: 1.25rem 1.5rem;
       border-bottom: 1px solid var(--color-border);
     }
 
     .modal-header h2 {
       margin: 0;
-      color: var(--color-text-primary);
-      font-size: var(--font-size-2xl);
+      font-size: var(--font-size-xl);
     }
 
     .close-button {
       background: transparent;
-      border: none;
-      font-size: 2rem;
+      border: 1px solid var(--color-border);
+      font-size: 1rem;
       color: var(--color-text-muted);
       cursor: pointer;
-      padding: 0;
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: var(--radius-sm);
-      transition:
-        background-color var(--transition-base),
-        color var(--transition-base);
+      transition: all var(--transition-base);
     }
 
     .close-button:hover {
-      background-color: var(--color-bg-input);
+      background-color: rgba(255, 255, 255, 0.06);
       color: var(--color-text-primary);
     }
 
-    .close-button:focus-visible {
-      outline: 2px solid var(--color-primary);
-      outline-offset: 2px;
-    }
-
     .modal-body {
-      padding: var(--spacing-xl);
+      padding: 1.5rem;
       overflow-y: auto;
       flex: 1;
     }
 
     .modal-footer {
-      padding: var(--spacing-xl);
+      padding: 1.25rem 1.5rem;
       border-top: 1px solid var(--color-border);
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      align-items: flex-end;
       gap: var(--spacing-md);
+      background: rgba(9, 13, 22, 0.5);
     }
 
-    .modal-footer .button {
-      max-width: none;
-      width: auto;
+    .day-selection {
+      flex: 1;
     }
 
     .dia-card {
-      background-color: var(--color-bg-secondary);
+      background-color: rgba(9, 13, 22, 0.6);
       border-radius: var(--radius-md);
-      padding: var(--spacing-lg);
-      margin-bottom: var(--spacing-md);
+      padding: 1.25rem;
+      margin-bottom: 1rem;
       border: 1px solid var(--color-border);
     }
 
     .dia-card h3 {
       margin-top: 0;
-      margin-bottom: var(--spacing-md);
-      color: var(--color-text-primary);
-      font-size: var(--font-size-lg);
+      margin-bottom: 0.75rem;
+      font-size: var(--font-size-base);
+      color: var(--color-primary);
     }
 
     .dia-card ul {
@@ -222,103 +181,20 @@ const apiUrl = import.meta.env.PUBLIC_API_URL;
     }
 
     .dia-card li {
-      padding: var(--spacing-sm) 0;
+      padding: 0.5rem 0;
       border-bottom: 1px solid var(--color-border);
       color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
     }
 
     .dia-card li:last-child {
       border-bottom: none;
     }
 
-    .dia-card li::before {
-      content: "→";
-      color: var(--color-primary);
-      margin-right: var(--spacing-sm);
-      font-weight: bold;
-    }
-
-    .day-selection {
-      display: flex;
-      flex-direction: column;
-      gap: var(--spacing-sm);
-      margin-bottom: var(--spacing-md);
-    }
-
-    .day-selection label {
-      font-weight: 600;
-      color: var(--color-text-primary);
-      font-size: var(--font-size-sm);
-    }
-
-    .day-select {
-      padding: var(--spacing-md);
-      background-color: var(--color-bg-input);
-      border: 2px solid var(--color-border);
-      border-radius: var(--radius-md);
-      color: var(--color-text-primary);
-      font-size: var(--font-size-base);
-      cursor: pointer;
-      transition: border-color var(--transition-base);
-    }
-
-    .day-select:hover {
-      border-color: var(--color-primary);
-    }
-
-    .day-select:focus {
-      outline: none;
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px var(--color-primary-light);
-    }
-
-    @media (max-width: 968px) {
+    @media (max-width: 640px) {
       .modal-footer {
         flex-direction: column;
-        gap: var(--spacing-md);
-      }
-
-      .modal-footer .button {
-        width: 100%;
-      }
-
-      .day-selection {
-        width: 100%;
-      }
-    }
-
-    @media (max-width: 599px) {
-      .modal.active {
-        padding: 0;
-      }
-
-      .modal-content {
-        max-height: 100vh;
-        max-height: 100dvh;
-        border-radius: 0;
-        margin: 0;
-      }
-
-      .modal-header,
-      .modal-body,
-      .modal-footer {
-        padding: var(--spacing-md);
-      }
-
-      .modal-header h2 {
-        font-size: var(--font-size-lg);
-      }
-
-      .plan-card {
-        padding: var(--spacing-lg);
-      }
-
-      .plan-card h3 {
-        font-size: var(--font-size-lg);
-      }
-
-      .dia-card {
-        padding: var(--spacing-md);
+        align-items: stretch;
       }
     }
   </style>

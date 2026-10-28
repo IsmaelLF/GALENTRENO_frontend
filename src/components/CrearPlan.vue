@@ -1,22 +1,23 @@
 <script>
-import { supabase } from '../lib/supabase.js';
+import { supabase } from "../lib/supabase.js";
+
 export default {
   data() {
     return {
-      planNome: '',
-      planDescricion: '',
+      planNome: "",
+      planDescricion: "",
       dias: [
         {
-          nome_dia: 'Día 1',
+          nome_dia: "Día 1",
           exercicios: [
-            { exercicio_id: null, series: null, repeticions: null, peso: null }
-          ]
-        }
+            { exercicio_id: null, series: null, repeticions: null, peso: null },
+          ],
+        },
       ],
       todosExercicios: [],
       estaCargando: false,
       planCreado: false,
-      mensaxeErro: '',
+      mensaxeErro: "",
     };
   },
   async mounted() {
@@ -24,26 +25,28 @@ export default {
   },
   methods: {
     async cargarExercicios() {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) {
-        window.location.href = '/';
+        window.location.href = "/";
         return;
       }
 
       const token = session.access_token;
-      // @ts-expect-error
       const urlApi = import.meta.env.PUBLIC_API_URL;
       try {
         const resposta = await fetch(`${urlApi}/api/exercicios`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
         if (resposta.status === 401) {
           await supabase.auth.signOut();
-          alert('A túa sesión expirou. Por favor, inicia sesión novamente.');
-          window.location.href = '/';
+          alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+          window.location.href = "/";
           return;
         }
-        if (!resposta.ok) throw new Error('Non se puideron cargar os exercicios');
+        if (!resposta.ok)
+          throw new Error("Non se puideron cargar os exercicios");
         this.todosExercicios = await resposta.json();
       } catch (erro) {
         this.mensaxeErro = erro.message;
@@ -54,8 +57,8 @@ export default {
       this.dias.push({
         nome_dia: `Día ${numDia}`,
         exercicios: [
-          { exercicio_id: null, series: null, repeticions: null, peso: null }
-        ]
+          { exercicio_id: null, series: null, repeticions: null, peso: null },
+        ],
       });
     },
     eliminarDia(indice) {
@@ -68,7 +71,7 @@ export default {
         exercicio_id: null,
         series: null,
         repeticions: null,
-        peso: null
+        peso: null,
       });
     },
     eliminarExercicio(indiceDia, indiceExercicio) {
@@ -78,33 +81,37 @@ export default {
     },
     async manexarEnvio() {
       this.estaCargando = true;
-      this.mensaxeErro = '';
+      this.mensaxeErro = "";
 
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session) {
-        window.location.href = '/';
+        window.location.href = "/";
         return;
       }
 
       const token = session.access_token;
-      // @ts-expect-error
       const urlApi = import.meta.env.PUBLIC_API_URL;
 
       try {
         const resposta = await fetch(`${urlApi}/api/plans/novo`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({
             nome: this.planNome,
             descricion: this.planDescricion,
-            dias: this.dias
-          })
+            dias: this.dias,
+          }),
         });
 
         if (resposta.status === 401) {
           await supabase.auth.signOut();
-          alert('A túa sesión expirou. Por favor, inicia sesión novamente.');
-          window.location.href = '/';
+          alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+          window.location.href = "/";
           return;
         }
 
@@ -112,37 +119,49 @@ export default {
           this.planCreado = true;
           this.estaCargando = false;
           setTimeout(() => {
-            window.location.href = '/meus-plans';
+            window.location.href = "/meus-plans";
           }, 1500);
         } else {
           const datosErro = await resposta.json();
-          this.mensaxeErro = datosErro.error || 'Non se puido crear o plan.';
+          this.mensaxeErro = datosErro.error || "Non se puido crear o plan.";
           this.estaCargando = false;
         }
       } catch (erro) {
-        this.mensaxeErro = 'Erro de conexión ao crear o plan.';
+        this.mensaxeErro = "Erro de conexión ao crear o plan.";
         this.estaCargando = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <template>
   <form @submit.prevent="manexarEnvio" class="create-plan-form">
-    <p v-if="mensaxeErro" style="color: red;">{{ mensaxeErro }}</p>
+    <p v-if="mensaxeErro" class="error-banner">{{ mensaxeErro }}</p>
 
-    <div>
-      <label for="planNome">Nome do Plan:</label>
-      <input type="text" id="planNome" v-model="planNome" required>
+    <div class="plan-meta-grid">
+      <div>
+        <label for="planNome">Nome do Plan</label>
+        <input
+          type="text"
+          id="planNome"
+          v-model="planNome"
+          placeholder="Ex: Forza e Hipertrofia 4 Días"
+          required
+        />
+      </div>
+
+      <div>
+        <label for="planDescricion">Descrición (opcional)</label>
+        <input
+          type="text"
+          id="planDescricion"
+          v-model="planDescricion"
+          placeholder="Ex: Rutina torso-perna enfocada en básicos"
+        />
+      </div>
     </div>
 
-    <div>
-      <label for="planDescricion">Descrición (opcional):</label>
-      <input type="text" id="planDescricion" v-model="planDescricion">
-    </div>
-
-    <hr>
     <div class="dias-header">
       <h3>Días de Adestramento</h3>
       <button type="button" @click="engadirDia" class="button button-secondary">
@@ -158,21 +177,26 @@ export default {
           placeholder="Nome do día"
           class="dia-nombre-input"
           required
-        >
+        />
         <button
           type="button"
           @click="eliminarDia(indiceDia)"
           class="button-remove"
           :disabled="dias.length === 1"
+          aria-label="Eliminar día"
         >
-          X
+          ✕
         </button>
       </div>
 
       <div class="exercicios-container">
         <h4>Exercicios para {{ dia.nome_dia }}</h4>
 
-        <div v-for="(exercicio, indiceExercicio) in dia.exercicios" :key="indiceExercicio" class="exercicio-fila">
+        <div
+          v-for="(exercicio, indiceExercicio) in dia.exercicios"
+          :key="indiceExercicio"
+          class="exercicio-fila"
+        >
           <div class="input-group">
             <label class="input-label">Exercicio</label>
             <select v-model="exercicio.exercicio_id" required>
@@ -184,32 +208,52 @@ export default {
           </div>
           <div class="input-group">
             <label class="input-label">Series</label>
-            <input type="number" v-model.number="exercicio.series" placeholder="Series" min="1" required>
+            <input
+              type="number"
+              v-model.number="exercicio.series"
+              placeholder="4"
+              min="1"
+              required
+            />
           </div>
           <div class="input-group">
             <label class="input-label">Repeticións</label>
-            <input type="number" v-model.number="exercicio.repeticions" placeholder="Repeticións" min="1" required>
+            <input
+              type="number"
+              v-model.number="exercicio.repeticions"
+              placeholder="10"
+              min="1"
+              required
+            />
           </div>
           <div class="input-group">
             <label class="input-label">Peso (kg)</label>
-            <input type="number" v-model.number="exercicio.peso" placeholder="Peso" min="0" step="0.5" required>
+            <input
+              type="number"
+              v-model.number="exercicio.peso"
+              placeholder="60"
+              min="0"
+              step="0.5"
+              required
+            />
           </div>
           <button
             type="button"
             @click="eliminarExercicio(indiceDia, indiceExercicio)"
             class="button-remove"
             :disabled="dia.exercicios.length === 1"
+            aria-label="Eliminar exercicio"
           >
-            X
+            ✕
           </button>
         </div>
 
         <button
           type="button"
           @click="engadirExercicio(indiceDia)"
-          class="button button-tertiary"
+          class="button-add-exercise"
         >
-          + Engadir Exercicio a este día
+          + Engadir Exercicio a {{ dia.nome_dia }}
         </button>
       </div>
     </div>
@@ -217,194 +261,178 @@ export default {
     <button
       type="submit"
       :disabled="estaCargando || planCreado"
-      class="button button-primary"
+      class="button submit-plan-btn"
       :class="{ 'plan-creado': planCreado }"
     >
       <span v-if="planCreado">✓ Plan Creado!</span>
       <span v-else-if="estaCargando">Gardando...</span>
-      <span v-else>Crear Plan</span>
+      <span v-else>Gardar Plan Completo</span>
     </button>
   </form>
 </template>
 
-<style>
-  .create-plan-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
+<style scoped>
+.create-plan-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 100%;
+}
 
-  .dias-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
+.error-banner {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-md);
+  margin: 0;
+}
 
-  .dia-section {
-    background-color: #2a2a2e;
-    padding: 1.5rem;
-    border-radius: 12px;
-    margin-bottom: 1.5rem;
-    border: 2px solid #444;
-  }
+.plan-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
 
-  .dia-header {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
+.dias-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
 
-  .dia-nombre-input {
-    flex: 1;
-    font-size: 1.1rem;
-    font-weight: 600;
-    padding: 0.5rem;
-    background-color: #333;
-    color: #fff;
-    border: 1px solid #555;
-    border-radius: 8px;
-  }
+.dias-header h3 {
+  margin: 0;
+}
 
-  .exercicios-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
+.dia-section {
+  background: rgba(15, 23, 42, 0.65);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
 
-  .exercicios-container h4 {
-    color: #0d6efd;
-    margin: 0.5rem 0;
-  }
+.dia-header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
 
+.dia-nombre-input {
+  flex: 1;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.exercicios-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.exercicios-container h4 {
+  color: var(--color-primary);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.exercicio-fila {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr 1fr 1fr auto;
+  gap: 0.75rem;
+  align-items: end;
+  background: rgba(9, 13, 22, 0.6);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.input-label {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.button-remove {
+  background: rgba(239, 68, 68, 0.14);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  height: 42px;
+  width: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.button-remove:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.28);
+  border-color: rgba(239, 68, 68, 0.55);
+}
+
+.button-remove:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.button-add-exercise {
+  background: rgba(59, 130, 246, 0.1);
+  color: #60a5fa;
+  border: 1px dashed rgba(59, 130, 246, 0.4);
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.button-add-exercise:hover {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: var(--color-primary);
+}
+
+.submit-plan-btn {
+  align-self: flex-end;
+  min-width: 240px;
+}
+
+.plan-creado {
+  background: var(--color-success) !important;
+}
+
+@media (max-width: 768px) {
   .exercicio-fila {
-    display: grid;
-    grid-template-columns: 3fr 1fr 1fr 1fr auto;
-    gap: 0.75rem;
-    align-items: end;
-    background-color: #1a1a1e;
-    padding: 0.75rem;
-    border-radius: 8px;
+    grid-template-columns: 1fr 1fr;
   }
 
-  .input-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+  .exercicio-fila .input-group:first-child {
+    grid-column: 1 / -1;
   }
 
-  .input-label {
-    font-size: 0.75rem;
-    color: #aaa;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .exercicio-fila input,
-  .exercicio-fila select {
-    padding: 0.75rem;
-    font-size: 1rem;
-    background-color: #333;
-    color: #fff;
-    border: 1px solid #555;
-    border-radius: 8px;
+  .exercicio-fila .button-remove {
+    grid-column: 1 / -1;
     width: 100%;
   }
 
-  .button-remove {
-    background-color: #ff5630;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 0.5rem 0.75rem;
-    min-width: 40px;
+  .submit-plan-btn {
+    width: 100%;
   }
-
-  .button-remove:disabled {
-    background-color: #666;
-    cursor: not-allowed;
-    opacity: 0.5;
-  }
-
-  .button-tertiary {
-    background-color: #28a745;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 0.5rem;
-  }
-
-  .button-tertiary:hover {
-    background-color: #218838;
-  }
-
-  .plan-creado {
-    background-color: #10b981 !important;
-  }
-
-  .plan-creado:hover {
-    background-color: #059669 !important;
-  }
-
-  @media (max-width: 968px) {
-    .exercicio-fila {
-      grid-template-columns: 2fr 1fr 1fr 1fr auto;
-      gap: 0.5rem;
-    }
-
-    .dia-section {
-      padding: 1.25rem;
-    }
-
-    .dias-header {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 0.75rem;
-    }
-
-    .dias-header h3 {
-      text-align: center;
-    }
-  }
-
-  @media (max-width: 599px) {
-    .exercicio-fila {
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-    }
-
-    .dia-section {
-      padding: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .dia-nombre-input {
-      font-size: 1rem;
-    }
-
-    .exercicio-fila input,
-    .exercicio-fila select {
-      padding: 0.65rem;
-      font-size: 0.95rem;
-    }
-
-    .button-remove {
-      width: 100%;
-      margin-top: 0.5rem;
-      padding: 0.75rem;
-    }
-
-    .input-label {
-      font-size: 0.7rem;
-    }
-
-    .exercicios-container h4 {
-      font-size: 1rem;
-    }
-  }
+}
 </style>

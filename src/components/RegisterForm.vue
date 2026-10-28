@@ -1,171 +1,123 @@
 <script>
 export default {
-    data(){
-        return {
-            nome: '',
-            correo: '',
-            contrasinal: '',
-            isLoading: false,
-            errorMessage: '',
-        };
-    },
-    methods: {
-        async handleRegister(){
-            const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if (!emailRegex.test(this.correo)) {
-                this.errorMessage = 'Por favor, introduce un formato de correo electrónico válido.';
-                return; 
-            }
-            this.isLoading = true;
-            this.errorMessage = '';
-            try {
-               // @ts-expect-error
-               const urlApi = import.meta.env.PUBLIC_API_URL;
-               const response = await fetch(`${urlApi}/api/auth/rexistro`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome: this.nome, email: this.correo, contrasinal: this.contrasinal }),
-                });
+  data() {
+    return {
+      nome: "",
+      correo: "",
+      contrasinal: "",
+      isLoading: false,
+      errorMessage: "",
+    };
+  },
+  methods: {
+    async handleRegister() {
+      const emailRegex =
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (!emailRegex.test(this.correo)) {
+        this.errorMessage =
+          "Por favor, introduce un formato de correo electrónico válido.";
+        return;
+      }
+      this.isLoading = true;
+      this.errorMessage = "";
+      try {
+        const urlApi = import.meta.env.PUBLIC_API_URL;
+        const response = await fetch(`${urlApi}/api/auth/rexistro`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nome: this.nome,
+            email: this.correo,
+            contrasinal: this.contrasinal,
+          }),
+        });
 
-                if (response.ok) {
-                    window.location.href = '/';
-                } else {
-                    const errorData = await response.json();
-                    this.errorMessage = errorData.error || 'Erro ao rexistrar. Tente de novo.';
-                }
-            } catch (error) {
-                this.errorMessage = 'Error de conexión co servidor.';
-            } finally {
-                this.isLoading = false;
-            }
+        if (response.ok) {
+          window.location.href = "/";
+        } else {
+          const errorData = await response.json();
+          this.errorMessage =
+            errorData.error || "Erro ao rexistrar. Tente de novo.";
         }
-    }
-}
+      } catch (error) {
+        this.errorMessage = "Erro de conexión co servidor.";
+      } finally {
+        this.isLoading = false;
+      }
+    },
+  },
+};
 </script>
 
 <template>
-  <h2 class="h2-form">REXISTRARSE</h2>
-  <div class="register-form">
+  <div class="register-card">
+    <h2 class="h2-form">Rexistrarse</h2>
     <form @submit.prevent="handleRegister">
-      <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
+      <p v-if="errorMessage" class="error-msg">{{ errorMessage }}</p>
 
       <div>
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" v-model="nome" required>
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" v-model="nome" required />
       </div>
 
       <div>
-        <label for="email">Correo:</label>
-        <input type="email" id="email" v-model="correo" required>
+        <label for="email">Correo electrónico</label>
+        <input type="email" id="email" v-model="correo" required />
       </div>
 
       <div>
-        <label for="password">Contrasinal:</label>
-        <input type="password" id="password" v-model="contrasinal" required>
+        <label for="password">Contrasinal</label>
+        <input type="password" id="password" v-model="contrasinal" required />
       </div>
 
-      <button type="submit" class="button button-register" :disabled="isLoading">
+      <button type="submit" class="button" :disabled="isLoading">
         <span v-if="isLoading">Cargando...</span>
         <span v-else>Rexistrarse</span>
       </button>
 
       <div class="login-section">
         <p class="p-text-acc">Xa tes unha conta?</p>
-        <a href="/" class="button button-login-link">Inicia Sesión</a>
+        <a href="/" class="link-secondary">Inicia Sesión</a>
       </div>
     </form>
   </div>
 </template>
 
-<style>
-.login-section {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  margin-top: 1rem;
+<style scoped>
+.register-card {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
 }
 
 .h2-form {
   text-align: center;
-  font-family: TexGyre, sans-serif;
-  color: #fff;
+  margin-top: 0;
   margin-bottom: 1.5rem;
-  position: absolute;
-  top: 0;
 }
 
-.register-form {
-  background: #2a2a2e;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  padding: 24px;
-  border-radius: 12px;
-  max-width: 400px;
-  box-sizing: border-box;
-  margin: 0 auto;
-  display: grid;
-  grid-gap: 16px;
-  position: relative;
-  left: auto;
-  transform: none;
-  color: #f0f0f0;
+.error-msg {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  text-align: center;
 }
 
-input {
-  width: 100%;
-  padding: 12px;
-  margin: 5px 0 10px 0;
-  background: #333;
-  color: #ffffff;
-  border: 1px solid #555;
-  border-radius: 8px;
-  box-sizing: border-box;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-input:active, input:focus {
-  outline: none;
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
-}
-
-.button-register {
-  width: 100%;
-  padding: 12px;
-  background-color: #0d6efd;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin: 0 auto;
-  font-family: inherit;
-  font-weight: 600;
-  transition: background-color 0.2s ease;
-}
-
-.button-register:hover {
-  background-color: #0b5ed7;
-}
-
-.button-login-link {
-  width: 100%;
-  background: transparent;
-  color: #1c77ff;
-  cursor: pointer;
-  margin: 0;
-  height: fit-content;
-  padding: 5px;
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.button-login-link:hover {
-  color: #ffffff;
+.login-section {
+  text-align: center;
+  margin-top: 0.5rem;
 }
 
 .p-text-acc {
-  color: #a0a0a0;
-  font-size: 0.9rem;
-  text-align: center;
-  margin-top: 1rem;
-  margin-bottom: 0.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.link-secondary {
+  font-weight: 600;
+  color: var(--color-primary);
 }
 </style>

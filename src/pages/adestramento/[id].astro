@@ -4,55 +4,76 @@ export const prerender = false;
 ---
 
 <AppLayout title="Adestramento">
-  <div class="training-header">
-    <h1 id="plan-name">Adestramento</h1>
-    <p id="plan-description"></p>
+  <div class="training-wrapper">
+    <div class="training-header">
+      <h1 id="plan-name">Adestramento</h1>
+      <p id="plan-description"></p>
+    </div>
+
+    <div class="info-box">
+      <svg
+        class="info-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+      <p>
+        <strong>Rexistro en tempo real:</strong> Se modificas as series,
+        repeticións ou o peso suxerido, gardarase a execución real que fixeches
+        hoxe para calcular o teu progreso.
+      </p>
+    </div>
+
+    <div id="training-content">
+      <p>Cargando exercicios...</p>
+    </div>
+
+    <div class="training-actions">
+      <button id="cancel-training-btn" class="button button-secondary">
+        Cancelar
+      </button>
+      <button id="finish-training-btn" class="button" disabled>
+        Finalizar Adestramento
+      </button>
+    </div>
   </div>
 
-  <div class="info-box">
-    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="10"></circle>
-      <line x1="12" y1="16" x2="12" y2="12"></line>
-      <line x1="12" y1="8" x2="12.01" y2="8"></line>
-    </svg>
-    <p>
-      <strong>Nota importante:</strong> Se modificas as series, repeticións ou peso suxeridos, gardarase a execución real que fixeches do plan.
-      Isto permitirache analizar a túa evolución e ver estatísticas precisas do teu progreso.
-    </p>
-  </div>
+  <style is:global>
+    .training-wrapper {
+      max-width: 840px;
+      margin: 0 auto;
+    }
 
-  <div id="training-content">
-    <p>Cargando exercicios...</p>
-  </div>
-
-  <div class="training-actions">
-    <button id="finish-training-btn" class="button button-primary" disabled>
-      Finalizar Adestramento
-    </button>
-    <button id="cancel-training-btn" class="button button-secondary">
-      Cancelar
-    </button>
-  </div>
-
-  <style>
     .training-header {
-      text-align: center;
-      margin-bottom: var(--spacing-2xl);
+      text-align: left;
+      margin-bottom: var(--spacing-xl);
     }
 
     .training-header h1 {
-      margin-bottom: var(--spacing-sm);
+      text-align: left;
+      margin-bottom: 0.25rem;
     }
 
     .training-header p {
       color: var(--color-text-muted);
+      margin: 0;
     }
 
     .info-box {
-      background-color: #1e3a5f;
-      border-left: 4px solid #0d6efd;
-      padding: var(--spacing-lg);
-      border-radius: var(--radius-md);
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-lg);
       margin-bottom: var(--spacing-xl);
       display: flex;
       gap: var(--spacing-md);
@@ -60,82 +81,58 @@ export const prerender = false;
     }
 
     .info-icon {
-      color: #0d6efd;
+      color: var(--color-primary);
       flex-shrink: 0;
-      margin-top: 0.2rem;
+      margin-top: 0.15rem;
     }
 
     .info-box p {
       margin: 0;
-      color: #e0e0e0;
       font-size: var(--font-size-sm);
-      line-height: 1.5;
-    }
-
-    .info-box strong {
-      color: #fff;
-      font-weight: 600;
-    }
-
-    #training-content {
-      margin-bottom: var(--spacing-2xl);
-    }
-
-    .dia-section {
-      background-color: var(--color-bg-card);
-      padding: var(--spacing-xl);
-      border-radius: var(--radius-lg);
-      margin-bottom: var(--spacing-xl);
-      border: 2px solid var(--color-border);
-    }
-
-    .dia-section h2 {
-      color: var(--color-primary);
-      margin-top: 0;
-      margin-bottom: var(--spacing-lg);
     }
 
     .exercicio-card {
-      background-color: var(--color-bg-secondary);
-      padding: var(--spacing-lg);
-      border-radius: var(--radius-md);
+      background: var(--color-bg-card);
+      backdrop-filter: blur(12px);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-xl);
       margin-bottom: var(--spacing-lg);
       border: 1px solid var(--color-border);
     }
 
     .exercicio-card h3 {
-      color: var(--color-text-primary);
       margin-top: 0;
-      margin-bottom: var(--spacing-md);
-      font-size: var(--font-size-xl);
+      margin-bottom: 0.25rem;
     }
 
     .exercicio-info {
-      color: var(--color-text-muted);
+      color: var(--color-primary);
       font-size: var(--font-size-sm);
+      font-weight: 600;
       margin-bottom: var(--spacing-lg);
     }
 
     .series-container {
       display: flex;
       flex-direction: column;
-      gap: var(--spacing-md);
+      gap: 0.75rem;
     }
 
     .serie-row {
       display: grid;
-      grid-template-columns: auto 1fr 1fr;
+      grid-template-columns: 90px 1fr 1fr;
       gap: var(--spacing-md);
       align-items: center;
-      padding: var(--spacing-md);
-      background-color: var(--color-bg-main);
-      border-radius: var(--radius-sm);
+      padding: 0.875rem 1rem;
+      background: rgba(9, 13, 22, 0.65);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
     }
 
     .serie-label {
-      font-weight: 600;
+      font-weight: 700;
       color: var(--color-text-primary);
-      min-width: 80px;
+      font-size: var(--font-size-sm);
     }
 
     .input-group-inline {
@@ -144,97 +141,28 @@ export const prerender = false;
       gap: 0.25rem;
     }
 
-    .input-group-inline label {
-      font-size: 0.7rem;
-      color: var(--color-text-muted);
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .input-group-inline input {
-      padding: var(--spacing-sm) var(--spacing-md);
-      background-color: var(--color-bg-input);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      color: var(--color-text-primary);
-      font-size: var(--font-size-base);
-    }
-
     .training-actions {
       display: flex;
       gap: var(--spacing-md);
-      justify-content: center;
-      margin-top: var(--spacing-2xl);
+      justify-content: flex-end;
+      margin-top: var(--spacing-xl);
     }
 
-    .button-secondary {
-      background-color: var(--color-bg-card);
-      border: 2px solid var(--color-border);
-    }
-
-    .button-secondary:hover {
-      background-color: var(--color-bg-secondary);
-      border-color: var(--color-primary);
-    }
-
-    @media (max-width: 968px) {
-      .dia-section {
-        padding: var(--spacing-lg);
-      }
-
-      .exercicio-card {
-        padding: var(--spacing-md);
-      }
-
+    @media (max-width: 640px) {
       .serie-row {
-        grid-template-columns: auto 1fr 1fr;
-        gap: var(--spacing-sm);
-      }
-    }
-
-    @media (max-width: 599px) {
-      .training-header h1 {
-        font-size: var(--font-size-xl);
-      }
-
-      .info-box {
-        flex-direction: column;
-        padding: var(--spacing-md);
-      }
-
-      .info-box p {
-        font-size: 0.85rem;
-      }
-
-      .dia-section {
-        padding: var(--spacing-md);
-      }
-
-      .exercicio-card {
-        padding: var(--spacing-sm);
-      }
-
-      .exercicio-card h3 {
-        font-size: var(--font-size-lg);
-      }
-
-      .serie-row {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-sm);
+        grid-template-columns: 1fr 1fr;
       }
 
       .serie-label {
-        min-width: auto;
+        grid-column: 1 / -1;
       }
 
       .training-actions {
-        flex-direction: column;
-        gap: var(--spacing-sm);
+        flex-direction: column-reverse;
       }
 
       .training-actions button {
         width: 100%;
-        padding: var(--spacing-md);
       }
     }
   </style>

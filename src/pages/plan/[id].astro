@@ -4,30 +4,86 @@ export const prerender = false;
 ---
 
 <AppLayout title="Detalle do Plan">
-  <div id="plan-detail">
-    <p>Cargando detalle do plan...</p>
-  </div>
+  <div class="plan-detail-wrapper">
+    <a href="/plans" class="back-link">← Voltar a Plans Predefinidos</a>
 
-  <button
-    id="add-plan-button"
-    class="button button-primary"
-    style="margin-top: 1rem;"
-  >
-    Engadir aos meus plans
-  </button>
+    <div id="plan-detail">
+      <p>Cargando detalle do plan...</p>
+    </div>
+
+    <div class="plan-detail-actions">
+      <button id="add-plan-button" class="button">
+        Engadir aos meus plans
+      </button>
+    </div>
+  </div>
 
   <script src="../../scripts/detalle-plan.js"></script>
 
-  <style>
-    .dia-card {
-      background: #fff;
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  <style is:global>
+    .plan-detail-wrapper {
+      max-width: 840px;
+      margin: 0 auto;
     }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      font-size: var(--font-size-sm);
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    .back-link:hover {
+      color: var(--color-text-primary);
+    }
+
+    #plan-detail h2 {
+      margin-top: 0;
+    }
+
+    #plan-detail hr {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin: 1.5rem 0;
+    }
+
+    .dia-card {
+      background: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
     .dia-card h3 {
       margin-top: 0;
+      margin-bottom: 0.75rem;
+      color: var(--color-primary);
+      font-size: var(--font-size-lg);
+    }
+
+    .dia-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .dia-card li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+    }
+
+    .dia-card li:last-child {
+      border-bottom: none;
+    }
+
+    .plan-detail-actions {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: flex-end;
     }
   </style>
 </AppLayout>

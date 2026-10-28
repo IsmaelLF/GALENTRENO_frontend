@@ -1,0 +1,5496 @@
+==> src/layouts/AuthLayout.astro <==
+---
+const { title } = Astro.props;
+---
+
+<html lang="gl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} | Galentreno</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"
+      is:inline></script>
+  </head>
+  <body>
+    <main>
+      <h1 style="display: none">Galentreno</h1>
+      <div class="deco-left">
+        <a href="/"><img src="/img/GALENTRENO.webp" alt="Galentreno Logo" /></a>
+
+        <div class="div-texts">
+          <p class="div-text-copy">Copyright 2025 GALENTRENO</p>
+        </div>
+      </div>
+      <div class="links-container">
+        <a
+          class="a-ig"
+          href="https://instagram.com/galentreno"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visitar o noso perfil de Instagram">INSTAGRAM</a
+        >
+        <a
+          class="a-web"
+          href="https://galentreno.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Ir á páxina web principal de Galentreno">(WEB)</a
+        >
+        <a
+          class="a-fb"
+          href="https://facebook.com/galentreno"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Visitar a nosa páxina de Facebook">FACEBOOK</a
+        >
+      </div>
+      <div class="deco-right auth-card">
+        <div class="auth-content">
+          <slot />
+          <div class="text-frase">
+            <p>
+              "Somos o que facemos repetidamente. A excelencia, daquela, non é
+              un acto, senón un hábito." - Aristóteles
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="deco-under">
+        <div class="scroll-gallery">
+          <div class="scroll-track">
+            <img
+              fetchpriority="high"
+              src="/img/galeria/foto1.webp"
+              alt="Imaxe 1"
+              loading="lazy"
+            />
+            <img
+              fetchpriority="high"
+              src="/img/galeria/foto2.webp"
+              alt="Imaxe 2"
+              loading="lazy"
+            />
+            <img
+              fetchpriority="high"
+              src="/img/galeria/foto3.webp"
+              alt="Imaxe 3"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+  <script>
+    declare const gsap: any;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Check if GSAP is loaded
+      if (typeof gsap === "undefined") {
+        console.warn(
+          "GSAP library failed to load. Some animations will be disabled."
+        );
+      }
+
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
+      // Custom cursor (only if user doesn't prefer reduced motion)
+      if (!prefersReducedMotion && window.innerWidth >= 968) {
+        const cursorDot = document.createElement("div");
+        cursorDot.classList.add("custom-cursor-dot");
+        document.body.appendChild(cursorDot);
+
+        let mouseX = 0;
+        let mouseY = 0;
+        const trail: HTMLElement[] = [];
+        const maxTrail = 15;
+
+        document.addEventListener("mousemove", (e) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+
+          cursorDot.style.left = mouseX + "px";
+          cursorDot.style.top = mouseY + "px";
+
+          const trailDot = document.createElement("div");
+          trailDot.classList.add("cursor-trail");
+          trailDot.style.left = mouseX + "px";
+          trailDot.style.top = mouseY + "px";
+          document.body.appendChild(trailDot);
+
+          trail.push(trailDot);
+
+          if (trail.length > maxTrail) {
+            const oldDot = trail.shift();
+            if (oldDot) oldDot.remove();
+          }
+
+          setTimeout(() => {
+            trailDot.style.opacity = "0";
+            trailDot.style.transform = "translate(-50%, -50%) scale(0)";
+          }, 10);
+        });
+
+        document.querySelectorAll("a, button").forEach((el) => {
+          el.addEventListener("mouseenter", () => {
+            cursorDot.classList.add("cursor-hover");
+          });
+          el.addEventListener("mouseleave", () => {
+            cursorDot.classList.remove("cursor-hover");
+          });
+        });
+      }
+
+      const track = document.querySelector(".scroll-track") as HTMLElement;
+
+      if (!track) return;
+
+      // Duplicate images for infinite scroll effect
+      const originalImages = Array.from(track.querySelectorAll("img"));
+      originalImages.forEach((img) => {
+        const clone = img.cloneNode(true) as HTMLElement;
+        track.appendChild(clone);
+      });
+
+      const baseSpeed = prefersReducedMotion ? 0.1 : 0.25;
+      let scrollAmount = 0;
+      let resetPoint = 0;
+
+      function calculateResetPoint() {
+        if (!track) return;
+        const images = track.querySelectorAll("img");
+        const totalImages = images.length;
+
+        if (totalImages > 0) {
+          resetPoint = track.scrollWidth / 2;
+        }
+      }
+
+      calculateResetPoint();
+      window.addEventListener("resize", calculateResetPoint);
+
+      function animateScroll() {
+        if (resetPoint === 0) {
+          calculateResetPoint();
+        }
+
+        scrollAmount += baseSpeed;
+
+        if (scrollAmount >= resetPoint) {
+          scrollAmount = scrollAmount - resetPoint;
+        }
+
+        if (!track) return;
+        track.style.transform = `translateX(-${scrollAmount}px)`;
+
+        requestAnimationFrame(animateScroll);
+      }
+
+      requestAnimationFrame(animateScroll);
+
+      const linksContainer = document.querySelector(
+        ".links-container"
+      ) as HTMLElement;
+      const authContainer = document.querySelector(".auth-card");
+
+      if (linksContainer && authContainer && window.innerWidth < 968) {
+        const observer = new MutationObserver(() => {
+          if (authContainer.classList.contains("form-active")) {
+            linksContainer.style.opacity = "0";
+            linksContainer.style.pointerEvents = "none";
+          } else {
+            linksContainer.style.opacity = "1";
+            linksContainer.style.pointerEvents = "auto";
+          }
+        });
+
+        observer.observe(authContainer, {
+          attributes: true,
+          attributeFilter: ["class"],
+        });
+
+        if (authContainer.classList.contains("form-active")) {
+          linksContainer.style.opacity = "0";
+          linksContainer.style.pointerEvents = "none";
+        }
+      }
+
+      const quotes = [
+        '"Somos o que facemos repetidamente. A excelencia, daquela, non é un acto, senón un hábito." - Aristóteles',
+        '"Unha viaxe de mil millas comeza cun só paso" - Lao-Tse',
+        '"Non basta con saber, hai que aplicar. Non basta con querer, hai que facer." Johann Wolfgang von Goethe',
+        '"A única maneira de descubrir os límites do posible é ir máis alá deles, cara ao imposible." - Arthur C. Clarke',
+        '"Non teño talentos especiais. Só son apaixonadamente curioso." - Albert Einstein',
+        '"Os únicos límites que tes son os límites que cres." - Wayne Dyer',
+        '"Non te conformes con facelo ¨suficientemente ben¨. Busca sempre facelo mellor." - Michael Jordan',
+      ];
+
+      const fraseElement = document.querySelector(
+        ".text-frase p"
+      ) as HTMLElement;
+      let currentQuoteIndex = 0;
+
+      function rotateQuote() {
+        if (!fraseElement) return;
+
+        if (typeof gsap !== "undefined" && !prefersReducedMotion) {
+          // Use GSAP animations if available and user doesn't prefer reduced motion
+          gsap.to(fraseElement, {
+            opacity: 0,
+            y: 10,
+            duration: 0.6,
+            ease: "power2.in",
+            onComplete: () => {
+              currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+              fraseElement.textContent = quotes[currentQuoteIndex];
+
+              gsap.fromTo(
+                fraseElement,
+                { opacity: 0, y: -10 },
+                { opacity: 0.6, y: 0, duration: 0.6, ease: "power2.out" }
+              );
+            },
+          });
+        } else {
+          // Fallback to simple fade without GSAP
+          fraseElement.style.transition = prefersReducedMotion
+            ? "none"
+            : "opacity 0.6s ease";
+          fraseElement.style.opacity = "0";
+
+          setTimeout(
+            () => {
+              currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+              fraseElement.textContent = quotes[currentQuoteIndex];
+              fraseElement.style.opacity = "0.6";
+            },
+            prefersReducedMotion ? 0 : 600
+          );
+        }
+      }
+
+      setInterval(rotateQuote, 5000);
+    });
+  </script>
+</html>
+
+<style is:global>
+  @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,500;1,500&display=swap");
+
+  @font-face {
+    font-family: TexGyre;
+    src: url("/fonts/texgyreheros-bold.otf") format("opentype");
+  }
+  * {
+    font-family: TexGyre, sans-serif;
+    font-weight: lighter;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Respect user's motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  body {
+    background-color: #000;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .div-text-copy,
+  .text-frase p {
+    font-size: 0.6rem;
+  }
+  input,
+  textarea,
+  select {
+    cursor: text !important;
+  }
+
+  .custom-cursor-dot {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background-color: #0073c0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    transition:
+      width 0.3s ease,
+      height 0.3s ease;
+    display: none;
+  }
+
+  .custom-cursor-dot.cursor-hover {
+    width: 12px;
+    height: 12px;
+  }
+
+  @media (min-width: 1142px) and (max-width: 1355px) {
+    .div-text-copy {
+      font-size: 0.5rem;
+    }
+  }
+
+  .cursor-trail {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background-color: #0073c0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s ease;
+    opacity: 0.6;
+    display: none;
+  }
+
+  .deco-under {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .deco-under::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #11111171;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .deco-left {
+    position: relative;
+    width: 100%;
+    flex-basis: auto;
+    min-height: auto;
+    max-height: none;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem 2rem 1rem;
+    overflow: visible;
+    z-index: 1;
+  }
+  .deco-left img {
+    width: 85%;
+    max-width: 280px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+  }
+  .deco-right {
+    position: relative;
+    width: 100%;
+    height: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow-y: visible;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 3rem 1rem 2rem 1rem;
+    z-index: 1;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .div-texts,
+  .div-text-1,
+  .div-text-copy {
+    display: none;
+  }
+
+  .links-container {
+    position: fixed;
+    bottom: 15vh;
+    left: 5vw;
+    right: 5vw;
+    display: flex;
+    justify-content: space-between;
+    z-index: 1001;
+  }
+
+  .a-ig,
+  .a-fb,
+  .a-web {
+    font-size: 16px;
+    font-style: normal;
+    text-decoration: none;
+    font-weight: 500;
+    color: #ffffff;
+    opacity: 0.7;
+    cursor: none;
+  }
+
+  .text-frase {
+    display: block;
+    position: fixed;
+    bottom: 0vh;
+    right: 1vw;
+    left: 1vw;
+    text-align: center;
+    z-index: 1001;
+    font-size: 10px;
+  }
+  .text-frase p {
+    font-family: "IBM Plex Mono", monospace;
+    font-style: normal;
+    line-height: 1.2;
+    color: #ffffff;
+    opacity: 0.6;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: auto;
+    position: relative;
+    margin: 0;
+    padding: 0;
+  }
+
+  @media (max-height: 700px) and (max-width: 967px) {
+    .deco-left {
+      padding: 1.5rem 1rem 1.5rem 1rem;
+    }
+
+    .deco-left img {
+      width: 75%;
+      max-width: 240px;
+    }
+
+    .deco-right {
+      padding: 2rem 1rem 2rem 1rem;
+    }
+  }
+
+  @media (min-width: 600px) and (max-width: 967px) {
+    .deco-left {
+      padding: 2.5rem 1rem 1.5rem 1rem;
+    }
+
+    .deco-left img {
+      width: 70%;
+      max-width: 320px;
+    }
+
+    .deco-right {
+      padding: 2.5rem 2rem 2rem 2rem;
+    }
+  }
+
+  @media (max-height: 500px) and (max-width: 967px) and (orientation: landscape) {
+    body {
+      height: auto;
+      min-height: 100%;
+    }
+
+    main {
+      min-height: 100%;
+    }
+
+    .deco-left {
+      padding: 1rem 1rem 0.5rem 1rem;
+    }
+
+    .deco-left img {
+      width: 50%;
+      max-width: 150px;
+    }
+
+    .deco-right {
+      padding: 1rem 1rem 1.5rem 1rem;
+    }
+  }
+
+  .text-frase {
+    text-align: center;
+    color: #fff;
+    padding: 2rem 1rem;
+    font-size: 0.7rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .text-frase p {
+    font-family: "IBM Plex Mono", monospace;
+    margin: 0;
+    font-style: normal;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+
+  .auth-content {
+    width: 100%;
+  }
+
+  .auth-content:has(.form-active) .text-frase {
+    display: none !important;
+  }
+
+  @media (min-width: 968px) {
+    body {
+      display: block;
+      overflow: hidden;
+    }
+
+    /* Only hide default cursor if custom cursor is supported and user doesn't prefer reduced motion */
+    @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+      body {
+        cursor: none;
+      }
+
+      .custom-cursor-dot {
+        display: block;
+      }
+
+      .cursor-trail {
+        display: block;
+      }
+    }
+
+    main {
+      display: block;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .text-frase {
+      position: absolute;
+      bottom: 1vh;
+      right: 1vw;
+      left: auto;
+      text-align: right;
+      max-width: 100%;
+      font-size: 0.6rem;
+    }
+
+    .text-frase p {
+      font-family: "IBM Plex Mono", monospace;
+      font-style: normal;
+      line-height: 1;
+      color: #ffffff;
+      opacity: 0.6;
+      text-transform: uppercase;
+    }
+
+    .auth-content {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .div-text-copy {
+      display: block;
+      position: absolute;
+      left: 1vw;
+      bottom: 0vh;
+      font-family: "IBM Plex Mono", monospace;
+      font-style: normal;
+      font-weight: 500;
+      text-transform: uppercase;
+      color: #ffffff;
+      opacity: 0.8;
+      line-height: 1;
+      margin: 0;
+      z-index: 1001;
+      font-size: 0.6rem;
+    }
+
+    .links-container {
+      top: 5dvh;
+      bottom: auto;
+      left: 55%;
+      right: 2vw;
+    }
+
+    .a-ig,
+    .a-fb,
+    .a-web {
+      font-size: 20px;
+    }
+    .deco-under {
+      display: block;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .deco-under::after {
+      display: block;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .deco-left {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform: translate(0, -5%);
+      padding: 0;
+      flex-basis: auto;
+      min-height: unset;
+      max-height: unset;
+      z-index: 999;
+      pointer-events: none;
+    }
+
+    .deco-left img {
+      max-width: none;
+      width: 35%;
+      height: auto;
+      object-fit: cover;
+      position: absolute;
+      left: 2vw;
+      top: 2vh;
+      transform: translate(-20%, -40%);
+      pointer-events: auto;
+    }
+
+    .deco-right {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      flex-direction: column;
+      flex-grow: 0;
+      justify-content: center;
+      overflow-y: auto;
+      z-index: 999;
+    }
+
+    .div-texts {
+      display: inline-block;
+      text-align: center;
+    }
+
+    .div-text-1 {
+      display: block;
+      position: absolute;
+      color: #fff;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0;
+      margin-right: 2dvh;
+      top: 10vh;
+      left: 65dvw;
+    }
+  }
+
+  @media (min-width: 1445px) {
+    .text-frase p {
+      font-size: 0.6rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .scroll-gallery {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .scroll-track {
+    display: flex;
+    height: 100%;
+    will-change: transform;
+    padding: 1dvh;
+  }
+
+  .scroll-track img {
+    width: 50vw;
+    height: 100%;
+    padding: 0;
+    object-fit: cover;
+    filter: saturate(30%);
+    border-radius: 10px;
+    margin-right: 10px;
+  }
+
+  @media (max-width: 967px) {
+    .scroll-track img {
+      width: 95vw;
+    }
+  }
+
+  @media (max-width: 358px) {
+    .deco-left {
+      padding: 1.5rem 0.5rem 1.5rem 0.5rem;
+    }
+
+    .deco-left img {
+      width: 90%;
+      max-width: 220px;
+    }
+
+    .deco-right {
+      padding: 2rem 0.5rem 1.5rem 0.5rem;
+    }
+
+    .links-container {
+      left: 3vw;
+      right: 3vw;
+      bottom: 13vh;
+    }
+
+    .a-ig,
+    .a-fb,
+    .a-web {
+      font-size: 13px;
+    }
+
+    .text-frase {
+      font-size: 8px;
+      left: 0.5vw;
+      right: 0.5vw;
+    }
+
+    .text-frase p {
+      line-height: 1.1;
+    }
+  }
+</style>
+
+==> src/layouts/AppLayout.astro <==
+---
+import Header from "../components/Header.astro";
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="gl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Aplicación de xestión de Galentreno" />
+    <title>{title} | Galentreno</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <style is:global>
+      @font-face {
+        font-family: TexGyre;
+        src: url("/fonts/texgyreheros-bold.otf") format("opentype");
+        font-display: swap;
+      }
+
+      :root {
+        --color-primary: #0d6efd;
+        --color-primary-hover: #0b5ed7;
+        --color-primary-light: rgba(13, 110, 253, 0.1);
+        --color-bg-main: #0a0a0a;
+        --color-bg-secondary: #1a1a1a;
+        --color-bg-card: #2a2a2a;
+        --color-bg-input: #2a2a2a;
+        --color-text-primary: #ffffff;
+        --color-text-secondary: #e0e0e0;
+        --color-text-muted: #c0c0c0;
+        --color-border: #444;
+        --color-border-focus: #0d6efd;
+        --color-shadow: rgba(0, 0, 0, 0.3);
+        --color-shadow-lg: rgba(0, 0, 0, 0.5);
+
+        /* Spacing */
+        --spacing-xs: 0.25rem;
+        --spacing-sm: 0.5rem;
+        --spacing-md: 1rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+        --spacing-2xl: 3rem;
+
+        /* Typography */
+        --font-family: TexGyre, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        --font-size-xs: 0.75rem;
+        --font-size-sm: 0.875rem;
+        --font-size-base: 1rem;
+        --font-size-lg: 1.125rem;
+        --font-size-xl: 1.25rem;
+        --font-size-2xl: 1.5rem;
+        --font-size-3xl: 1.875rem;
+        --font-size-4xl: 2.25rem;
+
+        /* Border Radius */
+        --radius-sm: 0.5rem;
+        --radius-md: 0.75rem;
+        --radius-lg: 1rem;
+        --radius-xl: 1.25rem;
+
+        /* Transitions */
+        --transition-fast: 0.15s ease;
+        --transition-base: 0.2s ease;
+        --transition-slow: 0.3s ease;
+
+        /* Shadows */
+        --shadow-sm: 0 1px 2px var(--color-shadow);
+        --shadow-md: 0 4px 6px var(--color-shadow);
+        --shadow-lg: 0 10px 15px var(--color-shadow-lg);
+
+        /* Z-index */
+        --z-dropdown: 1000;
+        --z-sticky: 1020;
+        --z-fixed: 1030;
+        --z-modal-backdrop: 1040;
+        --z-modal: 1050;
+        --z-tooltip: 1070;
+      }
+
+      * {
+        font-family: var(--font-family);
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      /* Respect user's motion preferences */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+
+      html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      body {
+        font-family: var(--font-family);
+        background: linear-gradient(
+          135deg,
+          var(--color-bg-main) 0%,
+          var(--color-bg-secondary) 100%
+        );
+        margin: 0;
+        color: var(--color-text-secondary);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        min-height: 100dvh;
+        overflow-x: hidden;
+        font-size: var(--font-size-base);
+        line-height: 1.6;
+      }
+
+      main {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        min-height: calc(100vh - 80px);
+        min-height: calc(100dvh - 80px);
+        position: relative;
+        flex-grow: 1;
+      }
+
+      .content-wrapper {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-md);
+        position: relative;
+        z-index: 1;
+        animation: fadeIn 0.4s ease-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Typography */
+      h1 {
+        font-size: var(--font-size-3xl);
+        font-weight: 700;
+        text-align: center;
+        color: var(--color-text-primary);
+        margin-bottom: var(--spacing-lg);
+        letter-spacing: -0.02em;
+      }
+
+      h2 {
+        font-size: var(--font-size-2xl);
+        font-weight: 600;
+        margin-top: var(--spacing-xl);
+        margin-bottom: var(--spacing-md);
+        color: var(--color-text-primary);
+        letter-spacing: -0.01em;
+      }
+
+      h3 {
+        font-size: var(--font-size-xl);
+        font-weight: 600;
+        margin-bottom: var(--spacing-sm);
+        color: var(--color-text-primary);
+      }
+
+      p {
+        margin-bottom: var(--spacing-md);
+        line-height: 1.7;
+      }
+
+      small {
+        color: var(--color-text-muted);
+        font-weight: 500;
+        font-size: var(--font-size-sm);
+      }
+
+      a {
+        color: var(--color-primary);
+        text-decoration: none;
+        transition: color var(--transition-base);
+      }
+
+      a:hover {
+        color: var(--color-primary-hover);
+        text-decoration: underline;
+      }
+
+      a:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+        border-radius: var(--radius-sm);
+      }
+
+      /* Cards */
+      .card {
+        background-color: var(--color-bg-card);
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-lg);
+        text-align: center;
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-secondary);
+        transition:
+          transform var(--transition-base),
+          box-shadow var(--transition-base);
+      }
+
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .card strong {
+        font-size: var(--font-size-3xl);
+        display: block;
+        margin-bottom: var(--spacing-xs);
+        color: var(--color-text-primary);
+        font-weight: 700;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+        margin: var(--spacing-lg) 0;
+      }
+
+      /* Buttons */
+      .button,
+      .button-register,
+      .button-login {
+        border: none;
+        padding: var(--spacing-md) var(--spacing-xl);
+        margin: 0 auto;
+        width: 100%;
+        max-width: 320px;
+        background-color: var(--color-primary);
+        color: var(--color-text-primary);
+        border-radius: var(--radius-md);
+        font-size: var(--font-size-base);
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+        display: inline-block;
+        text-decoration: none;
+        transition:
+          background-color var(--transition-base),
+          transform var(--transition-fast),
+          box-shadow var(--transition-base);
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .button::before,
+      .button-register::before,
+      .button-login::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s;
+        z-index: -1;
+      }
+
+      .button:hover::before,
+      .button-register:hover::before,
+      .button-login:hover::before {
+        transform: translateX(100%);
+      }
+
+      .button:hover,
+      .button-register:hover,
+      .button-login:hover {
+        background-color: var(--color-primary-hover);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+        color: var(--color-text-primary);
+      }
+
+      .button:active,
+      .button-register:active,
+      .button-login:active {
+        transform: translateY(0);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .button:focus-visible,
+      .button-register:focus-visible,
+      .button-login:focus-visible {
+        outline: 2px solid var(--color-primary);
+        outline-offset: 2px;
+      }
+
+      /* Session Items */
+      .session-item {
+        background-color: var(--color-bg-card);
+        padding: var(--spacing-lg);
+        border-radius: var(--radius-lg);
+        margin-bottom: var(--spacing-md);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--color-border);
+        color: var(--color-text-secondary);
+        transition:
+          transform var(--transition-base),
+          border-color var(--transition-base);
+      }
+
+      .session-item:hover {
+        transform: translateX(4px);
+        border-color: var(--color-primary);
+      }
+
+      /* Forms */
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-lg);
+        margin: 0 auto;
+        width: 100%;
+        max-width: 540px;
+      }
+
+      form.create-plan-form {
+        max-width: 900px;
+      }
+
+      label {
+        font-weight: 600;
+        color: var(--color-text-primary);
+        display: block;
+        margin-bottom: var(--spacing-xs);
+        font-size: var(--font-size-sm);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"],
+      input[type="number"],
+      input[type="date"],
+      input[type="time"],
+      select,
+      textarea {
+        width: 100%;
+        padding: var(--spacing-md) var(--spacing-lg);
+        border-radius: var(--radius-md);
+        border: 2px solid var(--color-border);
+        background-color: var(--color-bg-input);
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-base);
+        font-family: inherit;
+        box-sizing: border-box;
+        transition:
+          border-color var(--transition-base),
+          box-shadow var(--transition-base),
+          background-color var(--transition-base);
+      }
+
+      input[type="text"]:hover,
+      input[type="email"]:hover,
+      input[type="password"]:hover,
+      input[type="number"]:hover,
+      input[type="date"]:hover,
+      input[type="time"]:hover,
+      select:hover,
+      textarea:hover {
+        border-color: var(--color-border-focus);
+        background-color: rgba(42, 42, 42, 0.8);
+      }
+
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      input[type="password"]:focus,
+      input[type="number"]:focus,
+      input[type="date"]:focus,
+      input[type="time"]:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--color-border-focus);
+        box-shadow: 0 0 0 4px var(--color-primary-light);
+        background-color: var(--color-bg-input);
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      /* Plans Container */
+      .plans-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--spacing-lg);
+        margin-top: var(--spacing-xl);
+      }
+
+      .plan-card {
+        background-color: var(--color-bg-card);
+        color: var(--color-text-secondary);
+        padding: var(--spacing-xl);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        border: 2px solid var(--color-border);
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        transition:
+          transform var(--transition-base),
+          border-color var(--transition-base),
+          box-shadow var(--transition-base);
+      }
+
+      .plan-card:hover {
+        transform: translateY(-4px);
+        border-color: var(--color-primary);
+        box-shadow: var(--shadow-lg);
+        text-decoration: none;
+      }
+
+      .plan-card h3 {
+        margin-top: 0;
+        margin-bottom: var(--spacing-md);
+        color: var(--color-text-primary);
+        font-size: var(--font-size-2xl);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 599px) {
+        h1 {
+          font-size: var(--font-size-2xl);
+        }
+
+        h2 {
+          font-size: var(--font-size-xl);
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+          gap: var(--spacing-sm);
+        }
+
+        .plans-container {
+          grid-template-columns: 1fr;
+        }
+
+        .card {
+          padding: var(--spacing-md);
+        }
+
+        .plan-card {
+          padding: var(--spacing-lg);
+        }
+      }
+
+      @media (min-width: 600px) {
+        .content-wrapper {
+          padding: var(--spacing-2xl) var(--spacing-xl);
+        }
+
+        h1 {
+          font-size: var(--font-size-4xl);
+        }
+
+        h2 {
+          font-size: var(--font-size-2xl);
+        }
+
+        .button,
+        .button-register,
+        .button-login {
+          width: 60%;
+          max-width: 400px;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        }
+      }
+
+      @media (min-width: 968px) {
+        .content-wrapper {
+          padding: var(--spacing-2xl) var(--spacing-xl);
+        }
+
+        h1 {
+          font-size: var(--font-size-4xl);
+        }
+
+        .button,
+        .button-register,
+        .button-login {
+          width: auto;
+          min-width: 280px;
+          padding: var(--spacing-lg) var(--spacing-2xl);
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        form {
+          max-width: 600px;
+        }
+      }
+
+      @media (min-width: 1200px) {
+        .content-wrapper {
+          padding: var(--spacing-2xl);
+        }
+
+        .plans-container {
+          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        }
+      }
+
+      /* Utilities */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      .mt-0 {
+        margin-top: 0;
+      }
+
+      .mb-0 {
+        margin-bottom: 0;
+      }
+    </style></head
+  >
+
+  <body>
+    <Header />
+
+    <main>
+      <div class="content-wrapper">
+        <slot />
+      </div>
+    </main>
+  </body>
+</html>
+
+==> src/styles/global.css <==
+@import "tailwindcss";
+==> src/scripts/meus-plans.js <==
+import { supabase } from "../lib/supabase.js";
+
+const apiUrl = "https://galentreno-backend.onrender.com";
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    window.location.href = "/";
+    return;
+  }
+
+  const token = session.access_token;
+
+  const listaPlans = document.getElementById("plans-list");
+  const modal = document.getElementById("plan-modal");
+  const botonPechar = document.getElementById("close-modal");
+  const nomePlanModal = document.getElementById("modal-plan-name");
+  const detallePlanModal = document.getElementById("modal-plan-detail");
+  const botonIniciar = document.getElementById("start-training-btn");
+  const selectorDia = document.getElementById("day-select");
+
+  let planActualId = null;
+
+  function pecharModal() {
+    if (modal) {
+      modal.classList.remove("active");
+      document.body.style.overflow = "";
+    }
+  }
+
+  function abrirModal() {
+    if (modal) {
+      modal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+  }
+
+  async function cargarDetallesPlan(planId) {
+    planActualId = planId;
+
+    if (!detallePlanModal || !nomePlanModal) return;
+
+    detallePlanModal.innerHTML = "<p>Cargando detalle do plan...</p>";
+    abrirModal();
+
+    try {
+      const resposta = await fetch(`${apiUrl}/api/plans/${planId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (resposta.status === 401) {
+        await supabase.auth.signOut();
+        alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+        window.location.href = "/";
+        return;
+      }
+
+      if (!resposta.ok) throw new Error("Non se puido cargar o plan");
+
+      const plan = await resposta.json();
+
+      nomePlanModal.textContent = plan.nome;
+
+      let htmlDetalle = "";
+
+      if (plan.descricion) {
+        htmlDetalle += `<p style="margin-bottom: var(--spacing-lg); color: var(--color-text-muted);">${plan.descricion}</p>`;
+      }
+
+      if (plan.dias && plan.dias.length > 0) {
+        plan.dias.forEach((dia) => {
+          let htmlExercicios = "";
+          if (dia.exercicios && dia.exercicios.length > 0) {
+            dia.exercicios.forEach((ex) => {
+              htmlExercicios += `<li>${ex.nome_exercicio} - ${ex.series} series × ${ex.repeticions} reps</li>`;
+            });
+          } else {
+            htmlExercicios = "<li>Sen exercicios asignados</li>";
+          }
+
+          htmlDetalle += `
+                <div class="dia-card">
+                  <h3>${dia.nome_dia}</h3>
+                  <ul>${htmlExercicios}</ul>
+                </div>
+              `;
+        });
+      } else {
+        htmlDetalle += "<p>Este plan non ten días configurados.</p>";
+      }
+
+      detallePlanModal.innerHTML = htmlDetalle;
+
+      if (selectorDia) {
+        selectorDia.innerHTML = '<option value="">Escolle un día...</option>';
+
+        if (plan.dias && plan.dias.length > 0) {
+          plan.dias.forEach((dia) => {
+            const opcion = document.createElement("option");
+            opcion.value = dia.id;
+            opcion.textContent = dia.nome_dia;
+            selectorDia.appendChild(opcion);
+          });
+        }
+
+        selectorDia.disabled = false;
+      }
+    } catch (erro) {
+      detallePlanModal.innerHTML = "<p>Erro ao cargar os detalles do plan.</p>";
+    }
+  }
+
+  try {
+    const resposta = await fetch(`${apiUrl}/api/plans/creados`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (resposta.status === 401) {
+      await supabase.auth.signOut();
+      alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+      window.location.href = "/";
+      return;
+    }
+
+    if (!resposta.ok) throw new Error("Non se puideron cargar os plans");
+    if (!listaPlans) return;
+
+    const plans = await resposta.json();
+    listaPlans.innerHTML = "";
+
+    if (plans.length === 0) {
+      listaPlans.innerHTML = "<p>Aínda non creaches ningún plan persoal.</p>";
+    } else {
+      plans.forEach((plan) => {
+        const tarxeta = document.createElement("div");
+        tarxeta.className = "plan-card";
+        tarxeta.setAttribute("role", "button");
+        tarxeta.setAttribute("tabindex", "0");
+        tarxeta.setAttribute("aria-label", `Ver detalles do plan ${plan.nome}`);
+
+        const numDias = plan.dias?.length || 0;
+        const numExercicios =
+          plan.dias?.reduce(
+            (total, dia) => total + (dia.exercicios?.length || 0),
+            0
+          ) || 0;
+
+        tarxeta.innerHTML = `
+              <h3>${plan.nome}</h3>
+              <p>${plan.descricion || "Sen descrición"}</p>
+              <div class="plan-card-footer">
+                <span>${numDias} día${numDias !== 1 ? "s" : ""}</span>
+                <span>${numExercicios} exercicio${
+          numExercicios !== 1 ? "s" : ""
+        }</span>
+              </div>
+            `;
+
+        tarxeta.addEventListener("click", () => cargarDetallesPlan(plan.id));
+
+        tarxeta.addEventListener("keypress", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            cargarDetallesPlan(plan.id);
+          }
+        });
+
+        listaPlans.appendChild(tarxeta);
+      });
+    }
+  } catch (erro) {
+    if (listaPlans)
+      listaPlans.innerHTML = "<p>Erro ao cargar os teus plans.</p>";
+  }
+
+  if (botonPechar) {
+    botonPechar.addEventListener("click", pecharModal);
+  }
+
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        pecharModal();
+      }
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal?.classList.contains("active")) {
+      pecharModal();
+    }
+  });
+
+  if (selectorDia) {
+    selectorDia.addEventListener("change", () => {
+      if (botonIniciar) {
+        botonIniciar.disabled = !selectorDia.value;
+      }
+    });
+  }
+
+  if (botonIniciar) {
+    botonIniciar.addEventListener("click", () => {
+      const diaSeleccionadoId = selectorDia?.value;
+      if (planActualId && diaSeleccionadoId) {
+        window.location.href = `/adestramento/${planActualId}?dia=${diaSeleccionadoId}`;
+      }
+    });
+  }
+});
+
+==> src/scripts/sesion-adestramento.js <==
+import { supabase } from "../lib/supabase.js";
+
+const apiUrl = "https://galentreno-backend.onrender.com";
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    window.location.href = "/";
+    return;
+  }
+
+  const token = session.access_token;
+  const planId = window.location.pathname.split("/").pop();
+  const parametrosUrl = new URLSearchParams(window.location.search);
+  const diaSeleccionadoId = parametrosUrl.get("dia");
+
+  if (!diaSeleccionadoId) {
+    window.location.href = "/meus-plans";
+    return;
+  }
+
+  const contidoAdestramento = document.getElementById("training-content");
+  const elementoNomePlan = document.getElementById("plan-name");
+  const elementoDescPlan = document.getElementById("plan-description");
+  const botonFinalizar = document.getElementById("finish-training-btn");
+  const botonCancelar = document.getElementById("cancel-training-btn");
+
+  let datosPlan = null;
+  let diaSeleccionado = null;
+
+  try {
+    const resposta = await fetch(`${apiUrl}/api/plans/${planId}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (resposta.status === 401) {
+      await supabase.auth.signOut();
+      alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+      window.location.href = "/";
+      return;
+    }
+
+    if (!resposta.ok) throw new Error("Non se puido cargar o plan");
+
+    datosPlan = await resposta.json();
+
+    diaSeleccionado = datosPlan.dias.find((d) => d.id == diaSeleccionadoId);
+
+    if (!diaSeleccionado) {
+      throw new Error("Día non atopado");
+    }
+
+    if (elementoNomePlan)
+      elementoNomePlan.textContent = `${datosPlan.nome} - ${diaSeleccionado.nome_dia}`;
+    if (elementoDescPlan)
+      elementoDescPlan.textContent = datosPlan.descricion || "";
+
+    renderizarAdestramento(diaSeleccionado);
+
+    if (botonFinalizar) botonFinalizar.disabled = false;
+  } catch (erro) {
+    if (contidoAdestramento) {
+      contidoAdestramento.innerHTML = "<p>Erro ao cargar o plan.</p>";
+    }
+  }
+
+  function renderizarAdestramento(dia) {
+    if (!contidoAdestramento) return;
+
+    let html = "";
+
+    if (dia.exercicios && dia.exercicios.length > 0) {
+      dia.exercicios.forEach((ex, indiceEx) => {
+        html += `
+          <div class="exercicio-card" data-dia-id="${dia.id}" data-exercicio-index="${indiceEx}">
+            <h3>${ex.nome_exercicio}</h3>
+            <p class="exercicio-info">
+              ${ex.series} series × ${ex.repeticions} repeticions @ ${ex.peso} kg
+            </p>
+            <div class="series-container">
+        `;
+
+        for (let i = 1; i <= ex.series; i++) {
+          html += `
+            <div class="serie-row">
+              <span class="serie-label">Serie ${i}</span>
+              <div class="input-group-inline">
+                <label>Repeticions</label>
+                <input
+                  type="number"
+                  class="reps-input"
+                  data-serie="${i}"
+                  value="${ex.repeticions}"
+                  min="0"
+                  required
+                >
+              </div>
+              <div class="input-group-inline">
+                <label>Peso (kg)</label>
+                <input
+                  type="number"
+                  class="weight-input"
+                  data-serie="${i}"
+                  value="${ex.peso}"
+                  min="0"
+                  step="0.5"
+                  required
+                >
+              </div>
+            </div>
+          `;
+        }
+
+        html += `
+            </div>
+          </div>
+        `;
+      });
+    } else {
+      html = "<p>Este día non ten exercicios asignados.</p>";
+    }
+
+    contidoAdestramento.innerHTML = html;
+  }
+
+  if (botonCancelar) {
+    botonCancelar.addEventListener("click", () => {
+      if (confirm("Seguro que queres cancelar o adestramento?")) {
+        window.location.href = "/meus-plans";
+      }
+    });
+  }
+
+  if (botonFinalizar) {
+    botonFinalizar.addEventListener("click", async () => {
+      botonFinalizar.disabled = true;
+      botonFinalizar.textContent = "Gardando...";
+
+      try {
+        const datosAdestramento = recollerDatosAdestramento();
+
+        const resposta = await fetch(`${apiUrl}/api/sesions/nova`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            plan_id: planId,
+            exercicios: datosAdestramento,
+          }),
+        });
+
+        if (resposta.status === 401) {
+          await supabase.auth.signOut();
+          alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+          window.location.href = "/";
+          return;
+        }
+
+        if (resposta.ok) {
+          botonFinalizar.textContent = "✓ Gardado!";
+          botonFinalizar.style.backgroundColor =
+            "var(--color-success, #10b981)";
+
+          setTimeout(() => {
+            window.location.href = "/inicio";
+          }, 1500);
+        } else {
+          throw new Error("Non se puido gardar o adestramento");
+        }
+      } catch (erro) {
+        alert("Erro ao gardar o adestramento: " + erro.message);
+        botonFinalizar.disabled = false;
+        botonFinalizar.textContent = "Finalizar Adestramento";
+      }
+    });
+  }
+
+  function recollerDatosAdestramento() {
+    const tarxetasExercicio = document.querySelectorAll(".exercicio-card");
+    const datos = [];
+
+    tarxetasExercicio.forEach((tarxeta) => {
+      const diaId = tarxeta.dataset.diaId;
+      const indiceExercicio = parseInt(tarxeta.dataset.exercicioIndex);
+
+      const dia = datosPlan.dias.find((d) => d.id == diaId);
+      const exercicio = dia.exercicios[indiceExercicio];
+
+      const series = [];
+      const filasSerie = tarxeta.querySelectorAll(".serie-row");
+
+      filasSerie.forEach((fila) => {
+        const inputReps = fila.querySelector(".reps-input");
+        const inputPeso = fila.querySelector(".weight-input");
+
+        series.push({
+          repeticions: parseInt(inputReps.value) || 0,
+          peso: parseFloat(inputPeso.value) || 0,
+        });
+      });
+
+      datos.push({
+        exercicio_id: exercicio.exercicio_id,
+        series: series,
+      });
+    });
+
+    return datos;
+  }
+});
+
+==> src/scripts/detalle-plan.js <==
+import { supabase } from "../lib/supabase.js";
+
+const apiUrl = "https://galentreno-backend.onrender.com";
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const planId = window.location.pathname.split("/").pop();
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    window.location.href = "/";
+    return;
+  }
+
+  const token = session.access_token;
+  const planDetail = document.getElementById("plan-detail");
+  const addButton = document.getElementById("add-plan-button");
+
+  try {
+    const response = await fetch(`${apiUrl}/api/plans/predefinidos/${planId}`);
+    if (!response.ok) throw new Error("Plan non atopado");
+
+    const plan = await response.json();
+
+    planDetail.innerHTML = `
+      <h2>${plan.nome}</h2>
+      <p>${plan.descricion}</p>
+      <hr>
+    `;
+
+    plan.dias.forEach((dia) => {
+      const diaEx = document.createElement("div");
+      diaEx.className = "dia-card";
+
+      let exerciciosHtml = "";
+      dia.exercicios.forEach((ex) => {
+        exerciciosHtml += `<li>${ex.nome_exercicio} (${ex.series} x ${ex.repeticions})</li>`;
+      });
+
+      diaEx.innerHTML = `
+        <h3>${dia.nome_dia}</h3>
+        <ul>${exerciciosHtml}</ul>
+      `;
+      planDetail.appendChild(diaEx);
+    });
+  } catch (error) {
+    planDetail.innerHTML = "<p>Erro ao cargar o plan.</p>";
+  }
+
+  if (addButton) {
+    addButton.addEventListener("click", async () => {
+      addButton.textContent = "Engadindo...";
+      addButton.disabled = true;
+
+      try {
+        const response = await fetch(`${apiUrl}/api/plans/${planId}/copy`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.status === 401) {
+          await supabase.auth.signOut();
+          alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+          window.location.href = "/";
+          return;
+        }
+
+        if (response.ok) {
+          await response.json();
+          addButton.textContent = "✓ Engadido!";
+          addButton.style.backgroundColor = "var(--color-success, #10b981)";
+
+          setTimeout(() => {
+            window.location.href = "/meus-plans";
+          }, 1500);
+        } else {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Non se puido engadir o plan");
+        }
+      } catch (error) {
+        alert("Houbo un erro ao engadir o plan: " + error.message);
+        addButton.textContent = "Engadir aos meus plans";
+        addButton.disabled = false;
+      }
+    });
+  }
+});
+
+==> src/scripts/inicio.js <==
+import { supabase } from "../lib/supabase.js";
+
+const apiUrl = "https://galentreno-backend.onrender.com";
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    window.location.href = "/";
+    return;
+  }
+
+  const token = session.access_token;
+
+  const dataActual = document.getElementById("current-date");
+  if (dataActual) {
+    dataActual.textContent = dataActual.dataset.dataFormateada;
+  }
+
+  try {
+    const resposta = await fetch(`${apiUrl}/api/sesions/recentes`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (resposta.status === 401) {
+      await supabase.auth.signOut();
+      alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+      window.location.href = "/";
+      return;
+    }
+
+    const saudo = document.getElementById("user-greeting");
+
+    if (resposta.ok && saudo) {
+      const datos = await resposta.json();
+      saudo.textContent = `Benvido, ${datos.nome}`;
+    }
+  } catch (erro) {
+  }
+
+  async function cargarPesoHoxe() {
+    try {
+      const resposta = await fetch(`${apiUrl}/api/peso/hoy`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (resposta.status === 401) {
+        await supabase.auth.signOut();
+        alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+        window.location.href = "/";
+        return;
+      }
+
+      if (resposta.ok) {
+        const datos = await resposta.json();
+        const elementoPesoAnterior = document.querySelector("#last-weight");
+        const inputPeso = document.getElementById("weight-input");
+
+        if (datos.peso) {
+          if (elementoPesoAnterior) {
+            elementoPesoAnterior.textContent = `${datos.peso} kg`;
+          }
+          if (inputPeso) {
+            inputPeso.value = datos.peso;
+          }
+        } else {
+          if (elementoPesoAnterior) {
+            elementoPesoAnterior.textContent = "Sen datos";
+          }
+        }
+      }
+    } catch (erro) {
+    }
+  }
+
+  const botonGardarPeso = document.getElementById("save-weight-btn");
+  const inputPeso = document.getElementById("weight-input");
+  const estadoPeso = document.getElementById("weight-status");
+
+  if (botonGardarPeso && inputPeso && estadoPeso) {
+    botonGardarPeso.addEventListener("click", async () => {
+      const peso = parseFloat(inputPeso.value);
+
+      if (!peso || peso <= 0 || peso > 500) {
+        estadoPeso.textContent = "Por favor, introduce un peso válido";
+        estadoPeso.className = "weight-status error";
+        return;
+      }
+
+      botonGardarPeso.textContent = "Gardando...";
+      botonGardarPeso.disabled = true;
+      estadoPeso.textContent = "";
+      estadoPeso.className = "weight-status";
+
+      try {
+        const resposta = await fetch(`${apiUrl}/api/peso`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ peso_corporal: peso }),
+        });
+
+        if (resposta.status === 401) {
+          await supabase.auth.signOut();
+          alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+          window.location.href = "/";
+          return;
+        }
+
+        if (resposta.ok) {
+          estadoPeso.textContent = "✓ Peso gardado correctamente";
+          estadoPeso.className = "weight-status success";
+          await cargarPesoHoxe();
+        } else {
+          throw new Error("Error ao gardar o peso");
+        }
+      } catch (erro) {
+        estadoPeso.textContent = "✗ Erro ao gardar o peso";
+        estadoPeso.className = "weight-status error";
+      } finally {
+        botonGardarPeso.textContent = "Gardar";
+        botonGardarPeso.disabled = false;
+      }
+    });
+  }
+
+  async function cargarEstatisticas() {
+    try {
+      const resposta = await fetch(`${apiUrl}/api/sesions/stats`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (resposta.status === 401) {
+        await supabase.auth.signOut();
+        alert("A túa sesión expirou. Por favor, inicia sesión novamente.");
+        window.location.href = "/";
+        return;
+      }
+
+      if (resposta.ok) {
+        const datos = await resposta.json();
+
+        const elementoTotalAdestramentos =
+          document.getElementById("total-trainings");
+        const elementoVolumeTotal = document.getElementById("total-volume");
+        const elementoAdestramentosSemana =
+          document.getElementById("week-trainings");
+
+        if (elementoTotalAdestramentos) {
+          elementoTotalAdestramentos.textContent =
+            datos.totalAdestramentos || 0;
+        }
+        if (elementoVolumeTotal) {
+          const volume = datos.volumeTotal || 0;
+          elementoVolumeTotal.textContent = `${Math.round(volume)} kg`;
+        }
+        if (elementoAdestramentosSemana) {
+          elementoAdestramentosSemana.textContent =
+            datos.adestramentsEstaSemana || 0;
+        }
+      }
+    } catch (erro) {
+    }
+  }
+
+  cargarPesoHoxe();
+  cargarEstatisticas();
+});
+
+==> src/pages/plans/index.astro <==
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+const apiUrl = import.meta.env.PUBLIC_API_URL;
+---
+
+<AppLayout title="Plans Predefinidos">
+  <h2>Plans Predefinidos</h2>
+  <p>Explora as nosas rutinas creadas por expertos.</p>
+
+  <div id="plans-list" class="plans-container">
+    <p>Cargando plans...</p>
+  </div>
+
+  <style is:global></style>
+
+  <script type="module" define:vars={{ apiUrl: apiUrl }}>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const listaPlans = document.getElementById("plans-list");
+
+      try {
+        const response = await fetch(`${apiUrl}/api/plans/predefinidos`);
+        if (!response.ok) throw new Error("Non se puideron cargar os plans");
+        if (!listaPlans) return;
+        const plans = await response.json();
+        listaPlans.innerHTML = "";
+
+        if (plans.length === 0) {
+          listaPlans.innerHTML =
+            "<p>Non hai plans predefinidos dispoñibles.</p>";
+        } else {
+          plans.forEach((plan) => {
+            const card = document.createElement("a");
+            card.className = "plan-card";
+            card.href = `/plan/${plan.id}`;
+            card.innerHTML = `
+                            <h3>${plan.nome}</h3>
+                            <p>${plan.descricion || "Sen descrición."}</p>
+                        `;
+            listaPlans.appendChild(card);
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        if (!listaPlans) return;
+        listaPlans.innerHTML = "<p>Error ao cargar os plans.</p>";
+      }
+    });
+  </script>
+</AppLayout>
+
+==> src/pages/plans/novo.astro <==
+---
+// src/pages/plans/novo.astro
+import AppLayout from "../../layouts/AppLayout.astro";
+import CrearPlan from "../../components/CrearPlan.vue";
+---
+
+<AppLayout title="Crear Novo Plan">
+  <div class="page-header">
+    <h2>Crear un novo plan de adestramento</h2>
+    <p class="page-description">
+      Escolle unha das opcións a continuación para comezar co teu plan personalizado
+    </p>
+  </div>
+
+  <div class="plan-options-container">
+    <div class="option-card">
+      <div class="option-icon">📋</div>
+      <h3>Plans Predefinidos</h3>
+      <p>Escolle entre os nosos plans creados por expertos, deseñados para diferentes obxectivos e niveis</p>
+      <a href="/plans" class="button button-secondary">Ver Plans Predefinidos</a>
+    </div>
+
+    <div class="option-divider">
+      <span>OU</span>
+    </div>
+
+    <div class="option-card highlighted">
+      <div class="option-icon">✏️</div>
+      <h3>Plan Personalizado</h3>
+      <p>Crea o teu propio plan desde cero, adaptado ás túas necesidades específicas</p>
+      <button id="show-custom-form" class="button button-primary">Crear Plan Personalizado</button>
+    </div>
+  </div>
+
+  <div id="custom-plan-form" class="custom-form-container" style="display: none;">
+    <div class="form-header">
+      <h3>Deseña o teu plan personalizado</h3>
+      <button id="hide-custom-form" class="button-close" aria-label="Pechar formulario">×</button>
+    </div>
+    <CrearPlan client:load />
+  </div>
+
+  <style>
+    .page-header {
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .page-header h2 {
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-text-primary);
+    }
+
+    .page-description {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-lg);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .plan-options-container {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: var(--spacing-xl);
+      align-items: center;
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .option-card {
+      background-color: var(--color-bg-card);
+      padding: var(--spacing-2xl);
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--color-border);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .option-card:hover {
+      border-color: var(--color-primary);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(13, 110, 253, 0.15);
+    }
+
+    .option-card.highlighted {
+      border-color: var(--color-primary);
+      background: linear-gradient(135deg, rgba(13, 110, 253, 0.05) 0%, rgba(13, 110, 253, 0.02) 100%);
+    }
+
+    .option-icon {
+      font-size: 3rem;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .option-card h3 {
+      margin-top: 0;
+      margin-bottom: var(--spacing-md);
+      color: var(--color-text-primary);
+    }
+
+    .option-card p {
+      color: var(--color-text-muted);
+      margin-bottom: var(--spacing-xl);
+      min-height: 3em;
+      line-height: 1.5;
+    }
+
+    .option-card .button {
+      width: 100%;
+      margin-top: auto;
+    }
+
+    .option-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      position: relative;
+    }
+
+    .option-divider::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      background: linear-gradient(to bottom,
+        transparent 0%,
+        var(--color-border) 20%,
+        var(--color-border) 80%,
+        transparent 100%);
+      transform: translateX(-50%);
+    }
+
+    .option-divider span {
+      background-color: var(--color-bg-main);
+      padding: var(--spacing-md);
+      border: 2px solid var(--color-border);
+      border-radius: 50%;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      z-index: 1;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .custom-form-container {
+      background-color: var(--color-bg-card);
+      padding: var(--spacing-2xl);
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--color-primary);
+      margin-top: var(--spacing-2xl);
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--spacing-xl);
+      padding-bottom: var(--spacing-lg);
+      border-bottom: 2px solid var(--color-border);
+    }
+
+    .form-header h3 {
+      margin: 0;
+      color: var(--color-primary);
+    }
+
+    .button-close {
+      background: transparent;
+      border: none;
+      font-size: 2rem;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+
+    .button-close:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--color-text-primary);
+    }
+
+    @media (max-width: 968px) {
+      .plan-options-container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+      }
+
+      .option-divider {
+        height: auto;
+      }
+
+      .option-divider::before {
+        display: none;
+      }
+
+      .option-divider span {
+        width: 100%;
+        border-radius: var(--radius-md);
+      }
+
+      .option-card p {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 599px) {
+      .option-card {
+        padding: var(--spacing-xl);
+      }
+
+      .custom-form-container {
+        padding: var(--spacing-lg);
+      }
+
+      .page-description {
+        font-size: var(--font-size-base);
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const showFormBtn = document.getElementById('show-custom-form');
+      const hideFormBtn = document.getElementById('hide-custom-form');
+      const customFormContainer = document.getElementById('custom-plan-form');
+
+      if (showFormBtn && customFormContainer) {
+        showFormBtn.addEventListener('click', () => {
+          customFormContainer.style.display = 'block';
+          customFormContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+
+      if (hideFormBtn && customFormContainer) {
+        hideFormBtn.addEventListener('click', () => {
+          customFormContainer.style.display = 'none';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+    });
+  </script>
+</AppLayout>
+
+==> src/pages/plan/[id].astro <==
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+export const prerender = false;
+---
+
+<AppLayout title="Detalle do Plan">
+  <div id="plan-detail">
+    <p>Cargando detalle do plan...</p>
+  </div>
+
+  <button
+    id="add-plan-button"
+    class="button button-primary"
+    style="margin-top: 1rem;"
+  >
+    Engadir aos meus plans
+  </button>
+
+  <script src="../../scripts/detalle-plan.js"></script>
+
+  <style>
+    .dia-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    .dia-card h3 {
+      margin-top: 0;
+    }
+  </style>
+</AppLayout>
+
+==> src/pages/adestramento/[id].astro <==
+---
+import AppLayout from "../../layouts/AppLayout.astro";
+export const prerender = false;
+---
+
+<AppLayout title="Adestramento">
+  <div class="training-header">
+    <h1 id="plan-name">Adestramento</h1>
+    <p id="plan-description"></p>
+  </div>
+
+  <div class="info-box">
+    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>
+    <p>
+      <strong>Nota importante:</strong> Se modificas as series, repeticións ou peso suxeridos, gardarase a execución real que fixeches do plan.
+      Isto permitirache analizar a túa evolución e ver estatísticas precisas do teu progreso.
+    </p>
+  </div>
+
+  <div id="training-content">
+    <p>Cargando exercicios...</p>
+  </div>
+
+  <div class="training-actions">
+    <button id="finish-training-btn" class="button button-primary" disabled>
+      Finalizar Adestramento
+    </button>
+    <button id="cancel-training-btn" class="button button-secondary">
+      Cancelar
+    </button>
+  </div>
+
+  <style>
+    .training-header {
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .training-header h1 {
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .training-header p {
+      color: var(--color-text-muted);
+    }
+
+    .info-box {
+      background-color: #1e3a5f;
+      border-left: 4px solid #0d6efd;
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-xl);
+      display: flex;
+      gap: var(--spacing-md);
+      align-items: flex-start;
+    }
+
+    .info-icon {
+      color: #0d6efd;
+      flex-shrink: 0;
+      margin-top: 0.2rem;
+    }
+
+    .info-box p {
+      margin: 0;
+      color: #e0e0e0;
+      font-size: var(--font-size-sm);
+      line-height: 1.5;
+    }
+
+    .info-box strong {
+      color: #fff;
+      font-weight: 600;
+    }
+
+    #training-content {
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .dia-section {
+      background-color: var(--color-bg-card);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--spacing-xl);
+      border: 2px solid var(--color-border);
+    }
+
+    .dia-section h2 {
+      color: var(--color-primary);
+      margin-top: 0;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .exercicio-card {
+      background-color: var(--color-bg-secondary);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-lg);
+      border: 1px solid var(--color-border);
+    }
+
+    .exercicio-card h3 {
+      color: var(--color-text-primary);
+      margin-top: 0;
+      margin-bottom: var(--spacing-md);
+      font-size: var(--font-size-xl);
+    }
+
+    .exercicio-info {
+      color: var(--color-text-muted);
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .series-container {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+    }
+
+    .serie-row {
+      display: grid;
+      grid-template-columns: auto 1fr 1fr;
+      gap: var(--spacing-md);
+      align-items: center;
+      padding: var(--spacing-md);
+      background-color: var(--color-bg-main);
+      border-radius: var(--radius-sm);
+    }
+
+    .serie-label {
+      font-weight: 600;
+      color: var(--color-text-primary);
+      min-width: 80px;
+    }
+
+    .input-group-inline {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .input-group-inline label {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .input-group-inline input {
+      padding: var(--spacing-sm) var(--spacing-md);
+      background-color: var(--color-bg-input);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-primary);
+      font-size: var(--font-size-base);
+    }
+
+    .training-actions {
+      display: flex;
+      gap: var(--spacing-md);
+      justify-content: center;
+      margin-top: var(--spacing-2xl);
+    }
+
+    .button-secondary {
+      background-color: var(--color-bg-card);
+      border: 2px solid var(--color-border);
+    }
+
+    .button-secondary:hover {
+      background-color: var(--color-bg-secondary);
+      border-color: var(--color-primary);
+    }
+
+    @media (max-width: 968px) {
+      .dia-section {
+        padding: var(--spacing-lg);
+      }
+
+      .exercicio-card {
+        padding: var(--spacing-md);
+      }
+
+      .serie-row {
+        grid-template-columns: auto 1fr 1fr;
+        gap: var(--spacing-sm);
+      }
+    }
+
+    @media (max-width: 599px) {
+      .training-header h1 {
+        font-size: var(--font-size-xl);
+      }
+
+      .info-box {
+        flex-direction: column;
+        padding: var(--spacing-md);
+      }
+
+      .info-box p {
+        font-size: 0.85rem;
+      }
+
+      .dia-section {
+        padding: var(--spacing-md);
+      }
+
+      .exercicio-card {
+        padding: var(--spacing-sm);
+      }
+
+      .exercicio-card h3 {
+        font-size: var(--font-size-lg);
+      }
+
+      .serie-row {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+      }
+
+      .serie-label {
+        min-width: auto;
+      }
+
+      .training-actions {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+      }
+
+      .training-actions button {
+        width: 100%;
+        padding: var(--spacing-md);
+      }
+    }
+  </style>
+
+  <script src="../../scripts/sesion-adestramento.js"></script>
+</AppLayout>
+
+==> src/pages/index.astro <==
+---
+import AuthLayout from "../layouts/AuthLayout.astro";
+import AuthForms from "../components/AuthForms.vue";
+---
+
+<AuthLayout title="Inicio">
+  <AuthForms client:load />
+</AuthLayout>
+
+==> src/pages/presentacion.astro <==
+---
+import Presentation from "../components/Presentacion.vue";
+---
+
+<html lang="gl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Presentación Galentreno</title>
+  </head>
+  <body class="bg-[#111] m-0 p-0 overflow-hidden">
+    <Presentation client:only="vue" />
+  </body>
+</html>
+
+==> src/pages/inicio.astro <==
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import { format } from "date-fns";
+import { gl } from "date-fns/locale";
+const diaActual = new Date();
+const dataFormateada = format(diaActual, "EEEE, d 'de' MMMM 'de' yyyy", {
+  locale: gl,
+});
+const apiUrl = import.meta.env.PUBLIC_API_URL;
+---
+
+<AppLayout title="Inicio">
+  <div class="welcome-section">
+    <h1 id="user-greeting">Benvido a Galentreno</h1>
+    <small id="current-date" data-data-formateada={dataFormateada}></small>
+  </div>
+
+  <section class="stats-section">
+    <h2>Estatísticas do Teu Progreso</h2>
+    <div class="stats-grid">
+      <div class="card large-card">
+        <div class="card-icon">💪</div>
+        <strong id="total-trainings">--</strong>
+        <p>Adestramentos Totais</p>
+      </div>
+      <div class="card large-card">
+        <div class="card-icon">📊</div>
+        <strong id="total-volume">--</strong>
+        <p>Volume Total (kg)</p>
+      </div>
+      <div class="card large-card">
+        <div class="card-icon">📅</div>
+        <strong id="week-trainings">--</strong>
+        <p>Adestramentos Esta Semana</p>
+      </div>
+      <div class="card large-card">
+        <div class="card-icon">⚖️</div>
+        <strong id="last-weight">--</strong>
+        <p>Último Peso Rexistrado</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="weight-section compact">
+    <h2>Rexistro Rápido de Peso</h2>
+    <div class="weight-card">
+      <div class="weight-input-group">
+        <div class="input-with-button">
+          <input
+            type="number"
+            id="weight-input"
+            placeholder="Ex: 75"
+            step="0.1"
+            min="0"
+            max="400"
+          />
+          <button id="save-weight-btn" class="button button-primary">
+            Gardar Peso
+          </button>
+        </div>
+        <small id="weight-status" class="weight-status"></small>
+      </div>
+    </div>
+  </section>
+
+  <a href="/meus-plans" class="button button-primary cta-button"
+    >Ver os Meus Plans</a
+  >
+
+  <style>
+    .welcome-section {
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .welcome-section h1 {
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .welcome-section small {
+      display: block;
+      font-size: var(--font-size-base);
+      color: var(--color-text-muted);
+    }
+
+    .weight-section {
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .weight-section.compact {
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .weight-section h2 {
+      margin-top: 0;
+      margin-bottom: var(--spacing-md);
+      font-size: var(--font-size-xl);
+    }
+
+    .weight-card {
+      background-color: var(--color-bg-card);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+    }
+
+    .weight-input-group {
+      margin-bottom: 0;
+    }
+
+    .weight-input-group label {
+      display: block;
+      margin-bottom: var(--spacing-sm);
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .input-with-button {
+      display: flex;
+      gap: var(--spacing-md);
+      align-items: stretch;
+    }
+
+    .input-with-button input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .input-with-button .button {
+      flex-shrink: 0;
+      width: auto;
+      min-width: auto;
+      max-width: none;
+      padding: var(--spacing-md) var(--spacing-xl);
+    }
+
+    .weight-status {
+      display: block;
+      margin-top: var(--spacing-sm);
+      min-height: 1.2em;
+      font-size: var(--font-size-sm);
+    }
+
+    .weight-status.success {
+      color: #10b981;
+    }
+
+    .weight-status.error {
+      color: #ef4444;
+    }
+
+    .stats-section {
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .stats-section h2 {
+      margin-top: 0;
+      margin-bottom: var(--spacing-xl);
+      font-size: var(--font-size-2xl);
+      text-align: center;
+      color: var(--color-text-primary);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-lg);
+    }
+
+    .card.large-card {
+      padding: var(--spacing-xl);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--spacing-sm);
+      min-height: 160px;
+      justify-content: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card.large-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(13, 110, 253, 0.2);
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .card.large-card strong {
+      font-size: var(--font-size-3xl);
+      color: var(--color-primary);
+      font-weight: 700;
+    }
+
+    .card.large-card p {
+      margin: 0;
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .cta-button {
+      display: block;
+      max-width: 400px;
+      margin: var(--spacing-2xl) auto 0;
+    }
+
+    @media (max-width: 968px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .card.large-card {
+        min-height: 140px;
+      }
+
+      .card-icon {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 599px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+      }
+
+      .card.large-card {
+        min-height: 120px;
+        padding: var(--spacing-lg);
+      }
+
+      .card-icon {
+        font-size: 1.8rem;
+      }
+
+      .card.large-card strong {
+        font-size: var(--font-size-2xl);
+      }
+
+      .input-with-button {
+        flex-direction: column;
+      }
+
+      .input-with-button .button {
+        width: 100%;
+      }
+
+      .weight-card {
+        padding: var(--spacing-md);
+      }
+
+      .stats-section h2,
+      .weight-section h2 {
+        font-size: var(--font-size-xl);
+      }
+    }
+  </style>
+
+  <script src="../scripts/inicio.js"></script>
+</AppLayout>
+
+==> src/pages/meus-plans.astro <==
+---
+import AppLayout from "../layouts/AppLayout.astro";
+const apiUrl = import.meta.env.PUBLIC_API_URL;
+---
+
+<AppLayout title="Os Meus Plans">
+  <h2>Os Meus Plans</h2>
+
+  <a
+    href="/plans/novo"
+    class="button button-primary"
+    style="margin-bottom: 1.5rem;"
+  >
+    + Crear Novo Plan
+  </a>
+  <p>Selecciona un plan para ver os seus exercicios.</p>
+
+  <div id="plans-list" class="plans-container">
+    <p>Cargando plans...</p>
+  </div>
+
+  <div id="plan-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-plan-name">Plan</h2>
+        <button id="close-modal" class="close-button" aria-label="Pechar">
+          &times;
+        </button>
+      </div>
+      <div id="modal-plan-detail" class="modal-body">
+        <p>Cargando detalle do plan...</p>
+      </div>
+      <div class="modal-footer">
+        <div id="day-selection" class="day-selection">
+          <label for="day-select">Selecciona o día de adestramento:</label>
+          <select id="day-select" class="day-select">
+            <option value="">Escolle un día...</option>
+          </select>
+        </div>
+        <button id="start-training-btn" class="button button-primary" disabled>
+          Iniciar Adestramento
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .plan-card {
+      background-color: var(--color-bg-card);
+      color: var(--color-text-secondary);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+      border: 2px solid var(--color-border);
+      cursor: pointer;
+      transition:
+        transform var(--transition-base),
+        border-color var(--transition-base),
+        box-shadow var(--transition-base);
+    }
+
+    .plan-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--color-primary);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .plan-card:active {
+      transform: translateY(-2px);
+    }
+
+    .plan-card h3 {
+      margin-top: 0;
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-text-primary);
+      font-size: var(--font-size-xl);
+    }
+
+    .plan-card p {
+      margin: 0;
+      color: var(--color-text-muted);
+    }
+
+    .plan-card-footer {
+      margin-top: var(--spacing-md);
+      padding-top: var(--spacing-md);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: var(--font-size-sm);
+      color: var(--color-text-muted);
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: var(--z-modal);
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-md);
+    }
+
+    .modal-content {
+      background-color: var(--color-bg-card);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--color-border);
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--spacing-xl);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: var(--color-text-primary);
+      font-size: var(--font-size-2xl);
+    }
+
+    .close-button {
+      background: transparent;
+      border: none;
+      font-size: 2rem;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      transition:
+        background-color var(--transition-base),
+        color var(--transition-base);
+    }
+
+    .close-button:hover {
+      background-color: var(--color-bg-input);
+      color: var(--color-text-primary);
+    }
+
+    .close-button:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    .modal-body {
+      padding: var(--spacing-xl);
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .modal-footer {
+      padding: var(--spacing-xl);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      justify-content: flex-end;
+      gap: var(--spacing-md);
+    }
+
+    .modal-footer .button {
+      max-width: none;
+      width: auto;
+    }
+
+    .dia-card {
+      background-color: var(--color-bg-secondary);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+      border: 1px solid var(--color-border);
+    }
+
+    .dia-card h3 {
+      margin-top: 0;
+      margin-bottom: var(--spacing-md);
+      color: var(--color-text-primary);
+      font-size: var(--font-size-lg);
+    }
+
+    .dia-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .dia-card li {
+      padding: var(--spacing-sm) 0;
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+    }
+
+    .dia-card li:last-child {
+      border-bottom: none;
+    }
+
+    .dia-card li::before {
+      content: "→";
+      color: var(--color-primary);
+      margin-right: var(--spacing-sm);
+      font-weight: bold;
+    }
+
+    .day-selection {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .day-selection label {
+      font-weight: 600;
+      color: var(--color-text-primary);
+      font-size: var(--font-size-sm);
+    }
+
+    .day-select {
+      padding: var(--spacing-md);
+      background-color: var(--color-bg-input);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-size: var(--font-size-base);
+      cursor: pointer;
+      transition: border-color var(--transition-base);
+    }
+
+    .day-select:hover {
+      border-color: var(--color-primary);
+    }
+
+    .day-select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px var(--color-primary-light);
+    }
+
+    @media (max-width: 968px) {
+      .modal-footer {
+        flex-direction: column;
+        gap: var(--spacing-md);
+      }
+
+      .modal-footer .button {
+        width: 100%;
+      }
+
+      .day-selection {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 599px) {
+      .modal.active {
+        padding: 0;
+      }
+
+      .modal-content {
+        max-height: 100vh;
+        max-height: 100dvh;
+        border-radius: 0;
+        margin: 0;
+      }
+
+      .modal-header,
+      .modal-body,
+      .modal-footer {
+        padding: var(--spacing-md);
+      }
+
+      .modal-header h2 {
+        font-size: var(--font-size-lg);
+      }
+
+      .plan-card {
+        padding: var(--spacing-lg);
+      }
+
+      .plan-card h3 {
+        font-size: var(--font-size-lg);
+      }
+
+      .dia-card {
+        padding: var(--spacing-md);
+      }
+    }
+  </style>
+
+  <script src="../scripts/meus-plans.js"></script>
+</AppLayout>
+
+==> src/env.d.ts <==
+/// <reference types="astro/client" />
+
+interface ImportMetaEnv {
+  readonly PUBLIC_API_URL: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
+==> src/components/RegisterForm.vue <==
+<script>
+export default {
+    data(){
+        return {
+            nome: '',
+            correo: '',
+            contrasinal: '',
+            isLoading: false,
+            errorMessage: '',
+        };
+    },
+    methods: {
+        async handleRegister(){
+            const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if (!emailRegex.test(this.correo)) {
+                this.errorMessage = 'Por favor, introduce un formato de correo electrónico válido.';
+                return; 
+            }
+            this.isLoading = true;
+            this.errorMessage = '';
+            try {
+               // @ts-expect-error
+               const urlApi = import.meta.env.PUBLIC_API_URL;
+               const response = await fetch(`${urlApi}/api/auth/rexistro`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome: this.nome, email: this.correo, contrasinal: this.contrasinal }),
+                });
+
+                if (response.ok) {
+                    window.location.href = '/';
+                } else {
+                    const errorData = await response.json();
+                    this.errorMessage = errorData.error || 'Erro ao rexistrar. Tente de novo.';
+                }
+            } catch (error) {
+                this.errorMessage = 'Error de conexión co servidor.';
+            } finally {
+                this.isLoading = false;
+            }
+        }
+    }
+}
+</script>
+
+<template>
+  <h2 class="h2-form">REXISTRARSE</h2>
+  <div class="register-form">
+    <form @submit.prevent="handleRegister">
+      <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
+
+      <div>
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" v-model="nome" required>
+      </div>
+
+      <div>
+        <label for="email">Correo:</label>
+        <input type="email" id="email" v-model="correo" required>
+      </div>
+
+      <div>
+        <label for="password">Contrasinal:</label>
+        <input type="password" id="password" v-model="contrasinal" required>
+      </div>
+
+      <button type="submit" class="button button-register" :disabled="isLoading">
+        <span v-if="isLoading">Cargando...</span>
+        <span v-else>Rexistrarse</span>
+      </button>
+
+      <div class="login-section">
+        <p class="p-text-acc">Xa tes unha conta?</p>
+        <a href="/" class="button button-login-link">Inicia Sesión</a>
+      </div>
+    </form>
+  </div>
+</template>
+
+<style>
+.login-section {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.h2-form {
+  text-align: center;
+  font-family: TexGyre, sans-serif;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  position: absolute;
+  top: 0;
+}
+
+.register-form {
+  background: #2a2a2e;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  padding: 24px;
+  border-radius: 12px;
+  max-width: 400px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  display: grid;
+  grid-gap: 16px;
+  position: relative;
+  left: auto;
+  transform: none;
+  color: #f0f0f0;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 5px 0 10px 0;
+  background: #333;
+  color: #ffffff;
+  border: 1px solid #555;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:active, input:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+}
+
+.button-register {
+  width: 100%;
+  padding: 12px;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0 auto;
+  font-family: inherit;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.button-register:hover {
+  background-color: #0b5ed7;
+}
+
+.button-login-link {
+  width: 100%;
+  background: transparent;
+  color: #1c77ff;
+  cursor: pointer;
+  margin: 0;
+  height: fit-content;
+  padding: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.button-login-link:hover {
+  color: #ffffff;
+}
+
+.p-text-acc {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+</style>
+==> src/components/CrearPlan.vue <==
+<script>
+import { supabase } from '../lib/supabase.js';
+export default {
+  data() {
+    return {
+      planNome: '',
+      planDescricion: '',
+      dias: [
+        {
+          nome_dia: 'Día 1',
+          exercicios: [
+            { exercicio_id: null, series: null, repeticions: null, peso: null }
+          ]
+        }
+      ],
+      todosExercicios: [],
+      estaCargando: false,
+      planCreado: false,
+      mensaxeErro: '',
+    };
+  },
+  async mounted() {
+    await this.cargarExercicios();
+  },
+  methods: {
+    async cargarExercicios() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = '/';
+        return;
+      }
+
+      const token = session.access_token;
+      // @ts-expect-error
+      const urlApi = import.meta.env.PUBLIC_API_URL;
+      try {
+        const resposta = await fetch(`${urlApi}/api/exercicios`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (resposta.status === 401) {
+          await supabase.auth.signOut();
+          alert('A túa sesión expirou. Por favor, inicia sesión novamente.');
+          window.location.href = '/';
+          return;
+        }
+        if (!resposta.ok) throw new Error('Non se puideron cargar os exercicios');
+        this.todosExercicios = await resposta.json();
+      } catch (erro) {
+        this.mensaxeErro = erro.message;
+      }
+    },
+    engadirDia() {
+      const numDia = this.dias.length + 1;
+      this.dias.push({
+        nome_dia: `Día ${numDia}`,
+        exercicios: [
+          { exercicio_id: null, series: null, repeticions: null, peso: null }
+        ]
+      });
+    },
+    eliminarDia(indice) {
+      if (this.dias.length > 1) {
+        this.dias.splice(indice, 1);
+      }
+    },
+    engadirExercicio(indiceDia) {
+      this.dias[indiceDia].exercicios.push({
+        exercicio_id: null,
+        series: null,
+        repeticions: null,
+        peso: null
+      });
+    },
+    eliminarExercicio(indiceDia, indiceExercicio) {
+      if (this.dias[indiceDia].exercicios.length > 1) {
+        this.dias[indiceDia].exercicios.splice(indiceExercicio, 1);
+      }
+    },
+    async manexarEnvio() {
+      this.estaCargando = true;
+      this.mensaxeErro = '';
+
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = '/';
+        return;
+      }
+
+      const token = session.access_token;
+      // @ts-expect-error
+      const urlApi = import.meta.env.PUBLIC_API_URL;
+
+      try {
+        const resposta = await fetch(`${urlApi}/api/plans/novo`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({
+            nome: this.planNome,
+            descricion: this.planDescricion,
+            dias: this.dias
+          })
+        });
+
+        if (resposta.status === 401) {
+          await supabase.auth.signOut();
+          alert('A túa sesión expirou. Por favor, inicia sesión novamente.');
+          window.location.href = '/';
+          return;
+        }
+
+        if (resposta.ok) {
+          this.planCreado = true;
+          this.estaCargando = false;
+          setTimeout(() => {
+            window.location.href = '/meus-plans';
+          }, 1500);
+        } else {
+          const datosErro = await resposta.json();
+          this.mensaxeErro = datosErro.error || 'Non se puido crear o plan.';
+          this.estaCargando = false;
+        }
+      } catch (erro) {
+        this.mensaxeErro = 'Erro de conexión ao crear o plan.';
+        this.estaCargando = false;
+      }
+    }
+  }
+};
+</script>
+
+<template>
+  <form @submit.prevent="manexarEnvio" class="create-plan-form">
+    <p v-if="mensaxeErro" style="color: red;">{{ mensaxeErro }}</p>
+
+    <div>
+      <label for="planNome">Nome do Plan:</label>
+      <input type="text" id="planNome" v-model="planNome" required>
+    </div>
+
+    <div>
+      <label for="planDescricion">Descrición (opcional):</label>
+      <input type="text" id="planDescricion" v-model="planDescricion">
+    </div>
+
+    <hr>
+    <div class="dias-header">
+      <h3>Días de Adestramento</h3>
+      <button type="button" @click="engadirDia" class="button button-secondary">
+        + Engadir Día
+      </button>
+    </div>
+
+    <div v-for="(dia, indiceDia) in dias" :key="indiceDia" class="dia-section">
+      <div class="dia-header">
+        <input
+          type="text"
+          v-model="dia.nome_dia"
+          placeholder="Nome do día"
+          class="dia-nombre-input"
+          required
+        >
+        <button
+          type="button"
+          @click="eliminarDia(indiceDia)"
+          class="button-remove"
+          :disabled="dias.length === 1"
+        >
+          X
+        </button>
+      </div>
+
+      <div class="exercicios-container">
+        <h4>Exercicios para {{ dia.nome_dia }}</h4>
+
+        <div v-for="(exercicio, indiceExercicio) in dia.exercicios" :key="indiceExercicio" class="exercicio-fila">
+          <div class="input-group">
+            <label class="input-label">Exercicio</label>
+            <select v-model="exercicio.exercicio_id" required>
+              <option :value="null" disabled>Selecciona un exercicio...</option>
+              <option v-for="ex in todosExercicios" :key="ex.id" :value="ex.id">
+                {{ ex.nome }} ({{ ex.grupo_muscular }})
+              </option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Series</label>
+            <input type="number" v-model.number="exercicio.series" placeholder="Series" min="1" required>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Repeticións</label>
+            <input type="number" v-model.number="exercicio.repeticions" placeholder="Repeticións" min="1" required>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Peso (kg)</label>
+            <input type="number" v-model.number="exercicio.peso" placeholder="Peso" min="0" step="0.5" required>
+          </div>
+          <button
+            type="button"
+            @click="eliminarExercicio(indiceDia, indiceExercicio)"
+            class="button-remove"
+            :disabled="dia.exercicios.length === 1"
+          >
+            X
+          </button>
+        </div>
+
+        <button
+          type="button"
+          @click="engadirExercicio(indiceDia)"
+          class="button button-tertiary"
+        >
+          + Engadir Exercicio a este día
+        </button>
+      </div>
+    </div>
+
+    <button
+      type="submit"
+      :disabled="estaCargando || planCreado"
+      class="button button-primary"
+      :class="{ 'plan-creado': planCreado }"
+    >
+      <span v-if="planCreado">✓ Plan Creado!</span>
+      <span v-else-if="estaCargando">Gardando...</span>
+      <span v-else>Crear Plan</span>
+    </button>
+  </form>
+</template>
+
+<style>
+  .create-plan-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .dias-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .dia-section {
+    background-color: #2a2a2e;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 2px solid #444;
+  }
+
+  .dia-header {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .dia-nombre-input {
+    flex: 1;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.5rem;
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 8px;
+  }
+
+  .exercicios-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .exercicios-container h4 {
+    color: #0d6efd;
+    margin: 0.5rem 0;
+  }
+
+  .exercicio-fila {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr 1fr auto;
+    gap: 0.75rem;
+    align-items: end;
+    background-color: #1a1a1e;
+    padding: 0.75rem;
+    border-radius: 8px;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .input-label {
+    font-size: 0.75rem;
+    color: #aaa;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .exercicio-fila input,
+  .exercicio-fila select {
+    padding: 0.75rem;
+    font-size: 1rem;
+    background-color: #333;
+    color: #fff;
+    border: 1px solid #555;
+    border-radius: 8px;
+    width: 100%;
+  }
+
+  .button-remove {
+    background-color: #ff5630;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 0.5rem 0.75rem;
+    min-width: 40px;
+  }
+
+  .button-remove:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .button-tertiary {
+    background-color: #28a745;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+
+  .button-tertiary:hover {
+    background-color: #218838;
+  }
+
+  .plan-creado {
+    background-color: #10b981 !important;
+  }
+
+  .plan-creado:hover {
+    background-color: #059669 !important;
+  }
+
+  @media (max-width: 968px) {
+    .exercicio-fila {
+      grid-template-columns: 2fr 1fr 1fr 1fr auto;
+      gap: 0.5rem;
+    }
+
+    .dia-section {
+      padding: 1.25rem;
+    }
+
+    .dias-header {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.75rem;
+    }
+
+    .dias-header h3 {
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 599px) {
+    .exercicio-fila {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    .dia-section {
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .dia-nombre-input {
+      font-size: 1rem;
+    }
+
+    .exercicio-fila input,
+    .exercicio-fila select {
+      padding: 0.65rem;
+      font-size: 0.95rem;
+    }
+
+    .button-remove {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 0.75rem;
+    }
+
+    .input-label {
+      font-size: 0.7rem;
+    }
+
+    .exercicios-container h4 {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+==> src/components/PhotoSlider.vue <==
+<script setup>
+import { onMounted, onUnmounted, ref } from 'vue';
+
+// Si tienes fotos reales impórtalas, si no, usa placeholders o quita este array
+const photos = [
+  'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=800&q=80', // Ejemplo gym
+  'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80',
+  'https://images.unsplash.com/photo-1599058945522-28d584b6f0ff?auto=format&fit=crop&w=800&q=80'
+];
+
+const currentIndex = ref(0);
+let interval;
+
+onMounted(() => {
+  interval = setInterval(() => {
+    currentIndex.value = (currentIndex.value + 1) % photos.length;
+  }, 3000);
+});
+
+onUnmounted(() => clearInterval(interval));
+</script>
+
+<template>
+  <div class="relative w-full h-full overflow-hidden bg-gray-900 rounded-2xl">
+    <div 
+      v-for="(photo, index) in photos" 
+      :key="index"
+      class="absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out"
+      :class="index === currentIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-110'"
+    >
+      <img 
+        :src="photo" 
+        alt="Foto adestramento" 
+        class="w-full h-full object-cover opacity-90 hover:opacity-100 transition-opacity" 
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent"></div>
+    </div>
+    
+    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+      <div 
+        v-for="(_, idx) in photos" 
+        :key="idx"
+        class="h-1.5 rounded-full transition-all duration-500 shadow-sm"
+        :class="idx === currentIndex ? 'bg-orange-500 w-6' : 'bg-white/40 w-1.5'"
+      ></div>
+    </div>
+  </div>
+</template>
+==> src/components/Header.astro <==
+---
+
+---
+
+<header>
+  <nav>
+    <a href="/inicio" class="logo" aria-label="Ir ao inicio">
+      <span>GALENTRENO</span>
+    </a>
+
+    <button
+      class="mobile-menu-toggle"
+      aria-label="Abrir menú de navegación"
+      aria-expanded="false"
+      aria-controls="nav-menu"
+    >
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+
+    <ul class="nav-links" id="nav-menu" role="navigation">
+      <li><a href="/plans">Plans Predefinidos</a></li>
+      <li><a href="/meus-plans">Os Meus Plans</a></li>
+      <li><a href="/plans/novo">Crear Plan</a></li>
+      <li><a href="#" id="logout-link">Pechar Sesión</a></li>
+    </ul>
+  </nav>
+</header>
+
+<script>
+  import { supabase } from "../lib/supabase.js";
+  const enlacePecharSesion = document.getElementById("logout-link");
+  if (enlacePecharSesion) {
+    enlacePecharSesion.addEventListener("click", async (evento) => {
+      evento.preventDefault();
+      await supabase.auth.signOut();
+      window.location.href = "/";
+    });
+  }
+
+  const botonMenuMovil = document.querySelector(".mobile-menu-toggle");
+  const enlacesNav = document.querySelector(".nav-links");
+
+  if (botonMenuMovil && enlacesNav) {
+    // Asegurar estado inicial correcto
+    enlacesNav.classList.remove("active");
+    botonMenuMovil.classList.remove("active");
+    botonMenuMovil.setAttribute("aria-expanded", "false");
+
+    botonMenuMovil.addEventListener("click", () => {
+      const estaExpandido =
+        botonMenuMovil.getAttribute("aria-expanded") === "true";
+
+      botonMenuMovil.setAttribute("aria-expanded", (!estaExpandido).toString());
+      botonMenuMovil.classList.toggle("active");
+      enlacesNav.classList.toggle("active");
+
+      document.body.style.overflow = estaExpandido ? "" : "hidden";
+    });
+
+    document.addEventListener("click", (e) => {
+      const obxectivo = e.target as HTMLElement;
+      if (
+        enlacesNav.classList.contains("active") &&
+        !enlacesNav.contains(obxectivo) &&
+        !botonMenuMovil.contains(obxectivo)
+      ) {
+        botonMenuMovil.setAttribute("aria-expanded", "false");
+        botonMenuMovil.classList.remove("active");
+        enlacesNav.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+    });
+
+    const enlaces = enlacesNav.querySelectorAll("a");
+    enlaces.forEach((enlace) => {
+      enlace.addEventListener("click", () => {
+        if (window.innerWidth < 768) {
+          botonMenuMovil.setAttribute("aria-expanded", "false");
+          botonMenuMovil.classList.remove("active");
+          enlacesNav.classList.remove("active");
+          document.body.style.overflow = "";
+        }
+      });
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.innerWidth >= 768) {
+        botonMenuMovil.setAttribute("aria-expanded", "false");
+        botonMenuMovil.classList.remove("active");
+        enlacesNav.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+    });
+  }
+</script>
+
+<style>
+  header {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    padding: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid #444;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+    position: relative;
+  }
+
+  .logo {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #fff;
+    text-decoration: none;
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
+    letter-spacing: 0.05em;
+    z-index: 1001;
+  }
+
+  .logo:hover {
+    color: #0d6efd;
+    transform: scale(1.05);
+  }
+
+  .logo:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  .mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 1001;
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-menu-toggle:hover {
+    transform: scale(1.1);
+  }
+
+  .mobile-menu-toggle:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  .hamburger-line {
+    width: 24px;
+    height: 3px;
+    background-color: #fff;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+
+  .mobile-menu-toggle.active .hamburger-line:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+  }
+
+  .mobile-menu-toggle.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .mobile-menu-toggle.active .hamburger-line:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+  }
+
+  .nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: #e0e0e0;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition:
+      color 0.2s ease,
+      transform 0.2s ease;
+    position: relative;
+    padding: 0.5rem 0;
+  }
+
+  .nav-links a::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #0d6efd;
+    transition: width 0.3s ease;
+  }
+
+  .nav-links a:hover {
+    color: #0d6efd;
+    transform: translateY(-2px);
+  }
+
+  .nav-links a:hover::after {
+    width: 100%;
+  }
+
+  .nav-links a:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 4px;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 767px) {
+    header {
+      padding: 0.75rem 1rem;
+    }
+
+    .mobile-menu-toggle {
+      display: flex;
+    }
+
+    .nav-links {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      height: 100vh;
+      height: 100dvh;
+      width: 80%;
+      max-width: 320px;
+      background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+      transition: right 0.3s ease;
+      z-index: 1000;
+      padding: 2rem 0;
+      visibility: hidden;
+      opacity: 0;
+      transition: right 0.3s ease, opacity 0.3s ease, visibility 0s 0.3s;
+    }
+
+    .nav-links.active {
+      right: 0;
+      visibility: visible;
+      opacity: 1;
+      transition: right 0.3s ease, opacity 0.3s ease;
+    }
+
+    .nav-links li {
+      width: 100%;
+      padding: 0 1.5rem;
+    }
+
+    .nav-links a {
+      font-size: 1.1rem;
+      width: 100%;
+      text-align: center;
+      padding: 1rem 1.5rem;
+      display: block;
+      border-radius: var(--radius-md);
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus {
+      background-color: rgba(13, 110, 253, 0.15);
+      transform: translateX(0);
+    }
+
+    .nav-links a::after {
+      display: none;
+    }
+  }
+
+  @media (min-width: 600px) and (max-width: 767px) {
+    .logo {
+      font-size: 1.4rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    header {
+      padding: 1.25rem 1.5rem;
+    }
+
+    nav {
+      padding: 0;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+    }
+
+    .nav-links {
+      gap: 2rem;
+    }
+
+    .nav-links a {
+      font-size: 1rem;
+    }
+  }
+
+  @media (min-width: 968px) {
+    header {
+      padding: 1.5rem 2rem;
+    }
+
+    .nav-links {
+      gap: 2.5rem;
+    }
+
+    .nav-links a {
+      font-size: 1.05rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+
+==> src/components/AuthForms.vue <==
+<script>
+import { supabase } from '../lib/supabase.js';
+export default {
+  data() {
+    return {
+      currentView: 'inicio',
+      nome: '',
+      correo: '',
+      contrasinal: '',
+      isLoading: false,
+      errorMessage: '',
+    };
+  },
+  methods: {
+    showLogin() {
+      this.currentView = 'login';
+      this.resetForm();
+    },
+    showRegister() {
+      this.currentView = 'registro';
+      this.resetForm();
+    },
+    goBack() {
+      this.currentView = 'inicio';
+      this.resetForm();
+    },
+    resetForm() {
+      this.errorMessage = '';
+      this.nome = '';
+      this.correo = '';
+      this.contrasinal = '';
+    },
+    async handleLogin() {
+      this.isLoading = true;
+      this.errorMessage = '';
+
+      document.body.style.filter = 'blur(2px)';
+      document.body.style.transition = 'filter 0.2s ease-out';
+
+      try {
+        // @ts-expect-error
+        const urlApi = import.meta.env.PUBLIC_API_URL;
+        const response = await fetch(`${urlApi}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.correo, contrasinal: this.contrasinal }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+
+          const { error } = await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token
+          });
+
+          if (error) {
+            document.body.style.filter = 'none';
+            this.errorMessage = 'Erro ao gardar a sesión';
+            this.isLoading = false;
+            return;
+          }
+
+          await new Promise(resolve => setTimeout(resolve, 100));
+
+          window.location.href = '/inicio';
+        } else {
+          document.body.style.filter = 'none';
+          const errorData = await response.json();
+          this.errorMessage = errorData.error || 'Email o contrasinal incorrectos.';
+        }
+      } catch (error) {
+        document.body.style.filter = 'none';
+        this.errorMessage = 'Erro de conexión co servidor.';
+      } finally {
+        this.isLoading = false;
+      }
+    },
+    async handleRegister() {
+      const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (!emailRegex.test(this.correo)) {
+        this.errorMessage = 'Introduce un formato de correo electrónico válido.';
+        return;
+      }
+      this.isLoading = true;
+      this.errorMessage = '';
+      try {
+        // @ts-expect-error
+        const urlApi = import.meta.env.PUBLIC_API_URL;
+        const response = await fetch(`${urlApi}/api/auth/rexistro`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome: this.nome, email: this.correo, contrasinal: this.contrasinal }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+
+          const { error } = await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token
+          });
+
+          if (error) {
+            this.errorMessage = 'Erro ao gardar a sesión';
+            this.isLoading = false;
+            return;
+          }
+
+          await new Promise(resolve => setTimeout(resolve, 100));
+
+          window.location.href = '/inicio';
+        } else {
+          const errorData = await response.json();
+          this.errorMessage = errorData.error || 'Erro ao rexistrar. Tente de novo.';
+        }
+      } catch (error) {
+        this.errorMessage = 'Erro de conexión co servidor.';
+      } finally {
+        this.isLoading = false;
+      }
+    },
+  },
+};
+</script>
+
+<template>
+  <div class="auth-container" :class="{ 'form-active': currentView !== 'inicio' }">
+
+    <div v-if="currentView === 'inicio'" class="welcome-screen">
+      <div class="welcome-buttons">
+        <button @click="showLogin" class="button button-primary">
+          INICIAR SESIÓN
+        </button>
+        <button @click="showRegister" class="button button-secondary">
+          REXISTRARSE
+        </button>
+      </div>
+    </div>
+
+    <div v-if="currentView === 'login'" class="auth-form">
+      <div class="form-header">
+        <button @click="goBack" class="button-back">←</button>
+      </div>
+      <form @submit.prevent="handleLogin">
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+        <div>
+          <label for="email">Correo:</label>
+          <input type="email" id="email" v-model="correo" required>
+        </div>
+
+        <div>
+          <label for="password">Contrasinal:</label>
+          <input type="password" id="password" v-model="contrasinal" required>
+        </div>
+
+        <button type="submit" class="button button-submit" :disabled="isLoading">
+          <span v-if="isLoading">Cargando...</span>
+          <span v-else>Iniciar Sesión</span>
+        </button>
+      </form>
+    </div>
+
+    <div v-if="currentView === 'registro'" class="auth-form">
+      <div class="form-header">
+        <button @click="goBack" class="button-back">←</button>
+      </div>
+      <form @submit.prevent="handleRegister">
+        <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+        <div>
+          <label for="nome">Nome</label>
+          <input type="text" id="nome" v-model="nome" required>
+        </div>
+
+        <div>
+          <label for="email">Correo</label>
+          <input type="email" id="email" v-model="correo" required>
+        </div>
+
+        <div>
+          <label for="password">Contrasinal</label>
+          <input type="password" id="password" v-model="contrasinal" required>
+        </div>
+
+        <button type="submit" class="button button-submit" :disabled="isLoading">
+          <span v-if="isLoading">Cargando...</span>
+          <span v-else>Rexistrarse</span>
+        </button>
+      </form>
+    </div>
+
+  </div>
+</template>
+
+<style>
+.auth-container {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.welcome-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2rem;
+  padding: 0 2rem 2rem 2rem;
+  max-width: 400px;
+  width: 100%;
+}
+
+.welcome-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  width: 100%;
+}
+
+
+.button-primary,
+.button-secondary {
+  width: 100%;
+  padding: 16px;
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 1.5rem;
+  transition: color 0.2s ease, transform 0.1s ease;
+}
+
+.button-primary:hover,
+.button-secondary:hover {
+  color: #0d6efd;
+  transform: translateY(-0.5dvh);
+  cursor: none;
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0;
+}
+
+.button-back {
+  background: transparent;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 0;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.button-back:hover {
+  color: #0d6efd;
+}
+
+
+
+.auth-form {
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  color: #f0f0f0;
+}
+
+.auth-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.error-message {
+  color: #ff4444;
+  background: rgba(255, 68, 68, 0.1);
+  padding: 10px;
+  border-radius: 6px;
+  margin: 0;
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  color: #f0f0f0;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 0 auto;
+  display: block;
+  background: rgba(34, 34, 34, 0.95);
+  color: #ffffff;
+  border: 1px solid #ffffff65;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+
+input:focus,
+input:hover {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+  cursor: none !important;
+}
+input:active{
+  cursor: auto !important;
+}
+
+.button-submit {
+  width: 50%;
+  padding: 12px;
+  color: #fff;
+  background-color: #0d6dfd;
+  border-radius: 10px;
+  text-transform: uppercase;
+  border: none;
+  font-weight: 900;
+  cursor: none;
+  margin: 0 auto;
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.button-submit:hover:not(:disabled) {
+  background-color: #094094 ;
+  transition: background-color 200ms linear;
+  -webkit-transition: background-color 200ms linear;
+  -ms-transition: background-color 200ms linear;
+
+}
+
+.button-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+@media (max-width: 967px) {
+  .button-primary,
+  .button-secondary {
+    color: #fff;
+    background: rgba(34, 34, 34, 0.85);
+    font-size: 1rem;
+    border-radius: 10px;
+    width: 70%;
+    margin: 0 auto;
+    display: block;
+  }
+  
+  .auth-form {
+    padding: 10px;
+  }
+
+  .auth-form form {
+    gap: 10px;
+  }
+
+  input {
+    padding: 10px;
+    margin: 0 auto;
+    display: block;
+    width: 80%;
+  }
+
+  label {
+    width: 80%;
+    margin: 0 auto;
+    display: block;
+    font-size: 1rem;
+  }
+
+  .button-submit {
+    padding: 10px;
+    margin-top: 8px;
+  }
+
+  .form-header {
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 358px) {
+  .button-primary,
+  .button-secondary {
+    width: 70%;
+    font-size: 0.9rem;
+    padding: 12px;
+  }
+
+  .auth-form {
+    padding: 8px;
+  }
+
+  .auth-form form {
+    gap: 8px;
+  }
+
+  input {
+    padding: 8px;
+    width: 85%;
+    font-size: 0.9rem;
+  }
+
+  label {
+    width: 85%;
+    font-size: 0.9rem;
+  }
+
+  .button-submit {
+    padding: 8px;
+    font-size: 0.85rem;
+    width: 60%;
+  }
+
+  .error-message {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+}
+</style>
+==> src/components/Presentacion.vue <==
+<script setup>
+import { onMounted, onUnmounted, ref } from 'vue';
+
+// --- CONFIGURACIÓN E ESTADO ---
+const currentSlide = ref(0);
+const currentStep = ref(0);
+// Referencias para os dous vídeos
+const desktopVideoRef = ref(null);
+const mobileVideoRef = ref(null);
+const videoContainerRef = ref(null);
+const isPlaying = ref(false); 
+
+// Pasos por diapositiva:
+// 0: Portada 
+// 1: Problema 
+// 2: Solución 
+// 3: Stack 
+// 4: Fluxo 
+// 5: Melloras Futuras 
+// 6: O que aprendín (3 pasos)
+// 7: Video Demo 
+// 8: Final / Preguntas (NOVA)
+const stepsPerSlide = [0, 3, 2, 4, 3, 3, 3, 1, 0];
+const totalSlides = stepsPerSlide.length;
+
+// --- UTILIDADES VISUAIS ---
+const TRANSITION = "transition-all duration-700 ease-out";
+
+const getStepClass = (stepTrigger) => {
+  return currentStep.value >= stepTrigger
+    ? 'opacity-100 translate-y-0 blur-0 scale-100'
+    : 'opacity-0 translate-y-8 blur-sm scale-95 pointer-events-none';
+};
+
+// --- CONTROL DE VÍDEO ---
+const togglePlayback = () => {
+  if (!desktopVideoRef.value || !mobileVideoRef.value) return;
+
+  if (isPlaying.value) {
+    desktopVideoRef.value.pause();
+    mobileVideoRef.value.pause();
+    isPlaying.value = false;
+  } else {
+    desktopVideoRef.value.play();
+    mobileVideoRef.value.play();
+    isPlaying.value = true;
+  }
+};
+
+// --- NAVEGACIÓN ---
+const next = () => {
+  const maxSteps = stepsPerSlide[currentSlide.value];
+  
+  if (currentStep.value < maxSteps) {
+    currentStep.value++;
+    
+    // Auto-play na slide 7 (Demo)
+    if (currentSlide.value === 7 && currentStep.value === 1) {
+      setTimeout(() => {
+          if (desktopVideoRef.value) desktopVideoRef.value.play();
+          if (mobileVideoRef.value) mobileVideoRef.value.play();
+          isPlaying.value = true;
+          if (videoContainerRef.value) videoContainerRef.value.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 500);
+    }
+  } else if (currentSlide.value < totalSlides - 1) {
+    
+    // IMPORTANTE: Pausar vídeos ao saír da slide 7 cara a final
+    if (currentSlide.value === 7) {
+        if (desktopVideoRef.value) desktopVideoRef.value.pause();
+        if (mobileVideoRef.value) mobileVideoRef.value.pause();
+        isPlaying.value = false;
+    }
+
+    currentSlide.value++;
+    currentStep.value = 0;
+  }
+};
+
+const prev = () => {
+  if (currentStep.value > 0) {
+    currentStep.value--;
+  } else if (currentSlide.value > 0) {
+    currentSlide.value--;
+    currentStep.value = stepsPerSlide[currentSlide.value];
+  }
+};
+
+const toggleFullScreen = () => {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    if (document.exitFullscreen) document.exitFullscreen();
+  }
+};
+
+const handleKey = (e) => {
+  if (['ArrowRight', ' ', 'Enter'].includes(e.key)) {
+    e.preventDefault();
+    next();
+  }
+  if (['ArrowLeft'].includes(e.key)) {
+    e.preventDefault();
+    prev();
+  }
+  if (e.key === 'f') toggleFullScreen();
+  // Pausa na slide de video (7)
+  if (e.key === ' ' && currentSlide.value === 7 && currentStep.value === 1) {
+     togglePlayback();
+  }
+};
+
+onMounted(() => window.addEventListener('keydown', handleKey));
+onUnmounted(() => window.removeEventListener('keydown', handleKey));
+</script>
+
+<template>
+  <div 
+    class="w-screen h-screen bg-neutral-950 text-gray-100 overflow-hidden relative selection:bg-orange-500/30 font-sans outline-none"
+    @click="next"
+  >
+    
+    <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#404040 1px, transparent 1px); background-size: 30px 30px;"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-neutral-950 pointer-events-none"></div>
+
+    <div class="w-full h-full relative z-10">
+      
+      <div v-if="currentSlide === 0" class="w-full h-full flex flex-col items-center justify-center relative overflow-hidden animate-in fade-in zoom-in duration-1000">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-600/10 rounded-full blur-[100px] animate-pulse"></div>
+        <div class="relative z-10 flex flex-col items-center text-center space-y-10">
+          <div class="relative group hover:scale-105 transition-transform duration-500">
+            <div class="absolute -inset-4 bg-gradient-to-r from-orange-600 to-red-600 rounded-full blur-xl opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+            <div class="relative w-40 h-40 bg-neutral-900 rounded-full flex items-center justify-center border-2 border-orange-500/20 shadow-2xl">
+              <span class="text-7xl">💪</span>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <h1 class="text-8xl font-black tracking-tighter text-white drop-shadow-lg">GALENTRENO</h1>
+            <div class="flex items-center justify-center gap-4">
+              <div class="h-[2px] w-16 bg-orange-600"></div>
+              <span class="text-orange-500 font-bold font-mono text-sm tracking-[0.3em] uppercase">DAW • TFC 2025</span>
+              <div class="h-[2px] w-16 bg-orange-600"></div>
+            </div>
+            <h2 class="text-2xl text-gray-400 font-light max-w-xl mx-auto leading-relaxed pt-4">
+              Toma o control da túa evolución física.<br>
+              <span class="text-white font-bold">Gratis. Sen anuncios. En Galego.</span>
+            </h2>
+          </div>
+          <div class="mt-16 bg-neutral-900/80 backdrop-blur border border-neutral-800 p-6 rounded-2xl flex items-center gap-5 hover:border-orange-500/50 transition-colors cursor-default shadow-lg">
+            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-xl font-bold text-white">IL</div>
+            <div class="text-left">
+              <p class="text-xs text-orange-400 font-bold uppercase tracking-wider mb-1">Creado por</p>
+              <p class="text-xl text-white font-bold leading-none mb-1">Ismael Lens</p>
+              <a href="https://www.linkedin.com/in/ismaellens/" target="_blank" class="text-gray-500 text-xs hover:text-white transition-colors">linkedin.com/in/ismaellens</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="currentSlide === 1" class="w-full h-full flex flex-col justify-center px-16 max-w-7xl mx-auto">
+        <div class="mb-12 border-l-8 border-red-600 pl-6 animate-in slide-in-from-left duration-700">
+          <span class="text-red-500 font-mono text-sm tracking-widest uppercase mb-2 block">O Mercado Actual</span>
+          <h2 class="text-6xl font-black text-white">Barreiras para adestrar</h2>
+        </div>
+        <div class="grid grid-cols-2 gap-16 items-center">
+          <div class="space-y-8 relative">
+            <div :class="[TRANSITION, getStepClass(1)]" class="bg-neutral-900/50 p-6 rounded-2xl border-l-4 border-red-500 border-y border-r border-neutral-800 hover:bg-neutral-800 transition-colors">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="text-2xl font-bold text-white">💸 Custos Elevados</h3>
+                <span class="text-3xl">💰</span>
+              </div>
+              <p class="text-gray-400">A maioría das apps completas requiren subscricións mensuais caras.</p>
+            </div>
+            <div :class="[TRANSITION, getStepClass(2)]" class="bg-neutral-900/50 p-6 rounded-2xl border-l-4 border-orange-500 border-y border-r border-neutral-800 hover:bg-neutral-800 transition-colors">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="text-2xl font-bold text-white">📢 Publicidade Intrusiva</h3>
+                <span class="text-3xl">🚫</span>
+              </div>
+              <p class="text-gray-400">As versións "gratuítas" interrompen o adestramento con anuncios constantes e invasivos.</p>
+            </div>
+            <div :class="[TRANSITION, getStepClass(3)]" class="bg-neutral-900/50 p-6 rounded-2xl border-l-4 border-yellow-500 border-y border-r border-neutral-800 hover:bg-neutral-800 transition-colors">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="text-2xl font-bold text-white">💬 Barreira Idiomática</h3>
+                <span class="text-3xl">🌐</span>
+              </div>
+              <p class="text-gray-400">Dificultade para atopar ferramentas de calidade na nosa lingua.</p>
+            </div>
+          </div>
+          <div class="h-full flex items-center justify-center">
+             <div :class="[TRANSITION, getStepClass(3)]" class="relative">
+                <div class="absolute inset-0 bg-red-500/20 blur-3xl rounded-full"></div>
+                <div class="relative bg-neutral-900 p-8 rounded-3xl border border-neutral-700 shadow-2xl text-center transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                   <div class="text-6xl mb-4">📉</div>
+                   <h3 class="text-xl font-bold text-red-400">Experiencia Rota</h3>
+                   <p class="text-sm text-gray-400 mt-2 max-w-xs mx-auto">
+                     O usuario acaba usando notas do móbil ou papel para evitar as apps comerciais.
+                   </p>
+                </div>
+             </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="currentSlide === 2" class="w-full h-full flex flex-col justify-center px-16 max-w-7xl mx-auto">
+        <div class="mb-12 border-l-8 border-orange-500 pl-6 animate-in slide-in-from-left">
+          <span class="text-orange-400 font-mono text-sm tracking-widest uppercase mb-2 block">A Proposta</span>
+          <h2 class="text-6xl font-black text-white">Plataforma Gratuíta e Accesible</h2>
+        </div>
+        <div class="grid grid-cols-3 gap-8">
+           <div :class="[TRANSITION, getStepClass(1)]" class="bg-neutral-900 p-8 rounded-3xl border-t-4 border-orange-500 shadow-xl hover:-translate-y-2 transition-transform duration-300">
+              <div class="text-4xl mb-6 bg-orange-900/20 w-fit p-4 rounded-2xl">📋</div>
+              <h3 class="text-2xl font-bold text-white mb-3">Xestión de Plans</h3>
+              <ul class="space-y-2 text-gray-400 text-sm">
+                <li>• Plans predefinidos creados por expertos</li>
+                <li>• Creación personalizada</li>
+                <li>• Organizado por días e exercicios</li>
+              </ul>
+           </div>
+           
+           <div :class="[TRANSITION, getStepClass(1)]" class="bg-neutral-900 p-8 rounded-3xl border-t-4 border-orange-500 shadow-xl hover:-translate-y-2 transition-transform duration-300 delay-100">
+              <div class="text-4xl mb-6 bg-orange-900/20 w-fit p-4 rounded-2xl">📈</div>
+              <h3 class="text-2xl font-bold text-white mb-3">Progreso Real</h3>
+              <ul class="space-y-2 text-gray-400 text-sm">
+                <li>• Rexistro de series/reps/peso</li>
+                <li>• Estatísticas de adestramentos</li>
+                <li>• Seguimento de peso corporal</li>
+              </ul>
+           </div>
+
+           <div :class="[TRANSITION, getStepClass(2)]" class="bg-gradient-to-br from-orange-600 to-red-700 p-8 rounded-3xl shadow-2xl hover:-translate-y-2 transition-transform duration-300 text-white relative overflow-hidden flex flex-col justify-center">
+              <div class="absolute -right-4 -bottom-4 opacity-20 text-9xl">🦁</div>
+              <h3 class="text-2xl font-bold mb-4 relative z-10">Compromiso</h3>
+              <p class="text-orange-100 text-lg mb-6 relative z-10 leading-relaxed">
+                Un proxecto social para democratizar o acceso ao deporte e normalizar o galego na tecnoloxía.
+              </p>
+              <div class="inline-block bg-white/20 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide w-fit">100% Galego</div>
+           </div>
+        </div>
+      </div>
+
+      <div v-if="currentSlide === 3" class="w-full h-full flex flex-col justify-center px-16 max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-white mb-12 text-center animate-in slide-in-from-top">Stack Tecnolóxico Completo</h2>
+        <div class="grid grid-cols-4 grid-rows-3 gap-4 h-[65vh]">
+          <div :class="[TRANSITION, getStepClass(1)]" class="col-span-2 row-span-2 bg-gradient-to-br from-neutral-900 to-orange-900/20 rounded-3xl border border-orange-500/20 p-8 flex flex-col justify-between hover:border-orange-500/60 hover:to-orange-900/40 transition-all group relative overflow-hidden shadow-[0_0_30px_rgba(249,115,22,0.1)] hover:shadow-[0_0_50px_rgba(249,115,22,0.3)]">
+            <div class="absolute top-0 right-0 p-8 opacity-10 text-9xl grayscale group-hover:grayscale-0 transition-all text-orange-500">🚀</div>
+            <div class="relative z-10">
+              <div class="w-14 h-14 bg-orange-500/20 rounded-2xl flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition-transform text-orange-500 shadow-inner">🚀</div>
+              <h3 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-orange-500">Astro</h3>
+              <p class="text-gray-300 mt-4 text-lg">Arquitectura de illas para un rendemento web extremo.</p>
+            </div>
+            <div class="bg-black/50 p-4 rounded-xl font-mono text-xs text-orange-400 border border-orange-500/20 w-fit relative z-10">npm create astro@latest</div>
+          </div>
+          <div :class="[TRANSITION, getStepClass(2)]" class="col-span-2 bg-gradient-to-br from-neutral-900 to-green-900/20 rounded-3xl border border-green-500/20 p-6 flex items-center gap-6 hover:border-green-500/60 hover:to-green-900/40 transition-all shadow-[0_0_20px_rgba(34,197,94,0.1)] hover:shadow-[0_0_40px_rgba(34,197,94,0.2)]">
+            <div class="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center text-4xl text-green-500 shadow-inner">💚</div>
+            <div>
+              <h3 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-green-400">Vue.js</h3>
+              <p class="text-sm text-gray-300">Compoñentes interactivos e reactividade.</p>
+            </div>
+          </div>
+          <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-gradient-to-br from-neutral-900 to-cyan-900/20 rounded-3xl border border-cyan-500/20 p-6 flex flex-col justify-center hover:border-cyan-500/60 hover:to-cyan-900/40 transition-all shadow-[0_0_20px_rgba(6,182,212,0.1)] hover:shadow-[0_0_40px_rgba(6,182,212,0.2)]">
+            <div class="text-4xl mb-3 text-cyan-400">🎨</div>
+            <h3 class="font-bold text-white">Tailwind e CSS</h3>
+            <p class="text-xs text-gray-400">Deseño moderno e responsive.</p>
+          </div>
+          <div :class="[TRANSITION, getStepClass(3)]" class="col-span-1 bg-gradient-to-br from-neutral-900 to-emerald-900/20 rounded-3xl border border-emerald-500/20 p-6 flex flex-col justify-center hover:border-emerald-500/60 hover:to-emerald-900/40 transition-all shadow-[0_0_20px_rgba(16,185,129,0.1)] hover:shadow-[0_0_40px_rgba(16,185,129,0.2)]">
+            <div class="text-4xl mb-3 text-emerald-400">⚡</div>
+            <h3 class="font-bold text-white">Supabase</h3>
+            <p class="text-xs text-gray-400">Autenticación con RLS e APIs.</p>
+          </div>
+          <div :class="[TRANSITION, getStepClass(4)]" class="col-span-4 bg-gradient-to-r from-neutral-900/90 via-purple-900/10 to-neutral-900/90 rounded-3xl border border-purple-500/20 p-6 flex items-center justify-around hover:border-purple-500/50 transition-all shadow-[0_0_20px_rgba(168,85,247,0.1)] hover:shadow-[0_0_40px_rgba(168,85,247,0.2)]">
+             <div class="flex items-center gap-4">
+                <span class="text-4xl text-purple-300">☁️</span>
+                <h3 class="text-xl font-bold text-white">Despregamento e Infraestrutura</h3>
+             </div>
+             <div class="flex gap-8">
+                <div class="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-neutral-700 hover:border-white/50 transition-colors">
+                   <span class="text-2xl">▲</span>
+                   <div><p class="font-bold text-white">Vercel</p><p class="text-xs text-gray-500">Frontend</p></div>
+                </div>
+                 <div class="flex items-center gap-3 bg-black/40 px-4 py-2 rounded-xl border border-neutral-700 hover:border-purple-400/50 transition-colors">
+                   <span class="text-2xl text-purple-400">🟣</span>
+                   <div><p class="font-bold text-white">Render</p><p class="text-xs text-gray-500">Backend PostgreSQL</p></div>
+                </div>
+             </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="currentSlide === 4" class="w-full h-full flex flex-col justify-center px-16 max-w-7xl mx-auto">
+        <h2 class="text-4xl font-bold text-white mb-24 text-center animate-in slide-in-from-bottom">Fluxo da Información</h2>
+        <div class="relative flex items-center justify-between px-10">
+          <div class="absolute top-1/2 left-0 w-full h-1 bg-neutral-800 -translate-y-1/2 z-0"></div>
+          <div :class="['absolute top-1/2 left-0 h-1 bg-gradient-to-r from-orange-500 to-red-600 -translate-y-1/2 z-0 transition-all duration-1000', currentStep >= 1 ? 'w-full' : 'w-0']"></div>
+          <div :class="[TRANSITION, getStepClass(1)]" class="relative z-10 flex flex-col items-center gap-6 group">
+             <div class="w-28 h-28 bg-neutral-900 border-4 border-neutral-700 group-hover:border-white rounded-full flex items-center justify-center text-5xl shadow-2xl transition-colors">👤</div>
+             <p class="font-bold text-white text-xl">Usuario</p>
+          </div>
+          <div :class="[TRANSITION, getStepClass(2)]" class="relative z-10 flex flex-col items-center gap-6 group">
+             <div class="w-28 h-28 bg-neutral-900 border-4 border-orange-500 rounded-2xl flex items-center justify-center text-5xl shadow-[0_0_30px_rgba(249,115,22,0.4)] group-hover:scale-110 transition-transform">📋</div>
+             <div class="text-center">
+               <p class="font-bold text-white text-xl">Plan</p>
+               <p class="text-sm text-gray-500">Días / Exercicios</p>
+             </div>
+          </div>
+          <div :class="[TRANSITION, getStepClass(3)]" class="relative z-10 flex flex-col items-center gap-6 group">
+             <div class="w-28 h-28 bg-neutral-900 border-4 border-red-600 rounded-2xl flex items-center justify-center text-5xl shadow-[0_0_30px_rgba(220,38,38,0.4)] group-hover:scale-110 transition-transform">🔥</div>
+             <div class="text-center">
+               <p class="font-bold text-white text-xl">Sesión</p>
+               <p class="text-sm text-gray-500">Inputs Reais</p>
+             </div>
+          </div>
+           <div :class="[TRANSITION, getStepClass(3)]" class="relative z-10 flex flex-col items-center gap-6 group">
+             <div class="w-28 h-28 bg-neutral-900 border-4 border-green-500 rounded-full flex items-center justify-center text-5xl shadow-[0_0_30px_rgba(34,197,94,0.4)] group-hover:rotate-12 transition-transform">📊</div>
+             <p class="font-bold text-white text-xl">Progreso</p>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="currentSlide === 5" class="w-full h-full flex flex-col justify-center px-16 max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-white mb-20 text-center flex items-center justify-center gap-4 animate-in slide-in-from-top">
+           <span>🔮</span> Melloras Futuras
+        </h2>
+        <div class="grid grid-cols-3 gap-10 relative items-center">
+           <div :class="['absolute top-1/2 left-0 h-1 bg-gradient-to-r from-orange-600 to-purple-600 -translate-y-1/2 rounded-full transition-all duration-1000', currentStep >= 1 ? 'w-full' : 'w-0']"></div>
+           <div :class="[TRANSITION, getStepClass(1)]" class="relative bg-neutral-900 p-8 rounded-3xl border border-neutral-700 shadow-2xl hover:-translate-y-4 hover:border-gray-500 transition-all group z-10 opacity-80 hover:opacity-100">
+              <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-16 h-16 bg-neutral-800 rounded-full border-4 border-neutral-950 flex items-center justify-center text-3xl shadow-lg">📱</div>
+              <h3 class="text-xl font-bold text-white mt-6 text-center mb-3">Modo Offline</h3>
+              <p class="text-gray-400 text-center text-xs">Uso sen conexión en ximnasios con sincronización ao recuperala.</p>
+           </div>
+           <div :class="[TRANSITION, getStepClass(2)]" class="relative bg-neutral-900 p-10 rounded-[2rem] border-2 border-orange-500 shadow-[0_0_40px_rgba(249,115,22,0.2)] hover:-translate-y-4 hover:shadow-orange-500/40 transition-all group z-20 scale-110">
+              <div class="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-neutral-800 rounded-full border-4 border-orange-500 flex items-center justify-center text-5xl shadow-xl">📈</div>
+              <h3 class="text-3xl font-bold text-white mt-10 text-center mb-4 text-orange-400">Historial Avanzado</h3>
+              <p class="text-gray-300 text-center text-sm leading-relaxed">Gráficas detalladas de volume, proxección de 1RM e comparativas visuais de rendemento.</p>
+           </div>
+           <div :class="[TRANSITION, getStepClass(3)]" class="relative bg-neutral-900 p-8 rounded-3xl border border-neutral-700 shadow-2xl hover:-translate-y-4 hover:border-gray-500 transition-all group z-10 opacity-80 hover:opacity-100">
+              <div class="absolute -top-10 left-1/2 -translate-x-1/2 w-16 h-16 bg-neutral-800 rounded-full border-4 border-neutral-950 flex items-center justify-center text-3xl shadow-lg">🌍</div>
+              <h3 class="text-xl font-bold text-white mt-6 text-center mb-3">Comunidade</h3>
+              <p class="text-gray-400 text-center text-xs">Compartir plans e perfís públicos.</p>
+           </div>
+        </div>
+      </div>
+
+      <div v-if="currentSlide === 6" class="w-full h-full flex flex-col justify-center px-16 max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-white mb-20 text-center flex items-center justify-center gap-4 animate-in slide-in-from-top">
+           <span>🎓</span> O que aprendín
+        </h2>
+        <div class="grid grid-cols-3 gap-8">
+           <div :class="[TRANSITION, getStepClass(1)]" class="bg-neutral-900 p-8 rounded-3xl border border-neutral-800 hover:border-orange-500 transition-all group hover:-translate-y-2">
+              <div class="w-16 h-16 bg-orange-900/20 rounded-2xl flex items-center justify-center text-3xl text-orange-500 mb-6 group-hover:scale-110 transition-transform">🏗️</div>
+              <h3 class="text-2xl font-bold text-white mb-4">Proxecto Real</h3>
+              <p class="text-gray-400 leading-relaxed">A diferenza entre a teoría e levar unha idea á produción real, enfrontando retos de arquitectura e despregamento.</p>
+           </div>
+           <div :class="[TRANSITION, getStepClass(2)]" class="bg-neutral-900 p-8 rounded-3xl border border-neutral-800 hover:border-red-500 transition-all group hover:-translate-y-2">
+              <div class="w-16 h-16 bg-red-900/20 rounded-2xl flex items-center justify-center text-3xl text-red-500 mb-6 group-hover:scale-110 transition-transform">🧩</div>
+              <h3 class="text-2xl font-bold text-white mb-4">Solución Propia</h3>
+              <p class="text-gray-400 leading-relaxed">A satisfacción de crear unha ferramenta que resolve un problema persoal diario de forma efectiva.</p>
+           </div>
+           <div :class="[TRANSITION, getStepClass(3)]" class="bg-neutral-900 p-8 rounded-3xl border border-neutral-800 hover:border-green-500 transition-all group hover:-translate-y-2">
+              <div class="w-16 h-16 bg-green-900/20 rounded-2xl flex items-center justify-center text-3xl text-green-500 mb-6 group-hover:scale-110 transition-transform">🤝</div>
+              <h3 class="text-2xl font-bold text-white mb-4">Valor Social</h3>
+              <p class="text-gray-400 leading-relaxed">O potencial de axudar a outras persoas da comunidade a mellorar a súa saúde.</p>
+           </div>
+        </div>
+      </div>
+
+      <div v-if="currentSlide === 7" class="w-full h-full flex flex-col items-center justify-center relative bg-black" @click.stop="togglePlayback">
+         
+         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-orange-900/20 via-black to-black pointer-events-none animate-pulse-slow"></div>
+         
+         <div v-if="currentStep === 0" class="text-center animate-in zoom-in duration-700 relative z-10 px-4">
+            <h2 class="text-6xl md:text-7xl font-black text-white mb-6 tracking-tight">
+               Web & Móbil. <span class="text-orange-500">Todo en un.</span>
+            </h2>
+            <p class="text-2xl md:text-3xl text-gray-400 font-light">Unha experiencia fluída en calquera dispositivo.</p>
+            <div class="mt-12 inline-flex items-center gap-2 text-orange-500 border border-orange-500/30 px-6 py-3 rounded-full animate-bounce cursor-pointer hover:bg-orange-500/10 transition-colors" @click.stop="next">
+               <span>👇</span>
+               <span class="font-bold uppercase tracking-widest text-sm">Ver Demo Multiplataforma</span>
+            </div>
+         </div>
+
+         <div 
+            ref="videoContainerRef"
+            v-else 
+            class="relative w-[95vw] h-[85vh] flex items-center justify-center gap-4 animate-in slide-in-from-bottom duration-1000 z-10 px-4"
+         >
+            <div class="relative w-[65%] aspect-video rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-neutral-800 bg-neutral-900 group">
+               <div class="absolute inset-0 border-[1px] border-white/5 rounded-xl overflow-hidden">
+                  <video 
+                    ref="desktopVideoRef"
+                    class="w-full h-full object-cover" 
+                    src="/video/desktop.mp4" 
+                    loop
+                    muted
+                    playsinline
+                  ></video>
+                  <div class="absolute inset-0 bg-gradient-to-tr from-orange-500/10 to-transparent pointer-events-none mix-blend-overlay"></div>
+               </div>
+               <div class="absolute -bottom-3 left-0 w-full h-3 bg-neutral-800 rounded-b-lg border-t border-black"></div>
+            </div>
+
+            <div class="relative w-[22%] aspect-[9/19] rounded-[2.5rem] shadow-[0_20px_50px_rgba(234,88,12,0.2)] border-[6px] border-neutral-800 bg-black group transform translate-y-10 hover:-translate-y-2 transition-transform duration-500">
+               <div class="absolute top-2 left-1/2 -translate-x-1/2 w-1/3 h-6 bg-black rounded-full z-20"></div>
+               <div class="w-full h-full rounded-[2rem] overflow-hidden border border-white/5 relative">
+                  <video 
+                    ref="mobileVideoRef"
+                    class="w-full h-full object-cover" 
+                    src="/video/mobile.mp4" 
+                    loop
+                    muted
+                    playsinline
+                  ></video>
+               </div>
+               <div class="absolute top-20 -right-2 w-1 h-12 bg-neutral-800 rounded-r-md"></div>
+               <div class="absolute top-20 -left-2 w-1 h-8 bg-neutral-800 rounded-l-md"></div>
+            </div>
+
+            <div 
+               class="absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300"
+               :class="isPlaying ? 'opacity-0' : 'opacity-100'"
+             >
+                <div class="bg-black/60 backdrop-blur-sm p-6 rounded-full border border-white/20 shadow-2xl">
+                   <span class="text-6xl text-white">⏸️</span>
+                </div>
+             </div>
+         </div>
+      </div>
+
+      <div v-if="currentSlide === 8" class="w-full h-full flex flex-col items-center justify-center relative overflow-hidden animate-in fade-in zoom-in duration-1000">
+         <div class="absolute inset-0 bg-gradient-to-t from-orange-900/10 via-transparent to-transparent pointer-events-none"></div>
+         
+         <div class="relative z-10 text-center space-y-12">
+            <div class="inline-block animate-bounce mb-4">
+               <span class="text-8xl">🙏</span>
+            </div>
+            
+            <h2 class="text-8xl font-black text-white tracking-tighter drop-shadow-2xl">
+               Moitas Grazas
+            </h2>
+            
+            <p class="text-3xl text-orange-500 font-light tracking-wide">
+               Rolda de Preguntas
+            </p>
+
+            <div class="flex items-center justify-center gap-8 mt-12">
+               <a href="https://galentreno.vercel.app" target="_blank" class="px-8 py-4 bg-neutral-900 border border-neutral-700 text-white rounded-xl hover:border-orange-500 hover:text-orange-500 transition-all flex items-center gap-3 shadow-lg">
+                  <span>⚡</span> Probar App
+               </a>
+               <a href="https://github.com/IsmaelLF/GALENTRENO_frontend" target="_blank" class="px-8 py-4 bg-neutral-900 border border-neutral-700 text-white rounded-xl hover:border-orange-500 hover:text-orange-500 transition-all flex items-center gap-3 shadow-lg">
+                  <span>💻</span> Ver Código
+               </a>
+            </div>
+         </div>
+         
+         <div class="absolute bottom-10 text-gray-600 font-mono text-sm">
+            Ismael Lens • TFC 2025
+         </div>
+      </div>
+
+    </div>
+
+    <div class="fixed bottom-6 right-6 flex items-center gap-4 bg-neutral-900/90 backdrop-blur px-6 py-3 rounded-full border border-neutral-700 z-50 shadow-xl">
+       <button @click.stop="prev" class="text-gray-400 hover:text-white transition">◀</button>
+       <span class="font-mono text-sm text-orange-500 font-bold">{{ currentSlide + 1 }} / {{ totalSlides }}</span>
+       <button @click.stop="next" class="text-gray-400 hover:text-white transition">▶</button>
+    </div>
+
+  </div>
+</template>
+
+<style scoped>
+.mask-gradient-b {
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 50%);
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 50%);
+}
+.perspective-1000 {
+    perspective: 1000px;
+}
+.animate-pulse-slow {
+    animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+</style>
+==> src/components/LoginForm.vue <==
+
+<script>
+import { supabase } from '../lib/supabase.js';
+export default {
+  components: {
+    LoginTransition,
+  },
+  props: {
+    startWithRegister: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      isLogin: true,
+      nome: '',
+      correo: '',
+      contrasinal: '',
+      isLoading: false,
+      errorMessage: '',
+      showLoginTransition: false,
+    };
+  },
+  mounted() {
+    if (this.startWithRegister) {
+      this.isLogin = false;
+    }
+  },
+  methods: {
+    toggleForm() {
+      this.isLogin = !this.isLogin;
+      this.errorMessage = '';
+      this.nome = '';
+      this.correo = '';
+      this.contrasinal = '';
+    },
+    async handleLogin() {
+      this.isLoading = true;
+      this.errorMessage = '';
+
+      try {
+        // @ts-expect-error
+        const urlApi = import.meta.env.PUBLIC_API_URL;
+        const response = await fetch(`${urlApi}/api/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.correo, contrasinal: this.contrasinal }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+
+          console.log('Backend response:', data);
+          console.log('Access token from backend:', data.session?.access_token);
+
+          const { data: sessionData, error } = await supabase.auth.setSession({
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token
+          });
+
+          console.log('setSession result:', { sessionData, error });
+
+          if (error) {
+            console.error('Error setting session:', error);
+            this.errorMessage = 'Erro ao gardar a sesión';
+            this.isLoading = false;
+            return;
+          }
+
+          // Verificar que a sesión se gardou correctamente
+          const { data: { session: verificarSesion } } = await supabase.auth.getSession();
+          console.log('Session after setSession:', verificarSesion);
+
+          // Pequeno delay para asegurar que a sesión se gardou
+          await new Promise(resolve => setTimeout(resolve, 100));
+
+          this.showLoginTransition = true;
+        } else {
+          const errorData = await response.json();
+          this.errorMessage = errorData.error || 'Email o contrasinal incorrectos.';
+          this.isLoading = false;
+        }
+      } catch (error) {
+        this.errorMessage = 'Erro de conexión co servidor.';
+        this.isLoading = false;
+      }
+    },
+    async handleRegister() {
+      const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if (!emailRegex.test(this.correo)) {
+        this.errorMessage = 'Introduce un formato de correo electrónico válido.';
+        return;
+      }
+      this.isLoading = true;
+      this.errorMessage = '';
+      try {
+        // @ts-expect-error
+        const urlApi = import.meta.env.PUBLIC_API_URL;
+        const response = await fetch(`${urlApi}/api/auth/rexistro`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nome: this.nome, email: this.correo, contrasinal: this.contrasinal }),
+        });
+
+        if (response.ok) {
+          this.isLogin = true;
+          this.errorMessage = '';
+          this.nome = '';
+          this.correo = '';
+          this.contrasinal = '';
+        } else {
+          const errorData = await response.json();
+          this.errorMessage = errorData.error || 'Erro ao rexistrar. Tente de novo.';
+        }
+      } catch (error) {
+        this.errorMessage = 'Erro de conexión co servidor.';
+      } finally {
+        this.isLoading = false;
+      }
+    },
+  },
+};
+</script>
+
+<template>
+  <h2 class="h2-form">INICIAR SESIÓN</h2>
+  <div class="login-form">
+    <form @submit.prevent="handleLogin">
+      <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
+
+      <div>
+        <label for="email">Correo:</label>
+        <input type="email" id="email" v-model="correo" required>
+      </div>
+
+      <div>
+        <label for="password">Contrasinal:</label>
+        <input type="password" id="password" v-model="contrasinal" required>
+      </div>
+
+      <button type="submit" class="button button-login" :disabled="isLoading">
+        <span v-if="isLoading">Cargando...</span>
+        <span v-else>Iniciar Sesión</span>
+      </button>
+
+<div class="register-section">
+      <p class="p-text-acc">Non tes unha conta?</p>
+      <a href="/rexistro" class="button button-register">Rexístrate</a>
+    </div>
+      </form>
+  </div>
+</template>
+
+<style>
+.register-section {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  margin-top: 1rem;
+}
+.h2-form {
+  text-align: center;
+  font-family: TexGyre, sans-serif;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  position: absolute;
+  top: 0;
+}
+.login-form {
+  background: #2a2a2e;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  padding: 24px;
+  border-radius: 12px;
+  max-width: 400px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  display: grid;
+  grid-gap: 16px;
+  position: relative;
+  left: auto;
+  transform: none;
+  color: #f0f0f0;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 5px 0 10px 0;
+  background: #333;
+  color: #ffffff;
+  border: 1px solid #555;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:active, input:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+}
+
+.button-login {
+  width: 100%;
+  padding: 12px;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0 auto;
+  font-family: inherit;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+.button-login:hover {
+  background-color: #0b5ed7;
+}
+
+.button-register {
+  width: 100%;
+  background: transparent;
+  color: #1c77ff;
+  cursor: pointer;
+  margin: 0;
+  height: fit-content;
+  padding: 5px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.button-register:hover {
+  color: #ffffff;
+}
+.p-text-acc {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+</style>
+
+==> src/lib/supabase.js <==
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    "Faltan as credenciais públicas de Supabase nas variables de entorno"
+  );
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);

@@ -2,740 +2,256 @@
 const { title } = Astro.props;
 ---
 
+<!doctype html>
 <html lang="gl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} | Galentreno</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <script
-      src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"
-      is:inline></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <main>
-      <h1 style="display: none">Galentreno</h1>
-      <div class="deco-left">
-        <a href="/"><img src="/img/GALENTRENO.webp" alt="Galentreno Logo" /></a>
-
-        <div class="div-texts">
-          <p class="div-text-copy">Copyright 2025 GALENTRENO</p>
+    <div class="deco-under" aria-hidden="true">
+      <div class="scroll-gallery">
+        <div class="scroll-track">
+          <img
+            fetchpriority="high"
+            src="/img/galeria/foto1.webp"
+            alt="Imaxe 1"
+            loading="eager"
+          />
+          <img
+            fetchpriority="high"
+            src="/img/galeria/foto2.webp"
+            alt="Imaxe 2"
+            loading="eager"
+          />
+          <img
+            fetchpriority="high"
+            src="/img/galeria/foto3.webp"
+            alt="Imaxe 3"
+            loading="eager"
+          />
         </div>
       </div>
-      <div class="links-container">
-        <a
-          class="a-ig"
-          href="https://instagram.com/galentreno"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Visitar o noso perfil de Instagram">INSTAGRAM</a
-        >
-        <a
-          class="a-web"
-          href="https://galentreno.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Ir á páxina web principal de Galentreno">(WEB)</a
-        >
-        <a
-          class="a-fb"
-          href="https://facebook.com/galentreno"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Visitar a nosa páxina de Facebook">FACEBOOK</a
-        >
-      </div>
-      <div class="deco-right auth-card">
+    </div>
+
+    <main class="auth-shell">
+      <h1 class="sr-only">Galentreno</h1>
+
+      <header class="auth-topbar">
+        <a href="/" class="brand-link" aria-label="Inicio Galentreno">
+          <img src="/img/GALENTRENO.webp" alt="Galentreno Logo" />
+        </a>
+
+        <nav class="links-container" aria-label="Redes sociais">
+          <a
+            class="social-pill"
+            href="https://instagram.com/galentreno"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visitar o noso perfil de Instagram">Instagram</a
+          >
+          <a
+            class="social-pill"
+            href="https://galentreno.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Ir á páxina web principal de Galentreno">Web</a
+          >
+          <a
+            class="social-pill"
+            href="https://facebook.com/galentreno"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visitar a nosa páxina de Facebook">Facebook</a
+          >
+        </nav>
+      </header>
+
+      <section class="deco-right auth-card">
         <div class="auth-content">
           <slot />
-          <div class="text-frase">
-            <p>
-              "Somos o que facemos repetidamente. A excelencia, daquela, non é
-              un acto, senón un hábito." - Aristóteles
-            </p>
-          </div>
         </div>
-      </div>
-      <div class="deco-under">
-        <div class="scroll-gallery">
-          <div class="scroll-track">
-            <img
-              fetchpriority="high"
-              src="/img/galeria/foto1.webp"
-              alt="Imaxe 1"
-              loading="lazy"
-            />
-            <img
-              fetchpriority="high"
-              src="/img/galeria/foto2.webp"
-              alt="Imaxe 2"
-              loading="lazy"
-            />
-            <img
-              fetchpriority="high"
-              src="/img/galeria/foto3.webp"
-              alt="Imaxe 3"
-              loading="lazy"
-            />
-          </div>
+      </section>
+
+      <footer class="auth-footer">
+        <p class="div-text-copy">© {new Date().getFullYear()} GALENTRENO</p>
+        <div class="text-frase">
+          <p>
+            "Somos o que facemos repetidamente. A excelencia, daquela, non é un
+            acto, senón un hábito." — Aristóteles
+          </p>
         </div>
-      </div>
+      </footer>
     </main>
-  </body>
-  <script>
-    declare const gsap: any;
 
-    document.addEventListener("DOMContentLoaded", () => {
-      // Check if GSAP is loaded
-      if (typeof gsap === "undefined") {
-        console.warn(
-          "GSAP library failed to load. Some animations will be disabled."
-        );
-      }
+    <script>
+      import { gsap } from "gsap";
 
-      // Check for reduced motion preference
-      const prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
+      document.addEventListener("DOMContentLoaded", () => {
+        const prefersReducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
 
-      // Custom cursor (only if user doesn't prefer reduced motion)
-      if (!prefersReducedMotion && window.innerWidth >= 968) {
-        const cursorDot = document.createElement("div");
-        cursorDot.classList.add("custom-cursor-dot");
-        document.body.appendChild(cursorDot);
-
-        let mouseX = 0;
-        let mouseY = 0;
-        const trail: HTMLElement[] = [];
-        const maxTrail = 15;
-
-        document.addEventListener("mousemove", (e) => {
-          mouseX = e.clientX;
-          mouseY = e.clientY;
-
-          cursorDot.style.left = mouseX + "px";
-          cursorDot.style.top = mouseY + "px";
-
-          const trailDot = document.createElement("div");
-          trailDot.classList.add("cursor-trail");
-          trailDot.style.left = mouseX + "px";
-          trailDot.style.top = mouseY + "px";
-          document.body.appendChild(trailDot);
-
-          trail.push(trailDot);
-
-          if (trail.length > maxTrail) {
-            const oldDot = trail.shift();
-            if (oldDot) oldDot.remove();
-          }
-
-          setTimeout(() => {
-            trailDot.style.opacity = "0";
-            trailDot.style.transform = "translate(-50%, -50%) scale(0)";
-          }, 10);
-        });
-
-        document.querySelectorAll("a, button").forEach((el) => {
-          el.addEventListener("mouseenter", () => {
-            cursorDot.classList.add("cursor-hover");
-          });
-          el.addEventListener("mouseleave", () => {
-            cursorDot.classList.remove("cursor-hover");
-          });
-        });
-      }
-
-      const track = document.querySelector(".scroll-track") as HTMLElement;
-
-      if (!track) return;
-
-      // Duplicate images for infinite scroll effect
-      const originalImages = Array.from(track.querySelectorAll("img"));
-      originalImages.forEach((img) => {
-        const clone = img.cloneNode(true) as HTMLElement;
-        track.appendChild(clone);
-      });
-
-      const baseSpeed = prefersReducedMotion ? 0.1 : 0.25;
-      let scrollAmount = 0;
-      let resetPoint = 0;
-
-      function calculateResetPoint() {
-        if (!track) return;
-        const images = track.querySelectorAll("img");
-        const totalImages = images.length;
-
-        if (totalImages > 0) {
-          resetPoint = track.scrollWidth / 2;
-        }
-      }
-
-      calculateResetPoint();
-      window.addEventListener("resize", calculateResetPoint);
-
-      function animateScroll() {
-        if (resetPoint === 0) {
-          calculateResetPoint();
-        }
-
-        scrollAmount += baseSpeed;
-
-        if (scrollAmount >= resetPoint) {
-          scrollAmount = scrollAmount - resetPoint;
-        }
-
-        if (!track) return;
-        track.style.transform = `translateX(-${scrollAmount}px)`;
-
-        requestAnimationFrame(animateScroll);
-      }
-
-      requestAnimationFrame(animateScroll);
-
-      const linksContainer = document.querySelector(
-        ".links-container"
-      ) as HTMLElement;
-      const authContainer = document.querySelector(".auth-card");
-
-      if (linksContainer && authContainer && window.innerWidth < 968) {
-        const observer = new MutationObserver(() => {
-          if (authContainer.classList.contains("form-active")) {
-            linksContainer.style.opacity = "0";
-            linksContainer.style.pointerEvents = "none";
-          } else {
-            linksContainer.style.opacity = "1";
-            linksContainer.style.pointerEvents = "auto";
-          }
-        });
-
-        observer.observe(authContainer, {
-          attributes: true,
-          attributeFilter: ["class"],
-        });
-
-        if (authContainer.classList.contains("form-active")) {
-          linksContainer.style.opacity = "0";
-          linksContainer.style.pointerEvents = "none";
-        }
-      }
-
-      const quotes = [
-        '"Somos o que facemos repetidamente. A excelencia, daquela, non é un acto, senón un hábito." - Aristóteles',
-        '"Unha viaxe de mil millas comeza cun só paso" - Lao-Tse',
-        '"Non basta con saber, hai que aplicar. Non basta con querer, hai que facer." Johann Wolfgang von Goethe',
-        '"A única maneira de descubrir os límites do posible é ir máis alá deles, cara ao imposible." - Arthur C. Clarke',
-        '"Non teño talentos especiais. Só son apaixonadamente curioso." - Albert Einstein',
-        '"Os únicos límites que tes son os límites que cres." - Wayne Dyer',
-        '"Non te conformes con facelo ¨suficientemente ben¨. Busca sempre facelo mellor." - Michael Jordan',
-      ];
-
-      const fraseElement = document.querySelector(
-        ".text-frase p"
-      ) as HTMLElement;
-      let currentQuoteIndex = 0;
-
-      function rotateQuote() {
-        if (!fraseElement) return;
-
-        if (typeof gsap !== "undefined" && !prefersReducedMotion) {
-          // Use GSAP animations if available and user doesn't prefer reduced motion
-          gsap.to(fraseElement, {
-            opacity: 0,
-            y: 10,
-            duration: 0.6,
-            ease: "power2.in",
-            onComplete: () => {
-              currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
-              fraseElement.textContent = quotes[currentQuoteIndex];
-
-              gsap.fromTo(
-                fraseElement,
-                { opacity: 0, y: -10 },
-                { opacity: 0.6, y: 0, duration: 0.6, ease: "power2.out" }
-              );
-            },
-          });
-        } else {
-          // Fallback to simple fade without GSAP
-          fraseElement.style.transition = prefersReducedMotion
-            ? "none"
-            : "opacity 0.6s ease";
-          fraseElement.style.opacity = "0";
-
-          setTimeout(
-            () => {
-              currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
-              fraseElement.textContent = quotes[currentQuoteIndex];
-              fraseElement.style.opacity = "0.6";
-            },
-            prefersReducedMotion ? 0 : 600
+        const authContent = document.querySelector(".auth-content");
+        if (authContent && !prefersReducedMotion) {
+          gsap.fromTo(
+            authContent,
+            { opacity: 0, y: 20, scale: 0.98 },
+            { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: "power3.out" }
           );
         }
-      }
 
-      setInterval(rotateQuote, 5000);
-    });
-  </script>
+        const track = document.querySelector(".scroll-track") as HTMLElement;
+        if (track) {
+          const originalImages = Array.from(track.querySelectorAll("img"));
+          originalImages.forEach((img) => {
+            const clone = img.cloneNode(true) as HTMLElement;
+            track.appendChild(clone);
+          });
+
+          const baseSpeed = prefersReducedMotion ? 0.08 : 0.35;
+          let scrollAmount = 0;
+          let resetPoint = 0;
+
+          const calculateResetPoint = () => {
+            if (track.scrollWidth > 0) {
+              resetPoint = track.scrollWidth / 2;
+            }
+          };
+
+          calculateResetPoint();
+          window.addEventListener("resize", calculateResetPoint);
+
+          const animateScroll = () => {
+            if (resetPoint === 0) calculateResetPoint();
+            scrollAmount += baseSpeed;
+            if (scrollAmount >= resetPoint) {
+              scrollAmount -= resetPoint;
+            }
+            track.style.transform = `translate3d(-${scrollAmount}px, 0, 0)`;
+            requestAnimationFrame(animateScroll);
+          };
+
+          requestAnimationFrame(animateScroll);
+        }
+
+        const quotes = [
+          '"Somos o que facemos repetidamente. A excelencia, daquela, non é un acto, senón un hábito." — Aristóteles',
+          '"Unha viaxe de mil millas comeza cun só paso." — Lao-Tse',
+          '"Non basta con saber, hai que aplicar. Non basta con querer, hai que facer." — J.W. von Goethe',
+          '"A única maneira de descubrir os límites do posible é ir máis alá deles, cara ao imposible." — Arthur C. Clarke',
+          '"Non teño talentos especiais. Só son apaixonadamente curioso." — Albert Einstein',
+          '"Os únicos límites que tes son os límites que cres." — Wayne Dyer',
+          '"Non te conformes con facelo suficientemente ben. Busca sempre facelo mellor." — Michael Jordan',
+        ];
+
+        const fraseElement = document.querySelector(
+          ".text-frase p"
+        ) as HTMLElement;
+        let currentQuoteIndex = 0;
+
+        const rotateQuote = () => {
+          if (!fraseElement) return;
+
+          if (!prefersReducedMotion) {
+            gsap.to(fraseElement, {
+              opacity: 0,
+              y: 6,
+              duration: 0.4,
+              ease: "power2.in",
+              onComplete: () => {
+                currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+                fraseElement.textContent = quotes[currentQuoteIndex];
+                gsap.fromTo(
+                  fraseElement,
+                  { opacity: 0, y: -6 },
+                  { opacity: 0.75, y: 0, duration: 0.4, ease: "power2.out" }
+                );
+              },
+            });
+          } else {
+            currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+            fraseElement.textContent = quotes[currentQuoteIndex];
+          }
+        };
+
+        setInterval(rotateQuote, 6000);
+      });
+    </script>
+  </body>
 </html>
 
 <style is:global>
-  @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,500;1,500&display=swap");
-
   @font-face {
     font-family: TexGyre;
     src: url("/fonts/texgyreheros-bold.otf") format("opentype");
-  }
-  * {
-    font-family: TexGyre, sans-serif;
-    font-weight: lighter;
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    margin: 0;
-    padding: 0;
+    font-display: swap;
   }
 
-  /* Respect user's motion preferences */
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
+  :root {
+    --auth-primary: #3b82f6;
+    --auth-primary-hover: #2563eb;
+    --auth-bg: #070b14;
+    --auth-surface: rgba(15, 23, 42, 0.82);
+    --auth-border: rgba(148, 163, 184, 0.18);
+    --auth-text: #f8fafc;
+    --auth-muted: #94a3b8;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
 
   body {
-    background-color: #000;
-    background-size: cover;
-    margin: 0;
-    padding: 0;
-    color: #000;
-    display: flex;
-    flex-direction: column;
+    font-family: "Plus Jakarta Sans", TexGyre, -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--auth-bg);
+    color: var(--auth-text);
     min-height: 100vh;
     min-height: 100dvh;
-    height: auto;
     overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    -webkit-font-smoothing: antialiased;
   }
 
-  .div-text-copy,
-  .text-frase p {
-    font-size: 0.6rem;
-  }
-  input,
-  textarea,
-  select {
-    cursor: text !important;
-  }
-
-  .custom-cursor-dot {
-    position: fixed;
-    width: 8px;
-    height: 8px;
-    background-color: #0073c0;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 10000;
-    transform: translate(-50%, -50%);
-    transition:
-      width 0.3s ease,
-      height 0.3s ease;
-    display: none;
-  }
-
-  .custom-cursor-dot.cursor-hover {
-    width: 12px;
-    height: 12px;
-  }
-
-  @media (min-width: 1142px) and (max-width: 1355px) {
-    .div-text-copy {
-      font-size: 0.5rem;
-    }
-  }
-
-  .cursor-trail {
-    position: fixed;
-    width: 6px;
-    height: 6px;
-    background-color: #0073c0;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition:
-      opacity 0.5s ease,
-      transform 0.5s ease;
-    opacity: 0.6;
-    display: none;
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .deco-under {
-    display: block;
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     z-index: 0;
     overflow: hidden;
+    pointer-events: none;
   }
 
   .deco-under::after {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #11111171;
+    inset: 0;
+    background:
+      radial-gradient(circle at 50% 35%, rgba(15, 23, 42, 0.6) 0%, rgba(7, 11, 20, 0.94) 100%),
+      linear-gradient(180deg, rgba(7, 11, 20, 0.78) 0%, rgba(7, 11, 20, 0.92) 100%);
     z-index: 1;
-    pointer-events: none;
-  }
-
-  .deco-left {
-    position: relative;
-    width: 100%;
-    flex-basis: auto;
-    min-height: auto;
-    max-height: none;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem 1rem 2rem 1rem;
-    overflow: visible;
-    z-index: 1;
-  }
-  .deco-left img {
-    width: 85%;
-    max-width: 280px;
-    height: auto;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto;
-  }
-  .deco-right {
-    position: relative;
-    width: 100%;
-    height: auto;
-    flex-grow: 1;
-    flex-shrink: 1;
-    overflow-y: visible;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    padding: 3rem 1rem 2rem 1rem;
-    z-index: 1;
-    flex-direction: column;
-    min-height: 0;
-  }
-
-  .div-texts,
-  .div-text-1,
-  .div-text-copy {
-    display: none;
-  }
-
-  .links-container {
-    position: fixed;
-    bottom: 15vh;
-    left: 5vw;
-    right: 5vw;
-    display: flex;
-    justify-content: space-between;
-    z-index: 1001;
-  }
-
-  .a-ig,
-  .a-fb,
-  .a-web {
-    font-size: 16px;
-    font-style: normal;
-    text-decoration: none;
-    font-weight: 500;
-    color: #ffffff;
-    opacity: 0.7;
-    cursor: none;
-  }
-
-  .text-frase {
-    display: block;
-    position: fixed;
-    bottom: 0vh;
-    right: 1vw;
-    left: 1vw;
-    text-align: center;
-    z-index: 1001;
-    font-size: 10px;
-  }
-  .text-frase p {
-    font-family: "IBM Plex Mono", monospace;
-    font-style: normal;
-    line-height: 1.2;
-    color: #ffffff;
-    opacity: 0.6;
-    text-transform: uppercase;
-    margin: 0;
-  }
-
-  main {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-height: 100vh;
-    min-height: 100dvh;
-    height: auto;
-    position: relative;
-    margin: 0;
-    padding: 0;
-  }
-
-  @media (max-height: 700px) and (max-width: 967px) {
-    .deco-left {
-      padding: 1.5rem 1rem 1.5rem 1rem;
-    }
-
-    .deco-left img {
-      width: 75%;
-      max-width: 240px;
-    }
-
-    .deco-right {
-      padding: 2rem 1rem 2rem 1rem;
-    }
-  }
-
-  @media (min-width: 600px) and (max-width: 967px) {
-    .deco-left {
-      padding: 2.5rem 1rem 1.5rem 1rem;
-    }
-
-    .deco-left img {
-      width: 70%;
-      max-width: 320px;
-    }
-
-    .deco-right {
-      padding: 2.5rem 2rem 2rem 2rem;
-    }
-  }
-
-  @media (max-height: 500px) and (max-width: 967px) and (orientation: landscape) {
-    body {
-      height: auto;
-      min-height: 100%;
-    }
-
-    main {
-      min-height: 100%;
-    }
-
-    .deco-left {
-      padding: 1rem 1rem 0.5rem 1rem;
-    }
-
-    .deco-left img {
-      width: 50%;
-      max-width: 150px;
-    }
-
-    .deco-right {
-      padding: 1rem 1rem 1.5rem 1rem;
-    }
-  }
-
-  .text-frase {
-    text-align: center;
-    color: #fff;
-    padding: 2rem 1rem;
-    font-size: 0.7rem;
-    max-width: 500px;
-    margin: 0 auto;
-  }
-
-  .text-frase p {
-    font-family: "IBM Plex Mono", monospace;
-    margin: 0;
-    font-style: normal;
-    font-weight: 500;
-    text-transform: uppercase;
-  }
-
-  .auth-content {
-    width: 100%;
-  }
-
-  .auth-content:has(.form-active) .text-frase {
-    display: none !important;
-  }
-
-  @media (min-width: 968px) {
-    body {
-      display: block;
-      overflow: hidden;
-    }
-
-    /* Only hide default cursor if custom cursor is supported and user doesn't prefer reduced motion */
-    @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-      body {
-        cursor: none;
-      }
-
-      .custom-cursor-dot {
-        display: block;
-      }
-
-      .cursor-trail {
-        display: block;
-      }
-    }
-
-    main {
-      display: block;
-      height: 100vh;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .text-frase {
-      position: absolute;
-      bottom: 1vh;
-      right: 1vw;
-      left: auto;
-      text-align: right;
-      max-width: 100%;
-      font-size: 0.6rem;
-    }
-
-    .text-frase p {
-      font-family: "IBM Plex Mono", monospace;
-      font-style: normal;
-      line-height: 1;
-      color: #ffffff;
-      opacity: 0.6;
-      text-transform: uppercase;
-    }
-
-    .auth-content {
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    .div-text-copy {
-      display: block;
-      position: absolute;
-      left: 1vw;
-      bottom: 0vh;
-      font-family: "IBM Plex Mono", monospace;
-      font-style: normal;
-      font-weight: 500;
-      text-transform: uppercase;
-      color: #ffffff;
-      opacity: 0.8;
-      line-height: 1;
-      margin: 0;
-      z-index: 1001;
-      font-size: 0.6rem;
-    }
-
-    .links-container {
-      top: 5dvh;
-      bottom: auto;
-      left: 55%;
-      right: 2vw;
-    }
-
-    .a-ig,
-    .a-fb,
-    .a-web {
-      font-size: 20px;
-    }
-    .deco-under {
-      display: block;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 100%;
-      z-index: 0;
-    }
-
-    .deco-under::after {
-      display: block;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    .deco-left {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      transform: translate(0, -5%);
-      padding: 0;
-      flex-basis: auto;
-      min-height: unset;
-      max-height: unset;
-      z-index: 999;
-      pointer-events: none;
-    }
-
-    .deco-left img {
-      max-width: none;
-      width: 35%;
-      height: auto;
-      object-fit: cover;
-      position: absolute;
-      left: 2vw;
-      top: 2vh;
-      transform: translate(-20%, -40%);
-      pointer-events: auto;
-    }
-
-    .deco-right {
-      position: fixed;
-      right: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      padding: 0;
-      flex-direction: column;
-      flex-grow: 0;
-      justify-content: center;
-      overflow-y: auto;
-      z-index: 999;
-    }
-
-    .div-texts {
-      display: inline-block;
-      text-align: center;
-    }
-
-    .div-text-1 {
-      display: block;
-      position: absolute;
-      color: #fff;
-      text-transform: uppercase;
-      font-size: 12px;
-      letter-spacing: 0;
-      margin-right: 2dvh;
-      top: 10vh;
-      left: 65dvw;
-    }
-  }
-
-  @media (min-width: 1445px) {
-    .text-frase p {
-      font-size: 0.6rem;
-      margin-bottom: 0.5rem;
-    }
   }
 
   .scroll-gallery {
@@ -750,59 +266,163 @@ const { title } = Astro.props;
     display: flex;
     height: 100%;
     will-change: transform;
-    padding: 1dvh;
+    gap: 1rem;
+    padding: 1rem;
   }
 
   .scroll-track img {
-    width: 50vw;
+    width: 48vw;
+    min-width: 320px;
     height: 100%;
-    padding: 0;
     object-fit: cover;
-    filter: saturate(30%);
-    border-radius: 10px;
-    margin-right: 10px;
+    filter: saturate(25%) contrast(1.05) brightness(0.7);
+    border-radius: 1rem;
   }
 
-  @media (max-width: 967px) {
-    .scroll-track img {
-      width: 95vw;
-    }
+  .auth-shell {
+    position: relative;
+    z-index: 2;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem clamp(1rem, 4vw, 3rem);
   }
 
-  @media (max-width: 358px) {
-    .deco-left {
-      padding: 1.5rem 0.5rem 1.5rem 0.5rem;
-    }
+  .auth-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1360px;
+    margin: 0 auto;
+  }
 
-    .deco-left img {
-      width: 90%;
-      max-width: 220px;
-    }
+  .brand-link {
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
 
-    .deco-right {
-      padding: 2rem 0.5rem 1.5rem 0.5rem;
-    }
+  .brand-link:hover {
+    transform: translateY(-1px);
+    opacity: 0.92;
+  }
 
-    .links-container {
-      left: 3vw;
-      right: 3vw;
-      bottom: 13vh;
-    }
+  .brand-link img {
+    height: clamp(36px, 5vw, 50px);
+    width: auto;
+    object-fit: contain;
+  }
 
-    .a-ig,
-    .a-fb,
-    .a-web {
-      font-size: 13px;
+  .links-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .social-pill {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--auth-text);
+    background: rgba(15, 23, 42, 0.65);
+    border: 1px solid var(--auth-border);
+    padding: 0.5rem 0.9rem;
+    border-radius: 9999px;
+    backdrop-filter: blur(10px);
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.2s ease;
+  }
+
+  .social-pill:hover {
+    background: rgba(59, 130, 246, 0.18);
+    border-color: rgba(59, 130, 246, 0.55);
+    transform: translateY(-1px);
+  }
+
+  .deco-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+    padding: 2rem 0;
+  }
+
+  .auth-content {
+    width: 100%;
+    max-width: 440px;
+    background: var(--auth-surface);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--auth-border);
+    border-radius: 1.25rem;
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    box-shadow:
+      0 25px 50px -12px rgba(2, 6, 23, 0.85),
+      0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  }
+
+  .auth-footer {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 1360px;
+    margin: 0 auto;
+    padding-top: 1rem;
+  }
+
+  .div-text-copy {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.75rem;
+    color: var(--auth-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .text-frase {
+    max-width: 640px;
+    text-align: center;
+  }
+
+  .text-frase p {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: #cbd5e1;
+    opacity: 0.75;
+  }
+
+  @media (min-width: 968px) {
+    .auth-footer {
+      flex-direction: row;
     }
 
     .text-frase {
-      font-size: 8px;
-      left: 0.5vw;
-      right: 0.5vw;
+      text-align: right;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .auth-topbar {
+      flex-direction: column;
+      align-items: center;
+      gap: 0.875rem;
     }
 
-    .text-frase p {
-      line-height: 1.1;
+    .scroll-track img {
+      width: 85vw;
     }
   }
 </style>

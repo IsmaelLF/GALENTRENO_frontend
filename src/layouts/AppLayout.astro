@@ -25,27 +25,27 @@ const { title } = Astro.props;
       }
 
       :root {
-        --color-primary: #3b82f6;
-        --color-primary-hover: #2563eb;
-        --color-primary-active: #1d4ed8;
-        --color-primary-light: rgba(59, 130, 246, 0.14);
-        --color-primary-glow: rgba(59, 130, 246, 0.28);
-        --color-success: #10b981;
-        --color-danger: #ef4444;
+        --color-primary: #a78bdf;
+        --color-primary-hover: #b59ce9;
+        --color-primary-active: #9274cf;
+        --color-primary-light: rgba(167, 139, 223, 0.12);
+        --color-primary-glow: rgba(167, 139, 223, 0.12);
+        --color-success: #70c4a0;
+        --color-danger: #e08b91;
 
-        --color-bg-main: #090d16;
-        --color-bg-secondary: #0f172a;
-        --color-bg-card: rgba(17, 24, 39, 0.78);
-        --color-bg-card-hover: rgba(30, 41, 59, 0.85);
-        --color-bg-input: rgba(15, 23, 42, 0.9);
+        --color-bg-main: #1b1920;
+        --color-bg-secondary: #24212a;
+        --color-bg-card: #292630;
+        --color-bg-card-hover: #302c38;
+        --color-bg-input: #211f27;
 
-        --color-text-primary: #f8fafc;
-        --color-text-secondary: #cbd5e1;
-        --color-text-muted: #94a3b8;
+        --color-text-primary: #f2eef7;
+        --color-text-secondary: #d0cad8;
+        --color-text-muted: #a29aaa;
 
-        --color-border: rgba(148, 163, 184, 0.14);
-        --color-border-hover: rgba(59, 130, 246, 0.45);
-        --color-border-focus: #3b82f6;
+        --color-border: rgba(233, 225, 245, 0.1);
+        --color-border-hover: rgba(167, 139, 223, 0.42);
+        --color-border-focus: #a78bdf;
 
         --spacing-xs: 0.25rem;
         --spacing-sm: 0.5rem;
@@ -74,10 +74,10 @@ const { title } = Astro.props;
         --transition-base: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
         --transition-slow: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 
-        --shadow-sm: 0 2px 8px -2px rgba(2, 6, 23, 0.5);
-        --shadow-md: 0 10px 25px -5px rgba(2, 6, 23, 0.65);
-        --shadow-lg: 0 20px 40px -12px rgba(2, 6, 23, 0.8);
-        --shadow-glow: 0 8px 24px -4px var(--color-primary-glow);
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+        --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.16);
+        --shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.22);
+        --shadow-glow: 0 4px 12px -4px var(--color-primary-glow);
 
         --z-dropdown: 1000;
         --z-sticky: 1020;
@@ -117,11 +117,6 @@ const { title } = Astro.props;
       body {
         font-family: var(--font-family);
         background-color: var(--color-bg-main);
-        background-image:
-          radial-gradient(circle at 15% 0%, rgba(59, 130, 246, 0.12), transparent 40%),
-          radial-gradient(circle at 85% 100%, rgba(29, 78, 216, 0.1), transparent 40%),
-          linear-gradient(180deg, var(--color-bg-main) 0%, var(--color-bg-secondary) 100%);
-        background-attachment: fixed;
         color: var(--color-text-secondary);
         display: flex;
         flex-direction: column;
@@ -208,8 +203,6 @@ const { title } = Astro.props;
 
       .card {
         background: var(--color-bg-card);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
         padding: var(--spacing-lg);
         border-radius: var(--radius-lg);
         text-align: center;
@@ -224,8 +217,8 @@ const { title } = Astro.props;
       }
 
       .card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
         border-color: var(--color-border-hover);
         background: var(--color-bg-card-hover);
       }
@@ -249,10 +242,10 @@ const { title } = Astro.props;
       .button,
       .button-register,
       .button-login {
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid transparent;
         padding: 0.75rem 1.5rem;
-        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
-        color: var(--color-text-primary);
+        background: var(--color-primary);
+        color: #241e31;
         border-radius: var(--radius-md);
         font-size: var(--font-size-sm);
         font-weight: 600;
@@ -275,10 +268,10 @@ const { title } = Astro.props;
       .button:hover:not(:disabled),
       .button-register:hover:not(:disabled),
       .button-login:hover:not(:disabled) {
-        filter: brightness(1.08);
-        transform: translateY(-2px);
-        box-shadow: 0 12px 28px -4px rgba(59, 130, 246, 0.45);
-        color: var(--color-text-primary);
+        background: var(--color-primary-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px -6px var(--color-primary-glow);
+        color: #241e31;
         text-decoration: none;
       }
 
@@ -295,15 +288,17 @@ const { title } = Astro.props;
       }
 
       .button-secondary {
-        background: rgba(30, 41, 59, 0.75);
+        background: transparent;
         border: 1px solid var(--color-border);
-        box-shadow: var(--shadow-sm);
+        color: var(--color-text-secondary);
+        box-shadow: none;
       }
 
       .button-secondary:hover:not(:disabled) {
-        background: rgba(51, 65, 85, 0.85);
+        background: var(--color-primary-light);
         border-color: var(--color-border-hover);
-        box-shadow: var(--shadow-md);
+        color: var(--color-primary);
+        box-shadow: none;
       }
 
       .button:focus-visible,
@@ -375,7 +370,7 @@ const { title } = Astro.props;
         outline: none;
         border-color: var(--color-border-focus);
         box-shadow: 0 0 0 3px var(--color-primary-light);
-        background-color: #0f172a;
+        background-color: var(--color-bg-input);
       }
 
       textarea {
@@ -392,7 +387,6 @@ const { title } = Astro.props;
 
       .plan-card {
         background: var(--color-bg-card);
-        backdrop-filter: blur(12px);
         color: var(--color-text-secondary);
         padding: var(--spacing-xl);
         border-radius: var(--radius-xl);

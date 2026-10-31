@@ -307,7 +307,7 @@ export default {
 }
 
 .dia-section {
-  background: rgba(15, 23, 42, 0.65);
+  background: var(--color-bg-secondary);
   padding: 1.5rem;
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
@@ -345,7 +345,7 @@ export default {
   grid-template-columns: 2.5fr 1fr 1fr 1fr auto;
   gap: 0.75rem;
   align-items: end;
-  background: rgba(9, 13, 22, 0.6);
+  background: var(--color-bg-card);
   padding: 1rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
@@ -392,9 +392,9 @@ export default {
 }
 
 .button-add-exercise {
-  background: rgba(59, 130, 246, 0.1);
-  color: #60a5fa;
-  border: 1px dashed rgba(59, 130, 246, 0.4);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border: 1px dashed var(--color-border-hover);
   padding: 0.7rem 1rem;
   border-radius: var(--radius-md);
   font-weight: 600;
@@ -404,7 +404,7 @@ export default {
 }
 
 .button-add-exercise:hover {
-  background: rgba(59, 130, 246, 0.18);
+  background: rgba(118, 86, 214, 0.16);
   border-color: var(--color-primary);
 }
 

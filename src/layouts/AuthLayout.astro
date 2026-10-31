@@ -12,23 +12,20 @@ const { title } = Astro.props;
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
-    <div class="auth-backdrop" aria-hidden="true">
-      <div class="glow-orb orb-1"></div>
-      <div class="glow-orb orb-2"></div>
-      <div class="grid-overlay"></div>
-    </div>
+    <div class="auth-backdrop" aria-hidden="true"></div>
 
     <main class="auth-shell">
       <h1 class="sr-only">Galentreno</h1>
 
       <header class="auth-topbar">
         <a href="/" class="brand-link" aria-label="Inicio Galentreno">
-          <img src="/img/GALENTRENO.webp" alt="Galentreno Logo" />
+          <span class="brand-dot" aria-hidden="true"></span>
+          <span class="brand-name">GALENTRENO</span>
         </a>
 
         <nav class="links-container" aria-label="Contacto profesional">
@@ -163,13 +160,16 @@ const { title } = Astro.props;
   }
 
   :root {
-    --auth-primary: #3b82f6;
-    --auth-primary-hover: #2563eb;
-    --auth-bg: #070b14;
-    --auth-surface: rgba(15, 23, 42, 0.82);
-    --auth-border: rgba(148, 163, 184, 0.16);
-    --auth-text: #f8fafc;
-    --auth-muted: #94a3b8;
+    --auth-primary: #a78bdf;
+    --auth-primary-hover: #b59ce9;
+    --auth-primary-light: rgba(167, 139, 223, 0.12);
+    --auth-bg: #1b1920;
+    --auth-surface: #292630;
+    --auth-border: rgba(233, 225, 245, 0.1);
+    --auth-text: #f2eef7;
+    --auth-muted: #a29aaa;
+    --auth-text-secondary: #d0cad8;
+    --auth-input: #211f27;
   }
 
   *,
@@ -185,6 +185,7 @@ const { title } = Astro.props;
       sans-serif;
     background-color: var(--auth-bg);
     color: var(--auth-text);
+    color-scheme: dark;
     min-height: 100vh;
     min-height: 100dvh;
     overflow-x: hidden;
@@ -209,46 +210,7 @@ const { title } = Astro.props;
     z-index: 0;
     overflow: hidden;
     pointer-events: none;
-    background: linear-gradient(180deg, #070b14 0%, #0b1324 100%);
-  }
-
-  .glow-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(110px);
-    opacity: 0.45;
-  }
-
-  .orb-1 {
-    width: 480px;
-    height: 480px;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.35), transparent 70%);
-    top: -120px;
-    left: -100px;
-  }
-
-  .orb-2 {
-    width: 520px;
-    height: 520px;
-    background: radial-gradient(circle, rgba(29, 78, 216, 0.28), transparent 70%);
-    bottom: -160px;
-    right: -120px;
-  }
-
-  .grid-overlay {
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(
-      rgba(148, 163, 184, 0.12) 1px,
-      transparent 1px
-    );
-    background-size: 28px 28px;
-    mask-image: radial-gradient(circle at center, black 35%, transparent 85%);
-    -webkit-mask-image: radial-gradient(
-      circle at center,
-      black 35%,
-      transparent 85%
-    );
+    background: var(--auth-bg);
   }
 
   .auth-shell {
@@ -275,20 +237,29 @@ const { title } = Astro.props;
   .brand-link {
     display: inline-flex;
     align-items: center;
+    gap: 0.65rem;
+    color: var(--auth-text);
+    text-decoration: none;
     transition: transform 0.2s ease, opacity 0.2s ease;
   }
 
   .brand-link:hover {
     transform: translateY(-1px);
     opacity: 0.95;
+    color: var(--auth-text);
   }
 
-  .brand-link img {
-    height: clamp(68px, 9vw, 115px);
-    width: auto;
-    max-width: min(320px, 65vw);
-    object-fit: contain;
-    filter: drop-shadow(0 6px 20px rgba(59, 130, 246, 0.22));
+  .brand-dot {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--auth-primary);
+  }
+
+  .brand-name {
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
   }
 
   .links-container {
@@ -305,11 +276,10 @@ const { title } = Astro.props;
     letter-spacing: 0.02em;
     text-decoration: none;
     color: var(--auth-text);
-    background: rgba(15, 23, 42, 0.75);
+    background: #24212a;
     border: 1px solid var(--auth-border);
     padding: 0.6rem 1.1rem;
     border-radius: 9999px;
-    backdrop-filter: blur(10px);
     transition:
       background-color 0.2s ease,
       border-color 0.2s ease,
@@ -318,15 +288,15 @@ const { title } = Astro.props;
   }
 
   .linkedin-pill svg {
-    color: #60a5fa;
+    color: var(--auth-primary);
     flex-shrink: 0;
   }
 
   .linkedin-pill:hover {
-    background: rgba(59, 130, 246, 0.18);
-    border-color: rgba(59, 130, 246, 0.55);
+    background: var(--auth-primary-light);
+    border-color: rgba(167, 139, 223, 0.35);
     transform: translateY(-1px);
-    box-shadow: 0 6px 18px -4px rgba(59, 130, 246, 0.35);
+    box-shadow: 0 4px 12px -4px rgba(118, 86, 214, 0.18);
   }
 
   .deco-right {
@@ -336,21 +306,27 @@ const { title } = Astro.props;
     align-items: center;
     flex-grow: 1;
     width: 100%;
-    padding: 0.5rem 0;
+    padding: clamp(1.5rem, 4vh, 3rem) 0;
   }
 
   .auth-content {
     width: 100%;
     max-width: 440px;
     background: var(--auth-surface);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--auth-border);
     border-radius: 1.25rem;
     padding: clamp(1.5rem, 4vw, 2.25rem);
-    box-shadow:
-      0 25px 50px -12px rgba(2, 6, 23, 0.85),
-      0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .auth-content:has(.welcome-screen) {
+    width: 100%;
+    max-width: 1120px;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .auth-footer {
@@ -362,14 +338,14 @@ const { title } = Astro.props;
     width: 100%;
     max-width: 1280px;
     margin: 0 auto;
-    padding-top: 0.5rem;
+    border-top: 1px solid var(--auth-border);
+    padding-top: 1.1rem;
   }
 
   .div-text-copy {
-    font-family: "IBM Plex Mono", monospace;
     font-size: 0.75rem;
     color: var(--auth-muted);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
@@ -379,11 +355,10 @@ const { title } = Astro.props;
   }
 
   .text-frase p {
-    font-family: "IBM Plex Mono", monospace;
     font-size: 0.75rem;
     line-height: 1.5;
-    color: #cbd5e1;
-    opacity: 0.75;
+    color: var(--auth-muted);
+    opacity: 1;
   }
 
   @media (min-width: 968px) {
@@ -402,21 +377,21 @@ const { title } = Astro.props;
       gap: 1.25rem;
     }
 
-    .auth-topbar {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 1rem;
-    }
-
-    .brand-link img {
-      height: 76px;
-      max-width: 80vw;
+    .brand-name {
+      font-size: 1rem;
     }
 
     .auth-content {
       padding: 1.35rem 1.15rem;
       border-radius: 1rem;
+    }
+
+    .auth-content:has(.welcome-screen) {
+      padding: 0;
+    }
+
+    .deco-right {
+      padding: 1rem 0;
     }
   }
 </style>

@@ -124,9 +124,7 @@ const pathname = Astro.url.pathname;
 
 <style>
   header {
-    background: rgba(9, 13, 22, 0.82);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    background: #1f1d25;
     padding: 0.875rem 1.5rem;
     border-bottom: 1px solid var(--color-border);
     position: sticky;
@@ -166,7 +164,6 @@ const pathname = Astro.url.pathname;
     height: 10px;
     border-radius: 50%;
     background: var(--color-primary);
-    box-shadow: 0 0 12px var(--color-primary);
   }
 
   .mobile-menu-toggle {
@@ -229,8 +226,8 @@ const pathname = Astro.url.pathname;
 
   .nav-links a:hover,
   .nav-links a.active {
-    color: var(--color-text-primary);
-    background-color: rgba(59, 130, 246, 0.12);
+    color: var(--color-primary);
+    background-color: var(--color-primary-light);
   }
 
   .nav-links a.active {
@@ -238,15 +235,15 @@ const pathname = Astro.url.pathname;
   }
 
   .nav-links a.logout-btn {
-    color: #fca5a5;
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: var(--color-danger);
+    border: 1px solid rgba(201, 77, 90, 0.18);
     margin-left: 0.5rem;
   }
 
   .nav-links a.logout-btn:hover {
-    background-color: rgba(239, 68, 68, 0.14);
-    border-color: rgba(239, 68, 68, 0.4);
-    color: #fecaca;
+    background-color: rgba(201, 77, 90, 0.08);
+    border-color: rgba(201, 77, 90, 0.3);
+    color: var(--color-danger);
   }
 
   @media (max-width: 767px) {
@@ -261,13 +258,13 @@ const pathname = Astro.url.pathname;
       height: 100dvh;
       width: 80%;
       max-width: 300px;
-      background: #0b1120;
+      background: #211f27;
       border-left: 1px solid var(--color-border);
       flex-direction: column;
       justify-content: center;
       align-items: stretch;
       gap: 0.75rem;
-      box-shadow: -12px 0 30px rgba(0, 0, 0, 0.6);
+      box-shadow: -8px 0 24px rgba(33, 29, 43, 0.1);
       z-index: 1000;
       padding: 2rem 1.25rem;
       visibility: hidden;

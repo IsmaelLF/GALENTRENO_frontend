@@ -233,18 +233,81 @@ export default {
 <template>
   <div class="auth-container" :class="{ 'form-active': currentView !== 'inicio' }">
     <div v-if="currentView === 'inicio'" class="welcome-screen">
-      <div class="welcome-intro">
-        <span class="welcome-badge">Adestramento Intelixente</span>
-        <h2>Benvido a Galentreno</h2>
-        <p>Xestiona as túas rutinas, rexistra as túas series e mide a túa evolución.</p>
+      <div class="welcome-copy">
+        <div class="welcome-intro">
+          <span class="welcome-badge">Adestra ao teu ritmo</span>
+          <h2>Cada sesión conta.<br />Comeza pola seguinte.</h2>
+          <p>
+            Organiza as túas rutinas, apunta cada serie e céntrate no que importa:
+            ir progresando, pouco a pouco.
+          </p>
+        </div>
+        <div class="welcome-buttons">
+          <button @click="showRegister" class="btn-auth btn-auth-primary">
+            Crear a miña conta
+            <span aria-hidden="true">→</span>
+          </button>
+          <button @click="showLogin" class="btn-auth btn-auth-secondary">
+            Xa teño conta
+          </button>
+        </div>
+        <p class="welcome-note">Sen presión. Só ti, a túa rutina e o seguinte adestramento.</p>
       </div>
-      <div class="welcome-buttons">
-        <button @click="showLogin" class="btn-auth btn-auth-primary">
-          Iniciar Sesión
-        </button>
-        <button @click="showRegister" class="btn-auth btn-auth-secondary">
-          Crear Conta
-        </button>
+
+      <article class="training-preview" aria-label="Exemplo de rexistro de adestramento">
+        <header class="preview-header">
+          <div>
+            <span class="preview-eyebrow">Exemplo de rutina</span>
+            <h3>Tren superior</h3>
+          </div>
+          <span class="preview-day">DÍA 01</span>
+        </header>
+
+        <div class="preview-exercises">
+          <div class="preview-exercise">
+            <span class="exercise-number">01</span>
+            <div class="exercise-details">
+              <strong>Press de banca</strong>
+              <span>3 series · 8 repeticións</span>
+            </div>
+            <span class="exercise-check" aria-label="Completado">✓</span>
+          </div>
+          <div class="preview-exercise">
+            <span class="exercise-number">02</span>
+            <div class="exercise-details">
+              <strong>Remo con barra</strong>
+              <span>3 series · 10 repeticións</span>
+            </div>
+            <span class="exercise-check" aria-label="Completado">✓</span>
+          </div>
+          <div class="preview-exercise">
+            <span class="exercise-number">03</span>
+            <div class="exercise-details">
+              <strong>Press de ombreiros</strong>
+              <span>3 series · 10 repeticións</span>
+            </div>
+            <span class="exercise-check" aria-label="Completado">✓</span>
+          </div>
+        </div>
+
+        <p class="preview-footnote">
+          Un exemplo sinxelo. A túa rutina, ao teu xeito.
+        </p>
+      </article>
+
+      <div class="welcome-benefits" aria-label="O que podes facer con Galentreno">
+        <div>
+          <span class="benefit-mark" aria-hidden="true">01</span>
+          <p><strong>Rexistro doado</strong><span>Apunta series e pesos sen interromper o ritmo.</span></p>
+        </div>
+        <div>
+          <span class="benefit-mark" aria-hidden="true">02</span>
+          <p><strong>Plans á túa medida</strong><span>Adapta cada rutina aos teus obxectivos.</span></p>
+        </div>
+        <div>
+          <span class="benefit-mark" aria-hidden="true">03</span>
+          <p><strong>Progreso real</strong><span>Consulta como avanzas co paso do tempo.</span></p>
+        </div>
       </div>
     </div>
 
@@ -360,52 +423,64 @@ export default {
 }
 
 .welcome-screen {
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-  text-align: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.86fr);
+  column-gap: clamp(2rem, 6vw, 6rem);
+  row-gap: 3.5rem;
+  align-items: center;
+}
+
+.welcome-copy {
+  max-width: 580px;
 }
 
 .welcome-badge {
-  display: inline-block;
-  padding: 0.35rem 0.85rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--auth-primary);
+  font-size: 0.8rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #60a5fa;
-  background: rgba(59, 130, 246, 0.14);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  margin-bottom: 0.75rem;
+  letter-spacing: 0.015em;
+  margin-bottom: 1.1rem;
+}
+
+.welcome-badge::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: currentColor;
 }
 
 .welcome-intro h2 {
-  font-size: clamp(1.4rem, 4vw, 1.65rem);
-  font-weight: 800;
-  color: #f8fafc;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.02em;
+  font-size: clamp(2.5rem, 5vw, 4.25rem);
+  font-weight: 700;
+  color: var(--auth-text);
+  margin-bottom: 1rem;
+  letter-spacing: -0.055em;
+  line-height: 1.08;
 }
 
 .welcome-intro p {
-  font-size: 0.95rem;
-  color: #94a3b8;
-  line-height: 1.5;
+  max-width: 490px;
+  font-size: 1.05rem;
+  color: var(--auth-text-secondary);
+  line-height: 1.75;
   margin: 0;
 }
 
 .welcome-buttons {
   display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
-  width: 100%;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
 }
 
 .btn-auth {
-  width: 100%;
-  padding: 0.875rem 1.25rem;
-  border-radius: 0.75rem;
+  min-height: 3.25rem;
+  padding: 0.8rem 1.25rem;
+  border-radius: 0.65rem;
   font-family: inherit;
   font-weight: 600;
   font-size: 0.95rem;
@@ -418,27 +493,176 @@ export default {
 }
 
 .btn-auth-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 8px 20px -4px rgba(59, 130, 246, 0.45);
+  background: var(--auth-primary);
+  color: #241e31;
+  border: 1px solid transparent;
+  box-shadow: none;
 }
 
 .btn-auth-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 24px -4px rgba(59, 130, 246, 0.6);
+  transform: translateY(-1px);
+  background: var(--auth-primary-hover);
+  box-shadow: none;
 }
 
 .btn-auth-secondary {
-  background: rgba(30, 41, 59, 0.7);
-  color: #f8fafc;
-  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: transparent;
+  color: var(--auth-text-secondary);
+  border: 1px solid rgba(233, 225, 245, 0.2);
 }
 
 .btn-auth-secondary:hover:not(:disabled) {
-  background: rgba(51, 65, 85, 0.8);
-  border-color: rgba(59, 130, 246, 0.5);
-  transform: translateY(-2px);
+  background: var(--auth-primary-light);
+  border-color: rgba(167, 139, 223, 0.35);
+  color: var(--auth-text);
+}
+
+.welcome-note {
+  margin: 0.9rem 0 0;
+  color: var(--auth-muted);
+  font-size: 0.8rem;
+}
+
+.training-preview {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border: 1px solid var(--auth-border);
+  border-radius: 1rem;
+  background: #24212a;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--auth-border);
+}
+
+.preview-eyebrow {
+  color: var(--auth-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.preview-header h3 {
+  margin: 0.35rem 0 0;
+  color: var(--auth-text);
+  font-size: 1.35rem;
+  letter-spacing: -0.03em;
+}
+
+.preview-day {
+  padding: 0.35rem 0.55rem;
+  border-radius: 0.35rem;
+  color: var(--auth-primary);
+  background: var(--auth-primary-light);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.preview-exercises {
+  padding-top: 0.25rem;
+}
+
+.preview-exercise {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--auth-border);
+}
+
+.exercise-number {
+  color: var(--auth-muted);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.exercise-details {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.exercise-details strong {
+  color: var(--auth-text-secondary);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.exercise-details span {
+  color: var(--auth-muted);
+  font-size: 0.76rem;
+}
+
+.exercise-check {
+  display: grid;
+  width: 1.35rem;
+  height: 1.35rem;
+  place-items: center;
+  border: 1px solid rgba(112, 196, 160, 0.35);
+  border-radius: 50%;
+  color: #70c4a0;
+  font-size: 0.72rem;
+}
+
+.preview-footnote {
+  margin: 1rem 0 0;
+  color: var(--auth-muted);
+  font-size: 0.76rem;
+}
+
+.welcome-benefits {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--auth-border);
+  padding-top: 1.5rem;
+}
+
+.welcome-benefits > div {
+  display: flex;
+  gap: 0.8rem;
+  padding: 0 1.25rem;
+}
+
+.welcome-benefits > div:first-child {
+  padding-left: 0;
+}
+
+.welcome-benefits > div + div {
+  border-left: 1px solid var(--auth-border);
+}
+
+.benefit-mark {
+  color: var(--auth-primary);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding-top: 0.15rem;
+}
+
+.welcome-benefits p {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+}
+
+.welcome-benefits strong {
+  color: var(--auth-text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.welcome-benefits p span {
+  color: var(--auth-muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
 }
 
 .btn-auth:disabled {
@@ -458,19 +682,19 @@ export default {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  border-bottom: 1px solid var(--auth-border);
 }
 
 .form-header h3 {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #f8fafc;
+  color: var(--auth-text);
   margin: 0;
 }
 
 .button-back {
   background: transparent;
-  color: #94a3b8;
+  color: var(--auth-muted);
   border: none;
   cursor: pointer;
   font-size: 0.875rem;
@@ -481,8 +705,8 @@ export default {
 }
 
 .button-back:hover {
-  color: #f8fafc;
-  background: rgba(148, 163, 184, 0.1);
+  color: var(--auth-text);
+  background: var(--auth-primary-light);
 }
 
 .auth-form form {
@@ -502,28 +726,28 @@ label {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #cbd5e1;
+  color: var(--auth-text-secondary);
 }
 
 input {
   width: 100%;
   padding: 0.8rem 1rem;
-  background: rgba(9, 13, 22, 0.85);
-  color: #f8fafc;
-  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: var(--auth-input);
+  color: var(--auth-text);
+  border: 1px solid var(--auth-border);
   border-radius: 0.75rem;
   font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 input::placeholder {
-  color: #64748b;
+  color: var(--auth-muted);
 }
 
 input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  border-color: var(--auth-primary);
+  box-shadow: 0 0 0 3px var(--auth-primary-light);
 }
 
 .password-Checklist {
@@ -537,7 +761,7 @@ input:focus {
 
 .password-Checklist li {
   font-size: 0.75rem;
-  color: #64748b;
+  color: var(--auth-muted);
   display: flex;
   align-items: center;
   gap: 0.35rem;
@@ -572,6 +796,41 @@ input:focus {
 @media (max-width: 480px) {
   .password-Checklist {
     grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .welcome-screen {
+    grid-template-columns: 1fr;
+    row-gap: 2rem;
+  }
+
+  .welcome-intro h2 {
+    font-size: clamp(2.35rem, 10vw, 3.5rem);
+  }
+
+  .welcome-benefits {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .welcome-benefits > div,
+  .welcome-benefits > div:first-child {
+    padding: 0;
+  }
+
+  .welcome-benefits > div + div {
+    border-left: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .welcome-buttons {
+    flex-direction: column;
+  }
+
+  .welcome-buttons .btn-auth {
+    width: 100%;
   }
 }
 </style>

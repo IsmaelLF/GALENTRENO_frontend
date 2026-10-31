@@ -70,7 +70,6 @@ import CrearPlan from "../../components/CrearPlan.vue";
 
     .option-card {
       background: var(--color-bg-card);
-      backdrop-filter: blur(12px);
       padding: var(--spacing-xl);
       border-radius: var(--radius-xl);
       border: 1px solid var(--color-border);
@@ -86,12 +85,8 @@ import CrearPlan from "../../components/CrearPlan.vue";
     }
 
     .option-card.highlighted {
-      border-color: rgba(59, 130, 246, 0.4);
-      background: linear-gradient(
-        160deg,
-        rgba(59, 130, 246, 0.1) 0%,
-        rgba(17, 24, 39, 0.85) 100%
-      );
+      border-color: var(--color-border-hover);
+      background: var(--color-bg-card);
     }
 
     .option-badge {
@@ -101,14 +96,14 @@ import CrearPlan from "../../components/CrearPlan.vue";
       letter-spacing: 0.06em;
       padding: 0.3rem 0.7rem;
       border-radius: 9999px;
-      background: rgba(148, 163, 184, 0.12);
+      background: rgba(233, 225, 245, 0.08);
       color: var(--color-text-secondary);
       margin-bottom: 1rem;
     }
 
     .option-badge.primary {
-      background: rgba(59, 130, 246, 0.18);
-      color: #60a5fa;
+      background: var(--color-primary-light);
+      color: var(--color-primary);
     }
 
     .option-card p {
@@ -123,7 +118,6 @@ import CrearPlan from "../../components/CrearPlan.vue";
 
     .custom-form-container {
       background: var(--color-bg-card);
-      backdrop-filter: blur(12px);
       padding: var(--spacing-xl);
       border-radius: var(--radius-xl);
       border: 1px solid var(--color-border-hover);
